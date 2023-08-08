@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import 'login.dart';
 import 'main.dart';
 
 class SplashScreen extends StatefulWidget{
@@ -18,7 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
 
     Timer(Duration(seconds: 3),(){
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage(title: 'Stock Audit',)));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Login()));
     });
   }
 
