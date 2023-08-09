@@ -29,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
    return Scaffold(
      body: Container(
        color: Colors.blue,
-       child: Center(child: Text('Warehouse Stock Audit', style: TextStyle(
+       child: Center(child: Text('Stock Audit', style: TextStyle(
          fontSize: 34,
          fontWeight: FontWeight.w700,
          color: Colors.white

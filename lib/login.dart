@@ -9,8 +9,7 @@ var passwordText = TextEditingController();
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Login"),
-        backgroundColor: Colors.lightBlue,
+        title: Text("Login", style: TextStyle(color: Colors.white)),
         centerTitle: true,
       ),
       body:Center(child: Container(
@@ -75,6 +74,7 @@ var passwordText = TextEditingController();
               String uEmail = emailText.text.toString();
               String uPass = passwordText.text;
               print("Email: $uEmail, Password: $uPass");
+              Navigator.push(context, MaterialPageRoute(builder: (context) => Dashboard()));
               }, child: Text(
                 'Login'
               ))

@@ -17,6 +17,9 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
         primarySwatch: Colors.lightBlue,
+          appBarTheme: AppBarTheme(
+            color: Colors.lightBlue,
+          ),
       ),
       //home: const MyHomePage(title: 'Stock Audit'),
       home: SplashScreen(),
@@ -46,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: Colors.lightBlue,
         title: Text(widget.title),
       ),
       body: Center(
