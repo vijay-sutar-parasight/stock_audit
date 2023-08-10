@@ -1,11 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:stock_audit/util/constants.dart' as constants;
+import 'package:http/http.dart' as http;
 
 class Brands extends StatefulWidget{
   @override
-  State<StatefulWidget> createState() {
-    return BrandList();
-  }
+  State<Brands> createState() => BrandList();
 }
 
 class BrandList extends State<Brands>{
@@ -19,12 +21,15 @@ class BrandList extends State<Brands>{
     );
   }
 
-  ListView getBrandsList(){
-    var arrNames = ['Vijay','Deepali','Mahesh','Deepti'];
+  Future<ListView> getBrandsList() async {
+
+    String url = "${constants.apiBaseURL}/brand";
+    var results = await http.get(Uri.parse(url));
+    var arrNames = jsonDecode(results.body);
     return ListView.separated(itemBuilder: (context, index){
       return Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Text(arrNames[index], style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
+        child: Text(arrNames[index].brand_name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
       );
     },
     itemCount: arrNames.length,

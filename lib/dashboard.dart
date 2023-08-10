@@ -29,7 +29,7 @@ class Dashboard extends StatelessWidget{
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.branding_watermark_rounded, size: 120,color: Colors.lightBlue,),
+                Icon(Icons.branding_watermark_rounded, size: 80,color: Colors.lightBlue,),
                 Text('Brands',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
               ],
             ),
@@ -46,7 +46,7 @@ class Dashboard extends StatelessWidget{
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.list_rounded, size: 120,color: Colors.lightBlue,),
+                Icon(Icons.list_rounded, size: 80,color: Colors.lightBlue,),
                 Text('Formats',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
               ],
             ),
@@ -63,7 +63,7 @@ class Dashboard extends StatelessWidget{
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.library_add_rounded, size: 120,color: Colors.lightBlue,),
+                Icon(Icons.library_add_rounded, size: 80,color: Colors.lightBlue,),
                 Text('Variants',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
               ],
             ),
@@ -80,7 +80,7 @@ class Dashboard extends StatelessWidget{
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.perm_media_rounded, size: 120,color: Colors.lightBlue,),
+                Icon(Icons.perm_media_rounded, size: 80,color: Colors.lightBlue,),
                 Text('Descriptions',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
               ],
             ),
@@ -97,7 +97,7 @@ class Dashboard extends StatelessWidget{
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.list_alt, size: 120,color: Colors.lightBlue,),
+                Icon(Icons.list_alt, size: 80,color: Colors.lightBlue,),
                 Text('Audit Entries',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
               ],
             ),
@@ -114,7 +114,7 @@ class Dashboard extends StatelessWidget{
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.storage_rounded, size: 120,color: Colors.lightBlue,),
+                Icon(Icons.storage_rounded, size: 80,color: Colors.lightBlue,),
                 Text('Data Sync',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
               ],
             ),
