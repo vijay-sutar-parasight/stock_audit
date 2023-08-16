@@ -4,8 +4,9 @@ import 'package:stock_audit/brands.dart';
 import 'package:stock_audit/datasync.dart';
 import 'package:stock_audit/descriptions.dart';
 import 'package:stock_audit/variants.dart';
+import 'package:stock_audit/warehouse.dart';
 
-import 'auditentries.dart';
+import 'audit.dart';
 import 'formats.dart';
 
 class Dashboard extends StatelessWidget{
@@ -91,14 +92,31 @@ class Dashboard extends StatelessWidget{
         padding: const EdgeInsets.all(15.0),
         child: InkWell(
           onTap: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context) => AuditEntries()));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => Warehouse()));
+          },
+          child: Card(color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.storage_rounded, size: 80,color: Colors.lightBlue,),
+                Text('Warehouse',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+              ],
+            ),
+          ),
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: InkWell(
+          onTap: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => Audit()));
           },
           child: Card(color: Colors.white,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.list_alt, size: 80,color: Colors.lightBlue,),
-                Text('Audit Entries',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                Text('Audit',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
               ],
             ),
           ),

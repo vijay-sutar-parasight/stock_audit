@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 import 'package:http/http.dart' as http;
 
+import 'GetBrandData.dart';
+
 class Brands extends StatefulWidget{
   @override
   State<Brands> createState() => BrandList();
@@ -12,6 +14,7 @@ class Brands extends StatefulWidget{
 
 class BrandList extends State<Brands>{
 
+  List<GetBrandData>? apiList;
 
   void initState(){
     super.initState();
@@ -25,6 +28,7 @@ class BrandList extends State<Brands>{
       ),
       body: Column(
         children: [
+          if (apiList != null)
           getList()
         ],
       ),
@@ -34,20 +38,22 @@ class BrandList extends State<Brands>{
   Widget getList(){
     return Expanded(
       child: ListView.builder(
-          itemCount: 10,
+          itemCount: apiList!.length,
           itemBuilder: (BuildContext, int index)
     {
-      return ListView.separated(itemBuilder: (context, index){
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(arrNames[index].brand_name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
-            );
-          },
-          itemCount: arrNames.length,
-            separatorBuilder: (BuildContext context, int index) {
-            return Divider(height: 30, thickness: 2,);
-            },
-          );
+     return Column(
+       crossAxisAlignment: CrossAxisAlignment.start,
+       children: [
+         Card(
+           elevation: 5,
+           child: Container(
+             width: double.infinity,
+             padding: EdgeInsets.fromLTRB(5, 10, 0, 10),
+             child: Text("${apiList![index].brandName}"),
+           )
+         )
+       ],
+     );
     }),
     );
   }
@@ -56,27 +62,14 @@ class BrandList extends State<Brands>{
   Future<void> getApiData() async{
     String url = "${constants.apiBaseURL}/brand";
     var result = await http.get(Uri.parse(url));
-    var arrNames = jsonDecode(result.body);
-    print(arrNames);
-  }
+    apiList = jsonDecode(result.body)
+    .map((item) => GetBrandData.fromJson(item))
+    .toList()
+    .cast<GetBrandData>();
 
-  // ListView getBrandsList() {
-  //
-  //   String url = "${constants.apiBaseURL}/brand";
-  //   var results = http.get(Uri.parse(url));
-  //   var arrNames = jsonDecode(results);
-  //   return ListView.separated(itemBuilder: (context, index){
-  //     return Padding(
-  //       padding: const EdgeInsets.all(8.0),
-  //       child: Text(arrNames[index].brand_name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
-  //     );
-  //   },
-  //   itemCount: arrNames.length,
-  //     separatorBuilder: (BuildContext context, int index) {
-  //     return Divider(height: 30, thickness: 2,);
-  //     },
-  //   );
-  //
-  // }
+    setState(() {
+
+    });
+  }
 
 }

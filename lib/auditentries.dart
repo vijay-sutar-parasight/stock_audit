@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:stock_audit/addaudit.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
+import 'package:http/http.dart' as http;
+
+import 'GetAuditEntriesData.dart';
 
 
 class AuditEntries extends StatefulWidget{
@@ -9,46 +13,64 @@ class AuditEntries extends StatefulWidget{
   State<AuditEntries> createState() => AuditEntriesList();
 }
 
-class AuditEntriesList extends State<AuditEntries> {
+class AuditEntriesList extends State<AuditEntries>{
+
+  List<GetAuditEntriesData>? apiList;
+
+  void initState(){
+    super.initState();
+    getApiData();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text('Audit Entries')
+        title: Text('Audit Entries')
       ),
-      body: getAuditList(),
-        floatingActionButton: SizedBox(
-          width: 70,
-            height: 70,
-          child: FloatingActionButton(
-            onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => AddAudit()));
-            },
-            tooltip: 'Add Audit',
-            child: const Icon(Icons.add, color: Colors.white,),
-            backgroundColor: Colors.lightBlue,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(50.0))
-            ),
-          ),
-        )
+      body: Column(
+        children: [
+          if (apiList != null)
+          getList()
+        ],
+      ),
     );
   }
 
-  ListView getAuditList() {
-    String url = constants.apiBaseURL;
-    var arrNames = ['Vijay', 'Deepali', 'Mahesh', 'Deepti'];
-    return ListView.separated(itemBuilder: (context, index) {
-      return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Text(arrNames[index],
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
-      );
-    },
-      itemCount: arrNames.length,
-      separatorBuilder: (BuildContext context, int index) {
-        return Divider(height: 30, thickness: 2,);
-      },
+  Widget getList(){
+    return Expanded(
+      child: ListView.builder(
+          itemCount: apiList!.length,
+          itemBuilder: (BuildContext, int index)
+    {
+     return Column(
+       crossAxisAlignment: CrossAxisAlignment.start,
+       children: [
+         Card(
+           elevation: 5,
+           child: Container(
+             width: double.infinity,
+             padding: EdgeInsets.fromLTRB(5, 10, 0, 10),
+             child: Text("${apiList![index].auditDiscription}"),
+           )
+         )
+       ],
+     );
+    }),
     );
   }
+
+
+  Future<void> getApiData() async{
+    String url = "${constants.apiBaseURL}/entries/";
+    var result = await http.get(Uri.parse(url));
+    apiList = jsonDecode(result.body)
+    .map((item) => GetAuditEntriesData.fromJson(item))
+    .toList()
+    .cast<GetAuditEntriesData>();
+
+    setState(() {
+
+    });
+  }
+
 }

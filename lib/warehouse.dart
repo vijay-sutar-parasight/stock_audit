@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 import 'package:http/http.dart' as http;
 
-import 'GetFormatData.dart';
+import 'GetWarehouseData.dart';
 
-class Formats extends StatefulWidget {
+class Warehouse extends StatefulWidget {
   @override
-  State<Formats> createState() => FormatsList();
+  State<Warehouse> createState() => WarehouseList();
 }
-  class FormatsList extends State<Formats> {
-    List<GetFormatData>? apiList;
+  class WarehouseList extends State<Warehouse> {
+    List<GetWarehouseData>? apiList;
 
     void initState(){
       super.initState();
@@ -22,7 +22,7 @@ class Formats extends StatefulWidget {
     Widget build(BuildContext context) {
       return Scaffold(
         appBar: AppBar(
-            title: Text('Formats')
+            title: Text('Warehouse')
         ),
         body: Column(
           children: [
@@ -48,7 +48,7 @@ class Formats extends StatefulWidget {
                       child: Container(
                         width: double.infinity,
                         padding: EdgeInsets.fromLTRB(5, 10, 0, 10),
-                        child: Text("${apiList![index].formatName}"),
+                        child: Text("${apiList![index].warehouseName}"),
                       )
                   )
                 ],
@@ -59,12 +59,13 @@ class Formats extends StatefulWidget {
 
 
     Future<void> getApiData() async{
-      String url = "${constants.apiBaseURL}/format";
+      String url = "${constants.apiBaseURL}/warehouse";
       var result = await http.get(Uri.parse(url));
+      //print(result.body);
       apiList = jsonDecode(result.body)
-          .map((item) => GetFormatData.fromJson(item))
+          .map((item) => GetWarehouseData.fromJson(item))
           .toList()
-          .cast<GetFormatData>();
+          .cast<GetWarehouseData>();
 
       setState(() {
 

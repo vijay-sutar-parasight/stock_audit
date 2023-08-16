@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+import 'GetVariantData.dart';
 
 class Variants extends StatefulWidget{
   @override
@@ -8,30 +12,63 @@ class Variants extends StatefulWidget{
 }
 
 class VariantList extends State<Variants> {
+  List<GetVariantData>? apiList;
+
+  void initState(){
+    super.initState();
+    getApiData();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
           title: Text('Variants')
       ),
-      body: getVariantList(),
+      body: Column(
+        children: [
+          if (apiList != null)
+            getList()
+        ],
+      ),
     );
   }
 
-  ListView getVariantList() {
-    String url = constants.apiBaseURL;
-    var arrNames = ['Vijay', 'Deepali', 'Mahesh', 'Deepti'];
-    return ListView.separated(itemBuilder: (context, index) {
-      return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Text(arrNames[index],
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
-      );
-    },
-      itemCount: arrNames.length,
-      separatorBuilder: (BuildContext context, int index) {
-        return Divider(height: 30, thickness: 2,);
-      },
+
+  Widget getList(){
+    return Expanded(
+      child: ListView.builder(
+          itemCount: apiList!.length,
+          itemBuilder: (BuildContext, int index)
+          {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Card(
+                    elevation: 5,
+                    child: Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.fromLTRB(5, 10, 0, 10),
+                      child: Text("${apiList![index].variantName}"),
+                    )
+                )
+              ],
+            );
+          }),
     );
+  }
+
+
+  Future<void> getApiData() async{
+    String url = "${constants.apiBaseURL}/variant";
+    var result = await http.get(Uri.parse(url));
+    //print(result.body);
+    apiList = jsonDecode(result.body)
+        .map((item) => GetVariantData.fromJson(item))
+        .toList()
+        .cast<GetVariantData>();
+
+    setState(() {
+
+    });
   }
 }
