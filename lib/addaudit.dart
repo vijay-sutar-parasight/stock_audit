@@ -2,6 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 
+import 'audit.dart';
+import 'db_handler.dart';
+import 'models/auditmodel.dart';
+
 class AddAudit extends StatefulWidget{
   @override
   State<AddAudit> createState() => _AddAudit();
@@ -11,6 +15,13 @@ class _AddAudit extends State<AddAudit>{
   var company = TextEditingController();
   var shortDescription = TextEditingController();
   var status = TextEditingController();
+
+  DBHelper? dbHelper;
+
+  void initState(){
+    super.initState();
+    dbHelper = DBHelper();
+  }
 
   List statusDropdown = ['Active','Inactive'];
   String selectedItem = 'Active';
@@ -75,7 +86,17 @@ class _AddAudit extends State<AddAudit>{
                 String uCompany = company.text.toString();
                 String uDescription = shortDescription.text;
                 String uStatus = status.text;
-
+                dbHelper!.insert(
+                    AuditModel(
+                  title: uCompany,
+                  description: uDescription,
+                    )
+                ).then((value) {
+                  print('Data added Successfully');
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => Audit()));
+                }).onError((error, stackTrace) {
+                  print(error.toString());
+                });
                 print("Company: $uCompany, Description: $uDescription, Status: $uStatus");
               }, child: Text(
                   'Save'

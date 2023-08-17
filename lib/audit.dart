@@ -7,6 +7,8 @@ import 'package:http/http.dart' as http;
 
 import 'GetAuditData.dart';
 import 'auditentries.dart';
+import 'db_handler.dart';
+import 'models/auditmodel.dart';
 
 
 class Audit extends StatefulWidget{
@@ -16,11 +18,19 @@ class Audit extends StatefulWidget{
 
 class AuditList extends State<Audit> {
 
+  DBHelper? dbHelper;
+  late Future<List<AuditModel>> auditList;
   List<GetAuditData>? apiList;
 
   void initState(){
     super.initState();
     getApiData();
+    dbHelper = DBHelper();
+    loadData();
+  }
+
+  loadData () async{
+    auditList = dbHelper!.getAuditList();
   }
 
   @override
@@ -31,8 +41,51 @@ class AuditList extends State<Audit> {
       ),
       body: Column(
         children: [
-          if (apiList != null)
-          getList(),
+          // if (apiList != null)
+          // getList(),
+          Expanded(
+            child: FutureBuilder(
+              future: auditList,
+                builder: (context, AsyncSnapshot<List<AuditModel>> snapshot){
+                if(snapshot.hasData){
+                  return ListView.builder(
+                      itemCount: snapshot.data?.length,
+                      reverse: false,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index){
+                        return InkWell(
+                          child: Dismissible(
+                            direction: DismissDirection.endToStart,
+                            background: Container(
+                              color: Colors.red,
+                              child: Icon(Icons.delete_forever),
+                            ),
+                            onDismissed: (DismissDirection){
+                              setState(() {
+                                dbHelper!.delete(snapshot.data![index].id!);
+                                auditList = dbHelper!.getAuditList();
+                                snapshot.data!.remove(snapshot.data![index]);
+                              });
+                            },
+                            key: ValueKey<int>(snapshot.data![index].id!),
+                            child: Card(
+                              child: ListTile(
+                                contentPadding: EdgeInsets.all(0),
+                                title: Text(snapshot.data![index].title.toString()),
+                                subtitle: Text(snapshot.data![index].description.toString()),
+                                trailing: Icon(Icons.edit),
+
+                              ),
+                            ),
+                          ),
+                        );
+                      });
+                }else{
+                  return CircularProgressIndicator();
+                }
+
+                }),
+          )
         ],
       ),
         floatingActionButton: SizedBox(
@@ -72,7 +125,7 @@ class AuditList extends State<Audit> {
                           Text("${apiList![index].auditDiscription}"),
                           InkWell(
                               onTap: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => AuditEntries()), {apiList![index].auditId);
+                               // Navigator.push(context, MaterialPageRoute(builder: (context) => AuditEntries()), {apiList![index].auditId);
                               },
                               child: Icon(Icons.add)),
                         ],
@@ -96,8 +149,8 @@ class AuditList extends State<Audit> {
         .toList()
         .cast<GetAuditData>();
 
-    setState(() {
-
-    });
+    // setState(() {
+    //
+    // });
   }
 }
