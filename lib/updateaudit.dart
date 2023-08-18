@@ -6,18 +6,20 @@ import 'audit.dart';
 import 'db_handler.dart';
 import 'models/auditmodel.dart';
 
-class AddAudit extends StatefulWidget{
+class UpdateAudit extends StatefulWidget{
   @override
-  State<AddAudit> createState() => _AddAudit();
+  State<UpdateAudit> createState() => _UpdateAudit();
 }
 
-class _AddAudit extends State<AddAudit>{
+class _UpdateAudit extends State<UpdateAudit>{
   var company = TextEditingController();
   var shortDescription = TextEditingController();
   var status = TextEditingController();
+  var recordId;
 
   DBHelper? dbHelper;
 
+  @override
   void initState(){
     super.initState();
     dbHelper = DBHelper();
@@ -27,12 +29,16 @@ class _AddAudit extends State<AddAudit>{
   String selectedItem = 'Active';
   @override
   Widget build(BuildContext context) {
+
+    final updateAudit = ModalRoute.of(context)!.settings.arguments as AuditModel;
+    company.text = updateAudit.title!;
+    shortDescription.text = updateAudit.description!;
+    recordId = updateAudit.id!;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Audit')
+        title: Text('Update Audit')
       ),
       body: Container(
-
           child: Column(
             children: [
               TextField(
@@ -85,8 +91,9 @@ class _AddAudit extends State<AddAudit>{
                 String uCompany = company.text.toString();
                 String uDescription = shortDescription.text;
                 String uStatus = status.text;
-                dbHelper!.insert(
+                dbHelper!.update(
                     AuditModel(
+                      id: recordId,
                   title: uCompany,
                   description: uDescription,
                     )

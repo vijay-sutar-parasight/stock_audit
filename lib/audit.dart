@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:stock_audit/addaudit.dart';
+import 'package:stock_audit/addauditentries.dart';
+import 'package:stock_audit/updateaudit.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -73,7 +75,42 @@ class AuditList extends State<Audit> {
                                 contentPadding: EdgeInsets.all(0),
                                 title: Text(snapshot.data![index].title.toString()),
                                 subtitle: Text(snapshot.data![index].description.toString()),
-                                trailing: Icon(Icons.edit),
+                                trailing: Column(
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>  UpdateAudit(),
+                                            // Pass the arguments as part of the RouteSettings. The
+                                            // UpdateScreen reads the arguments from these settings.
+                                            settings: RouteSettings(
+                                              arguments: snapshot.data![index],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                        child: Icon(Icons.edit)
+                                    ),
+                                    InkWell(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>  AuditEntries(),
+                                              // Pass the arguments as part of the RouteSettings. The
+                                              // UpdateScreen reads the arguments from these settings.
+                                              settings: RouteSettings(
+                                                arguments: snapshot.data![index],
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        child: Icon(Icons.add)
+                                    ),
+                                  ],
+                                ),
 
                               ),
                             ),
@@ -81,7 +118,7 @@ class AuditList extends State<Audit> {
                         );
                       });
                 }else{
-                  return CircularProgressIndicator();
+                  return Center(child: CircularProgressIndicator());
                 }
 
                 }),
