@@ -4,6 +4,7 @@ import 'package:stock_audit/audit.dart';
 import 'package:stock_audit/models/auditmodel.dart';
 import 'package:path/path.dart';
 import 'dart:io' as io;
+import 'package:stock_audit/util/constants.dart' as constants;
 class DBHelper{
   static Database? _db;
 
@@ -17,7 +18,7 @@ class DBHelper{
 
   initDatabase() async{
     io.Directory documentDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentDirectory.path, 'stockaudit.db');
+    String path = join(documentDirectory.path, '${constants.apiBaseURL}');
     var db = await openDatabase(path, version: 1, onCreate: _onCreate);
     return db;
   }

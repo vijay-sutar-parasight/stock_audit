@@ -4,6 +4,7 @@ import 'package:path/path.dart';
 import 'dart:io' as io;
 
 import 'models/auditentriesmodel.dart';
+import 'package:stock_audit/util/constants.dart' as constants;
 class AuditentriesDBHelper{
   static Database? _db;
 
@@ -17,8 +18,8 @@ class AuditentriesDBHelper{
 
   initDatabase() async{
     io.Directory documentDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentDirectory.path, 'stockaudit.db');
-    var db = await openDatabase(path, version: 1, onCreate: _onCreate);
+    String path = join(documentDirectory.path, '${constants.apiBaseURL}');
+    var db = await openDatabase(path, version: 2, onCreate: _onCreate);
     return db;
   }
 

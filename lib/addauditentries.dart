@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:stock_audit/auditentries.dart';
+import 'package:stock_audit/auditentries_handler.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 
 import 'audit.dart';
 import 'db_handler.dart';
+import 'models/auditentriesmodel.dart';
 import 'models/auditmodel.dart';
 
 class AddAuditEntries extends StatefulWidget{
@@ -31,11 +34,11 @@ class _AddAuditEntries extends State<AddAuditEntries>{
 
 
 
-  DBHelper? dbHelper;
+  AuditentriesDBHelper? dbHelper;
 
   void initState(){
     super.initState();
-    dbHelper = DBHelper();
+    dbHelper = AuditentriesDBHelper();
   }
 
   List statusDropdown = ['Active','Inactive'];
@@ -46,313 +49,406 @@ class _AddAuditEntries extends State<AddAuditEntries>{
       appBar: AppBar(
         title: Text('Add Audit Entries')
       ),
-      body: SingleChildScrollView(
-          child: Column(
-            children: [
-              TextField(
-                controller: brand,
-                decoration: InputDecoration(
-                    hintText: 'Brand',
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(11),
-                        borderSide: BorderSide(
-                            color: Colors.deepOrange,
-                            width: 2
-                        )
+      body: Padding(
+        padding: const EdgeInsets.all(8),
+        child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Flexible(
+                      child: TextField(
+                        controller: brand,
+                        decoration: InputDecoration(
+                            hintText: 'Brand',
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(11),
+                                borderSide: BorderSide(
+                                    color: Colors.deepOrange,
+                                    width: 2
+                                )
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(11),
+                                borderSide: BorderSide(
+                                    color: Colors.blueAccent,
+                                    width: 2
+                                )
+                            ),
+                            prefixIcon: Icon(Icons.add_business, color: Colors.orange),
+                          contentPadding: EdgeInsets.symmetric(vertical: 15),
+                        ),
+                      ),
                     ),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(11),
-                        borderSide: BorderSide(
-                            color: Colors.blueAccent,
-                            width: 2
-                        )
+                    SizedBox(width: 10),
+
+                    Flexible(
+                      child: TextField(
+                          controller: format,
+                          decoration: InputDecoration(
+                              hintText: 'Format',
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(11),
+                                  borderSide: BorderSide(
+                                    color: Colors.blue,
+                                  )
+                              ),
+                              prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
+                            contentPadding: EdgeInsets.symmetric(vertical: 15),
+
+                          )
+                      ),
                     ),
-                    prefixIcon: Icon(Icons.add_business, color: Colors.orange)
+                  ],
                 ),
-              ),
-              Container(height: 11),
-              TextField(
-                  controller: format,
-                  decoration: InputDecoration(
-                      hintText: 'Format',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(11),
-                          borderSide: BorderSide(
-                            color: Colors.blue,
+
+                Container(height: 11),
+                Row(
+                  children: [
+                    Flexible(
+                      child: TextField(
+                          controller: variant,
+                          decoration: InputDecoration(
+                              hintText: 'Variant',
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(11),
+                                  borderSide: BorderSide(
+                                    color: Colors.blue,
+                                  )
+                              ),
+                              prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
+                            contentPadding: EdgeInsets.symmetric(vertical: 15),
+
                           )
                       ),
-                      prefixIcon: Icon(Icons.list_alt, color: Colors.orange)
+                    ),
+                    SizedBox(width: 10),
 
-                  )
-              ),
-              Container(height: 11),
-              TextField(
-                  controller: variant,
-                  decoration: InputDecoration(
-                      hintText: 'Variant',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(11),
-                          borderSide: BorderSide(
-                            color: Colors.blue,
+                    Flexible(
+                      child: TextField(
+                          controller: description,
+                          decoration: InputDecoration(
+                              hintText: 'Description',
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(11),
+                                  borderSide: BorderSide(
+                                    color: Colors.blue,
+                                  )
+                              ),
+                              prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
+                            contentPadding: EdgeInsets.symmetric(vertical: 15),
+
                           )
                       ),
-                      prefixIcon: Icon(Icons.list_alt, color: Colors.orange)
+                    ),
+                  ],
+                ),
+                Container(height: 11),
+                
+                Container(height: 11),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Flexible(
+                      child: TextField(
+                          controller: mfg_month,
+                          decoration: InputDecoration(
 
-                  )
-              ),
-              Container(height: 11),
-              TextField(
-                  controller: description,
-                  decoration: InputDecoration(
-                      hintText: 'Description',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(11),
-                          borderSide: BorderSide(
-                            color: Colors.blue,
+                              hintText: 'MFG Month',
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(11),
+                                  borderSide: BorderSide(
+                                    color: Colors.blue,
+                                  )
+                              ),
+                              prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
+                            contentPadding: EdgeInsets.symmetric(vertical: 15),
+
+                          ),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+
+                    Flexible(
+                      child: TextField(
+                          controller: mfg_year,
+                          decoration: InputDecoration(
+                              hintText: 'MFG Year',
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(11),
+                                  borderSide: BorderSide(
+                                    color: Colors.blue,
+                                  )
+                              ),
+                              prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
+                            contentPadding: EdgeInsets.symmetric(vertical: 15),
+
                           )
                       ),
-                      prefixIcon: Icon(Icons.list_alt, color: Colors.orange)
+                    ),
 
-                  )
-              ),
-              Container(height: 11),
-              TextField(
-                  controller: mfg_month,
-                  // decoration: InputDecoration(
-                  //     hintText: 'MFG Month',
-                  //     border: OutlineInputBorder(
-                  //         borderRadius: BorderRadius.circular(11),
-                  //         borderSide: BorderSide(
-                  //           color: Colors.blue,
-                  //         )
-                  //     ),
-                  //     prefixIcon: Icon(Icons.list_alt, color: Colors.orange)
-                  //
-                  // )
+                  ],
+                ),
 
-                  decoration: InputDecoration(
-              icon: Icon(Icons.calendar_today), //icon of text field
-          labelText: "Enter MFG Month" //label text of field
-      ),
-      readOnly: true,  //set it true, so that user will not able to edit text
-      onTap: () async {
-        DateTime pickedDate = await showDatePicker(
-            context: context, initialDate: DateTime.now(),
-            firstDate: DateTime(2000), //DateTime.now() - not to allow to choose before today.
-            lastDate: DateTime(2101)
-        );
 
-        if(pickedDate != null ){
-          print(pickedDate);  //pickedDate output format => 2021-03-10 00:00:00.000
-          String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
-          print(formattedDate); //formatted date output using intl package =>  2021-03-16
-          //you can implement different kind of Date Format here according to your requirement
+                Container(height: 11),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Flexible(
+                      child: TextField(
+                          controller: exp_month,
+                          decoration: InputDecoration(
+                              hintText: 'EXP Month',
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(11),
+                                  borderSide: BorderSide(
+                                    color: Colors.blue,
+                                  )
+                              ),
+                              prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
+                            contentPadding: EdgeInsets.symmetric(vertical: 15),
 
-          setState(() {
-            dateinput.text = formattedDate; //set output date to TextField value.
-          });
-        }else{
-          print("Date is not selected");
-        }
-      },
-
-              ),
-              Container(height: 11),
-              TextField(
-                  controller: mfg_year,
-                  decoration: InputDecoration(
-                      hintText: 'MFG Year',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(11),
-                          borderSide: BorderSide(
-                            color: Colors.blue,
                           )
                       ),
-                      prefixIcon: Icon(Icons.list_alt, color: Colors.orange)
+                    ),
+                    SizedBox(width: 10),
 
-                  )
-              ),
-              Container(height: 11),
-              TextField(
-                  controller: exp_month,
-                  decoration: InputDecoration(
-                      hintText: 'EXP Month',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(11),
-                          borderSide: BorderSide(
-                            color: Colors.blue,
+                    Flexible(
+                      child: TextField(
+                          controller: exp_year,
+                          decoration: InputDecoration(
+                              hintText: 'EXP Year',
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(11),
+                                  borderSide: BorderSide(
+                                    color: Colors.blue,
+                                  )
+                              ),
+                              prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
+                            contentPadding: EdgeInsets.symmetric(vertical: 15),
+
                           )
                       ),
-                      prefixIcon: Icon(Icons.list_alt, color: Colors.orange)
+                    ),
+                  ],
+                ),
+                Container(height: 11),
+                Row(
+                  children: [
+                    Flexible(
+                      child: TextField(
+                          controller: warehouse,
+                          decoration: InputDecoration(
+                              hintText: 'Warehouse',
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(11),
+                                  borderSide: BorderSide(
+                                    color: Colors.blue,
+                                  )
+                              ),
+                              prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
+                            contentPadding: EdgeInsets.symmetric(vertical: 15),
 
-                  )
-              ),
-              Container(height: 11),
-              TextField(
-                  controller: exp_year,
-                  decoration: InputDecoration(
-                      hintText: 'EXP Year',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(11),
-                          borderSide: BorderSide(
-                            color: Colors.blue,
                           )
                       ),
-                      prefixIcon: Icon(Icons.list_alt, color: Colors.orange)
+                    ),
+                    SizedBox(width: 10),
 
-                  )
-              ),
-              Container(height: 11),
-              TextField(
-                  controller: warehouse,
-                  decoration: InputDecoration(
-                      hintText: 'Warehouse',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(11),
-                          borderSide: BorderSide(
-                            color: Colors.blue,
+                    Flexible(
+                      child: TextField(
+                          controller: weight,
+                          decoration: InputDecoration(
+                              hintText: 'Weight',
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(11),
+                                  borderSide: BorderSide(
+                                    color: Colors.blue,
+                                  )
+                              ),
+                              prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
+                            contentPadding: EdgeInsets.symmetric(vertical: 15),
+
                           )
                       ),
-                      prefixIcon: Icon(Icons.list_alt, color: Colors.orange)
+                    ),
+                  ],
+                ),
+                
+                Container(height: 11),
+                Row(
+                  children: [
+                    Flexible(
+                      child: TextField(
+                          controller: mrp,
+                          decoration: InputDecoration(
+                              hintText: 'MRP',
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(11),
+                                  borderSide: BorderSide(
+                                    color: Colors.blue,
+                                  )
+                              ),
+                              prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
+                            contentPadding: EdgeInsets.symmetric(vertical: 15),
 
-                  )
-              ),
-              Container(height: 11),
-              TextField(
-                  controller: weight,
-                  decoration: InputDecoration(
-                      hintText: 'Weight',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(11),
-                          borderSide: BorderSide(
-                            color: Colors.blue,
                           )
                       ),
-                      prefixIcon: Icon(Icons.list_alt, color: Colors.orange)
+                    ),
+                    SizedBox(width: 10),
 
-                  )
-              ),
-              Container(height: 11),
-              TextField(
-                  controller: mrp,
-                  decoration: InputDecoration(
-                      hintText: 'MRP',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(11),
-                          borderSide: BorderSide(
-                            color: Colors.blue,
+                    Flexible(
+                      child: TextField(
+                          controller: valuation_per_unit,
+                          decoration: InputDecoration(
+                              hintText: 'Valuation Per Unit',
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(11),
+                                  borderSide: BorderSide(
+                                    color: Colors.blue,
+                                  )
+                              ),
+                              prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
+                            contentPadding: EdgeInsets.symmetric(vertical: 15),
+
                           )
                       ),
-                      prefixIcon: Icon(Icons.list_alt, color: Colors.orange)
+                    ),
+                  ],
+                ),
 
-                  )
-              ),
-              Container(height: 11),
-              TextField(
-                  controller: valuation_per_unit,
-                  decoration: InputDecoration(
-                      hintText: 'Valuation Per Unit',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(11),
-                          borderSide: BorderSide(
-                            color: Colors.blue,
+                Container(height: 11),
+                TextField(
+                    controller: system_unit,
+                    decoration: InputDecoration(
+                        hintText: 'System Unit',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(11),
+                            borderSide: BorderSide(
+                              color: Colors.blue,
+                            )
+                        ),
+                        prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
+                      contentPadding: EdgeInsets.symmetric(vertical: 15),
+
+                    )
+                ),
+                Container(height: 11),
+                TextField(
+                    controller: calculation,
+                    decoration: InputDecoration(
+                        hintText: 'Calculation',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(11),
+                            borderSide: BorderSide(
+                              color: Colors.blue,
+                            )
+                        ),
+                        prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
+                      contentPadding: EdgeInsets.symmetric(vertical: 15),
+
+                    )
+                ),
+                Container(height: 11),
+                Row(
+                  children: [
+                    Flexible(
+                      child: TextField(
+                          controller: actual_units,
+                          decoration: InputDecoration(
+                              hintText: 'Actual Units',
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(11),
+                                  borderSide: BorderSide(
+                                    color: Colors.blue,
+                                  )
+                              ),
+                              prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
+                            contentPadding: EdgeInsets.symmetric(vertical: 15),
+
                           )
                       ),
-                      prefixIcon: Icon(Icons.list_alt, color: Colors.orange)
+                    ),
+                    SizedBox(width: 10),
 
-                  )
-              ),
-              Container(height: 11),
-              TextField(
-                  controller: system_unit,
-                  decoration: InputDecoration(
-                      hintText: 'System Unit',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(11),
-                          borderSide: BorderSide(
-                            color: Colors.blue,
+                    Flexible(
+                      child: TextField(
+                          controller: total_valuation,
+                          decoration: InputDecoration(
+                              hintText: 'Total Valuation',
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(11),
+                                  borderSide: BorderSide(
+                                    color: Colors.blue,
+                                  )
+                              ),
+                              prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
+                            contentPadding: EdgeInsets.symmetric(vertical: 15),
+
                           )
                       ),
-                      prefixIcon: Icon(Icons.list_alt, color: Colors.orange)
+                    ),
+                  ],
+                ),
 
-                  )
-              ),
-              Container(height: 11),
-              TextField(
-                  controller: calculation,
-                  decoration: InputDecoration(
-                      hintText: 'Calculation',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(11),
-                          borderSide: BorderSide(
-                            color: Colors.blue,
-                          )
-                      ),
-                      prefixIcon: Icon(Icons.list_alt, color: Colors.orange)
-
-                  )
-              ),
-              Container(height: 11),
-              TextField(
-                  controller: actual_units,
-                  decoration: InputDecoration(
-                      hintText: 'Actual Units',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(11),
-                          borderSide: BorderSide(
-                            color: Colors.blue,
-                          )
-                      ),
-                      prefixIcon: Icon(Icons.list_alt, color: Colors.orange)
-
-                  )
-              ),
-              Container(height: 11),
-              TextField(
-                  controller: total_valuation,
-                  decoration: InputDecoration(
-                      hintText: 'Total Valuation',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(11),
-                          borderSide: BorderSide(
-                            color: Colors.blue,
-                          )
-                      ),
-                      prefixIcon: Icon(Icons.list_alt, color: Colors.orange)
-
-                  )
-              ),
-              // Container(height: 20),
-              // DropdownButton(
-              //     value: selectedItem, items: statusDropdown.map((e) {
-              //   return DropdownMenuItem(value: e,child: Text(e));
-              // }).toList(), onChanged: (val){
-              //   setState(() {
-              //     selectedItem = val as String;
-              //   });
-              // }),
-              Container(height: 20),
-              ElevatedButton(onPressed: (){
-                // String uCompany = company.text.toString();
-                // String uDescription = shortDescription.text;
-                // String uStatus = status.text;
-                // dbHelper!.insert(
-                //     AuditModel(
-                //   title: uCompany,
-                //   description: uDescription,
-                //     )
-                // ).then((value) {
-                //   print('Data added Successfully');
-                //   Navigator.push(context, MaterialPageRoute(builder: (context) => Audit()));
-                // }).onError((error, stackTrace) {
-                //   print(error.toString());
-                // });
-                // print("Company: $uCompany, Description: $uDescription, Status: $uStatus");
-              }, child: Text(
-                  'Save'
-              ))
-            ],
-          )
+                // Container(height: 20),
+                // DropdownButton(
+                //     value: selectedItem, items: statusDropdown.map((e) {
+                //   return DropdownMenuItem(value: e,child: Text(e));
+                // }).toList(), onChanged: (val){
+                //   setState(() {
+                //     selectedItem = val as String;
+                //   });
+                // }),
+                Container(height: 20),
+                ElevatedButton(onPressed: (){
+                  String uBrand = brand.text.toString();
+                  String uFormat = format.text.toString();
+                  String uVariant = variant.text.toString();
+                  String uDescriiption = description.text.toString();
+                  String uMfgMonth = mfg_month.text.toString();
+                  String uMfgYear = mfg_month.text.toString();
+                  String uExpMonth = exp_month.text.toString();
+                  String uExpYear = exp_year.text.toString();
+                  String uWarehouse = warehouse.text.toString();
+                  String uWeight = weight.text.toString();
+                  String uMrp = mrp.text.toString();
+                  String uValuationPerUnit = valuation_per_unit.text.toString();
+                  String uSystemUnit = system_unit.text.toString();
+                  String uCalculation = calculation.text.toString();
+                  String uActualUnit = actual_units.text.toString();
+                  String uTotalValuation = total_valuation.text.toString();
+                  dbHelper!.insert(
+                      AuditEntriesModel(
+                    brandId: uBrand,
+                    formatId: uFormat,
+                        variantId: uVariant,
+                        productId: uDescriiption,
+                        mfgMonth: uMfgMonth,
+                        mfgYear: uMfgYear,
+                        expMonth: uExpMonth,
+                        expYear: uExpYear,
+                        warehouseId: uWarehouse,
+                        weight: uWeight,
+                        mrp: uMrp,
+                        valuationPerUnit: uValuationPerUnit,
+                        systemUnit: uSystemUnit,
+                        calculationArr: uCalculation,
+                        actualUnit: uActualUnit,
+                        totalStockValue: uTotalValuation
+                      )
+                  ).then((value) {
+                    print('Data added Successfully');
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => AuditEntries()));
+                  }).onError((error, stackTrace) {
+                    print(error.toString());
+                  });
+                }, child: Text(
+                    'Save'
+                ))
+              ],
+            )
+        ),
       ),
     );
   }
