@@ -6,6 +6,7 @@ import 'dart:io' as io;
 import 'package:stock_audit/util/constants.dart' as constants;
 
 import 'models/brandmodel.dart';
+import 'models/formatmodel.dart';
 class DBHelper{
   static Database? _db;
 
@@ -80,12 +81,12 @@ class DBHelper{
     return queryResult.map((e) => BrandModel.fromMap(e)).toList();
   }
 
-  Future<int> deleteBrand(int auditId) async{
+  Future<int> deleteBrand(int brandId) async{
     var dbClient = await db;
     return await dbClient!.delete(
         'brand',
         where: 'brand_id=?',
-        whereArgs: [auditId]
+        whereArgs: [brandId]
     );
   }
 
@@ -96,6 +97,38 @@ class DBHelper{
         brandModel.toMap(),
         where: 'brand_id=?',
         whereArgs: [brandModel.brandId]
+    );
+  }
+
+
+  Future<FormatModel> insertFormat(FormatModel formatModel) async{
+    var dbClient = await db;
+    await dbClient!.insert('format', formatModel.toMap());
+    return formatModel;
+  }
+
+  Future<List<FormatModel>> getFormatList() async{
+    var dbClient = await db;
+    final List<Map<String, Object?>> queryResult = await dbClient!.query("format");
+    return queryResult.map((e) => FormatModel.fromMap(e)).toList();
+  }
+
+  Future<int> deleteFormat(int formatId) async{
+    var dbClient = await db;
+    return await dbClient!.delete(
+        'format',
+        where: 'format_id=?',
+        whereArgs: [formatId]
+    );
+  }
+
+  Future<int> updateFormat(FormatModel formatModel) async{
+    var dbClient = await db;
+    return await dbClient!.update(
+        'format',
+        formatModel.toMap(),
+        where: 'format_id=?',
+        whereArgs: [formatModel.formatId]
     );
   }
 

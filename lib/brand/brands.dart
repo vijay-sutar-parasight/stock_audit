@@ -60,7 +60,7 @@ class BrandList extends State<Brands>{
                                 ),
                                 onDismissed: (DismissDirection){
                                   setState(() {
-                                    dbHelper!.delete(snapshot.data![index].brandId!);
+                                    dbHelper!.deleteBrand(snapshot.data![index].brandId!);
                                     brandList = dbHelper!.getBrandList();
                                     snapshot.data!.remove(snapshot.data![index]);
                                   });
