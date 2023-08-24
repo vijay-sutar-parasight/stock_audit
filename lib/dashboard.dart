@@ -1,13 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:stock_audit/brands.dart';
-import 'package:stock_audit/datasync.dart';
-import 'package:stock_audit/descriptions.dart';
-import 'package:stock_audit/variants.dart';
-import 'package:stock_audit/warehouse.dart';
-
-import 'audit.dart';
-import 'formats.dart';
+import 'package:stock_audit/brand/brands.dart';
+import 'package:stock_audit/datasync/datasync.dart';
+import 'package:stock_audit/description/descriptions.dart';
+import 'package:stock_audit/variant/variants.dart';
+import 'package:stock_audit/warehouse/warehouse.dart';
+import 'package:stock_audit/audit/audit.dart';
+import 'package:stock_audit/format/formats.dart';
 
 class Dashboard extends StatelessWidget{
   @override

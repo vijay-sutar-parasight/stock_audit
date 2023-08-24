@@ -1,45 +1,44 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:stock_audit/addaudit.dart';
-import 'package:stock_audit/addauditentries.dart';
-import 'package:stock_audit/updateaudit.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import 'GetAuditData.dart';
-import 'auditentries.dart';
-import 'db_handler.dart';
-import 'models/auditmodel.dart';
+import '../GetAuditData.dart';
+import '../models/auditentriesmodel.dart';
+import 'addauditentries.dart';
+import 'auditentries_handler.dart';
 
 
-class Audit extends StatefulWidget{
+
+
+class AuditEntries extends StatefulWidget{
   @override
-  State<Audit> createState() => AuditList();
+  State<AuditEntries> createState() => AuditEntriesList();
 }
 
-class AuditList extends State<Audit> {
+class AuditEntriesList extends State<AuditEntries> {
 
-  DBHelper? dbHelper;
-  late Future<List<AuditModel>> auditList;
+  AuditentriesDBHelper? dbHelper;
+  late Future<List<AuditEntriesModel>> auditEntriesList;
   List<GetAuditData>? apiList;
 
   void initState(){
     super.initState();
     getApiData();
-    dbHelper = DBHelper();
+    dbHelper = AuditentriesDBHelper();
     loadData();
   }
 
   loadData () async{
-    auditList = dbHelper!.getAuditList();
+    auditEntriesList = dbHelper!.getAuditEntriesList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text('Audit')
+          title: Text('Audit Entries')
       ),
       body: Column(
         children: [
@@ -47,8 +46,8 @@ class AuditList extends State<Audit> {
           // getList(),
           Expanded(
             child: FutureBuilder(
-              future: auditList,
-                builder: (context, AsyncSnapshot<List<AuditModel>> snapshot){
+              future: auditEntriesList,
+                builder: (context, AsyncSnapshot<List<AuditEntriesModel>> snapshot){
                 if(snapshot.hasData){
                   return ListView.builder(
                       itemCount: snapshot.data?.length,
@@ -64,52 +63,32 @@ class AuditList extends State<Audit> {
                             ),
                             onDismissed: (DismissDirection){
                               setState(() {
-                                dbHelper!.delete(snapshot.data![index].auditId!);
-                                auditList = dbHelper!.getAuditList();
+                                dbHelper!.delete(snapshot.data![index].entryId!);
+                                auditEntriesList = dbHelper!.getAuditEntriesList();
                                 snapshot.data!.remove(snapshot.data![index]);
                               });
                             },
-                            key: ValueKey<int>(snapshot.data![index].auditId!),
+                            key: ValueKey<int>(snapshot.data![index].entryId!),
                             child: Card(
                               child: ListTile(
                                 contentPadding: EdgeInsets.all(0),
-                                title: Text(snapshot.data![index].title.toString()),
-                                subtitle: Text(snapshot.data![index].description.toString()),
-                                trailing: Column(
-                                  children: [
-                                    InkWell(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>  UpdateAudit(),
-                                            // Pass the arguments as part of the RouteSettings. The
-                                            // UpdateScreen reads the arguments from these settings.
-                                            settings: RouteSettings(
-                                              arguments: snapshot.data![index],
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                        child: Icon(Icons.edit)
-                                    ),
-                                    InkWell(
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>  AuditEntries(),
-                                              // Pass the arguments as part of the RouteSettings. The
-                                              // UpdateScreen reads the arguments from these settings.
-                                              settings: RouteSettings(
-                                                arguments: snapshot.data![index],
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                        child: Icon(Icons.add)
-                                    ),
-                                  ],
+                                title: Text(snapshot.data![index].productName.toString()),
+                                subtitle: Text(snapshot.data![index].brandName.toString()),
+                                trailing: InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>  AddAuditEntries(),
+                                        // Pass the arguments as part of the RouteSettings. The
+                                        // UpdateScreen reads the arguments from these settings.
+                                        settings: RouteSettings(
+                                          arguments: snapshot.data![index],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                    child: Icon(Icons.edit)
                                 ),
 
                               ),
@@ -118,7 +97,9 @@ class AuditList extends State<Audit> {
                         );
                       });
                 }else{
-                  return Center(child: CircularProgressIndicator());
+                  return Center(child: CircularProgressIndicator(
+
+                  ));
                 }
 
                 }),
@@ -130,9 +111,9 @@ class AuditList extends State<Audit> {
             height: 70,
           child: FloatingActionButton(
             onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => AddAudit()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => AddAuditEntries()));
             },
-            tooltip: 'Add Audit',
+            tooltip: 'Add Audit Entries',
             child: const Icon(Icons.add, color: Colors.white,),
             backgroundColor: Colors.lightBlue,
             shape: RoundedRectangleBorder(

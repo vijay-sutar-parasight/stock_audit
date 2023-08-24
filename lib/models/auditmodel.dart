@@ -1,23 +1,23 @@
 class AuditModel{
   final int? auditId;
-  final String? title;
-  final String? description;
-  final String? status;
+  final String? companyId;
+  final String? auditDescription;
+  final String? auditStatus;
 
-AuditModel({this.auditId, required this.title, required this.description, this.status});
+AuditModel({this.auditId, required this.companyId, required this.auditDescription, this.auditStatus});
 
 AuditModel.fromMap(Map<String, dynamic> res):
-auditId = res['audit_id'],
-title = res['title'],
-description = res['description'],
-status = res['status'];
+      auditId = res['audit_id'],
+      companyId = res['company_id'],
+      auditDescription = res['audit_description'],
+      auditStatus = res['audit_status'];
 
 Map<String, Object?> toMap(){
   return{
     'audit_id' : auditId,
-    'title' : title,
-    'description' : description,
-    'status' : status,
+    'company_id' : companyId,
+    'audit_description' : auditDescription,
+    'audit_status' : auditStatus,
   };
 }
 }

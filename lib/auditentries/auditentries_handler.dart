@@ -3,7 +3,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'dart:io' as io;
 
-import 'models/auditentriesmodel.dart';
+import '../../models/auditentriesmodel.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 class AuditentriesDBHelper{
   static Database? _db;

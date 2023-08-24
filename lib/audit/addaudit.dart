@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 
+import '../../db_handler.dart';
+import '../../models/auditmodel.dart';
 import 'audit.dart';
-import 'db_handler.dart';
-import 'models/auditmodel.dart';
 
 class AddAudit extends StatefulWidget{
   @override
@@ -12,9 +12,9 @@ class AddAudit extends StatefulWidget{
 }
 
 class _AddAudit extends State<AddAudit>{
-  var company = TextEditingController();
-  var shortDescription = TextEditingController();
-  var status = TextEditingController();
+  var companyId = TextEditingController();
+  var auditDescription = TextEditingController();
+  var auditStatus = TextEditingController();
 
   DBHelper? dbHelper;
 
@@ -36,7 +36,7 @@ class _AddAudit extends State<AddAudit>{
           child: Column(
             children: [
               TextField(
-                controller: company,
+                controller: companyId,
                 decoration: InputDecoration(
                     hintText: 'Select Company',
                     focusedBorder: OutlineInputBorder(
@@ -58,7 +58,7 @@ class _AddAudit extends State<AddAudit>{
               ),
               Container(height: 11),
               TextField(
-                  controller: shortDescription,
+                  controller: auditDescription,
                   decoration: InputDecoration(
                       hintText: 'Short Description',
                       border: OutlineInputBorder(
@@ -82,13 +82,14 @@ class _AddAudit extends State<AddAudit>{
               }),
               Container(height: 20),
               ElevatedButton(onPressed: (){
-                String uCompany = company.text.toString();
-                String uDescription = shortDescription.text;
-                String uStatus = status.text;
+                String uCompany = companyId.text.toString();
+                String uDescription = auditDescription.text;
+                String uStatus = auditStatus.text;
                 dbHelper!.insert(
                     AuditModel(
-                  title: uCompany,
-                  description: uDescription,
+                  companyId: uCompany,
+                  auditDescription: uDescription,
+                      auditStatus: uStatus,
                     )
                 ).then((value) {
                   print('Data added Successfully');

@@ -2,7 +2,7 @@ const SUCCESS_MESSAGE=" You will be contacted by us very soon.";
 
 // Api related
 const apiBaseURL = "https://www.parasightdemo.com/castockaudit/api";
-const databaseName = "stockaudit4.db";
+const databaseName = "stockaudit5.db";
 
 const userLoginApi = "login";
 const userSignupApi = "signup";

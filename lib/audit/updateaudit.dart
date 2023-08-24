@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 
+import '../db_handler.dart';
+import '../models/auditmodel.dart';
 import 'audit.dart';
-import 'db_handler.dart';
-import 'models/auditmodel.dart';
 
 class UpdateAudit extends StatefulWidget{
   @override
@@ -12,9 +12,9 @@ class UpdateAudit extends StatefulWidget{
 }
 
 class _UpdateAudit extends State<UpdateAudit>{
-  var company = TextEditingController();
-  var shortDescription = TextEditingController();
-  var status = TextEditingController();
+  var companyId = TextEditingController();
+  var auditDescription = TextEditingController();
+  var auditStatus = TextEditingController();
   var recordId;
 
   DBHelper? dbHelper;
@@ -31,8 +31,9 @@ class _UpdateAudit extends State<UpdateAudit>{
   Widget build(BuildContext context) {
 
     final updateAudit = ModalRoute.of(context)!.settings.arguments as AuditModel;
-    company.text = updateAudit.title!;
-    shortDescription.text = updateAudit.description!;
+    companyId.text = updateAudit.companyId!;
+    auditDescription.text = updateAudit.auditDescription!;
+    auditStatus.text = updateAudit.auditStatus!;
     recordId = updateAudit.auditId!;
     return Scaffold(
       appBar: AppBar(
@@ -42,7 +43,7 @@ class _UpdateAudit extends State<UpdateAudit>{
           child: Column(
             children: [
               TextField(
-                controller: company,
+                controller: companyId,
                 decoration: InputDecoration(
                     hintText: 'Select Company',
                     focusedBorder: OutlineInputBorder(
@@ -64,7 +65,7 @@ class _UpdateAudit extends State<UpdateAudit>{
               ),
               Container(height: 11),
               TextField(
-                  controller: shortDescription,
+                  controller: auditDescription,
                   decoration: InputDecoration(
                       hintText: 'Short Description',
                       border: OutlineInputBorder(
@@ -88,14 +89,15 @@ class _UpdateAudit extends State<UpdateAudit>{
               }),
               Container(height: 20),
               ElevatedButton(onPressed: (){
-                String uCompany = company.text.toString();
-                String uDescription = shortDescription.text;
-                String uStatus = status.text;
+                String uCompany = companyId.text.toString();
+                String uDescription = auditDescription.text;
+                String uStatus = auditStatus.text;
                 dbHelper!.update(
                     AuditModel(
                       auditId: recordId,
-                  title: uCompany,
-                  description: uDescription,
+                  companyId: uCompany,
+                      auditDescription: uDescription,
+                  auditStatus: uStatus,
                     )
                 ).then((value) {
                   print('Data added Successfully');

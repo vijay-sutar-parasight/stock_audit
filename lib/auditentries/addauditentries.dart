@@ -1,13 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:stock_audit/auditentries.dart';
-import 'package:stock_audit/auditentries_handler.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 
-import 'audit.dart';
-import 'db_handler.dart';
-import 'models/auditentriesmodel.dart';
-import 'models/auditmodel.dart';
+import '../../models/auditentriesmodel.dart';
+import 'auditentries.dart';
+import 'auditentries_handler.dart';
 
 class AddAuditEntries extends StatefulWidget{
   @override

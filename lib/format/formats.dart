@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 import 'package:http/http.dart' as http;
 
-import 'GetFormatData.dart';
+import '../GetFormatData.dart';
 
 class Formats extends StatefulWidget {
   @override

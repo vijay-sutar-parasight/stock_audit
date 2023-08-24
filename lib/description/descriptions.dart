@@ -4,15 +4,15 @@ import 'package:stock_audit/util/constants.dart' as constants;
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import 'GetVariantData.dart';
+import '../GetDescriptionData.dart';
 
-class Variants extends StatefulWidget{
+class Descriptions extends StatefulWidget{
   @override
-  State<Variants> createState() => VariantList();
+  State<Descriptions> createState() => DescriptionList();
 }
 
-class VariantList extends State<Variants> {
-  List<GetVariantData>? apiList;
+class DescriptionList extends State<Descriptions> {
+  List<GetDescriptionData>? apiList;
 
   void initState(){
     super.initState();
@@ -22,7 +22,7 @@ class VariantList extends State<Variants> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text('Variants')
+          title: Text('Descriptions')
       ),
       body: Column(
         children: [
@@ -48,7 +48,7 @@ class VariantList extends State<Variants> {
                     child: Container(
                       width: double.infinity,
                       padding: EdgeInsets.fromLTRB(5, 10, 0, 10),
-                      child: Text("${apiList![index].variantName}"),
+                      child: Text("${apiList![index].productName}"),
                     )
                 )
               ],
@@ -59,13 +59,13 @@ class VariantList extends State<Variants> {
 
 
   Future<void> getApiData() async{
-    String url = "${constants.apiBaseURL}/variant";
+    String url = "${constants.apiBaseURL}/product";
     var result = await http.get(Uri.parse(url));
     //print(result.body);
     apiList = jsonDecode(result.body)
-        .map((item) => GetVariantData.fromJson(item))
+        .map((item) => GetDescriptionData.fromJson(item))
         .toList()
-        .cast<GetVariantData>();
+        .cast<GetDescriptionData>();
 
     setState(() {
 

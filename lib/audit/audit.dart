@@ -1,42 +1,43 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:stock_audit/auditentries_handler.dart';
+import 'package:stock_audit/audit/addaudit.dart';
+import 'package:stock_audit/audit/updateaudit.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import 'GetAuditData.dart';
-import 'addauditentries.dart';
-import 'models/auditentriesmodel.dart';
+import '../GetAuditData.dart';
+import '../auditentries/auditentries.dart';
+import '../db_handler.dart';
+import '../models/auditmodel.dart';
 
-
-class AuditEntries extends StatefulWidget{
+class Audit extends StatefulWidget{
   @override
-  State<AuditEntries> createState() => AuditEntriesList();
+  State<Audit> createState() => AuditList();
 }
 
-class AuditEntriesList extends State<AuditEntries> {
+class AuditList extends State<Audit> {
 
-  AuditentriesDBHelper? dbHelper;
-  late Future<List<AuditEntriesModel>> auditEntriesList;
+  DBHelper? dbHelper;
+  late Future<List<AuditModel>> auditList;
   List<GetAuditData>? apiList;
 
   void initState(){
     super.initState();
     getApiData();
-    dbHelper = AuditentriesDBHelper();
+    dbHelper = DBHelper();
     loadData();
   }
 
   loadData () async{
-    auditEntriesList = dbHelper!.getAuditEntriesList();
+    auditList = dbHelper!.getAuditList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text('Audit Entries')
+          title: Text('Audit')
       ),
       body: Column(
         children: [
@@ -44,8 +45,8 @@ class AuditEntriesList extends State<AuditEntries> {
           // getList(),
           Expanded(
             child: FutureBuilder(
-              future: auditEntriesList,
-                builder: (context, AsyncSnapshot<List<AuditEntriesModel>> snapshot){
+              future: auditList,
+                builder: (context, AsyncSnapshot<List<AuditModel>> snapshot){
                 if(snapshot.hasData){
                   return ListView.builder(
                       itemCount: snapshot.data?.length,
@@ -61,32 +62,52 @@ class AuditEntriesList extends State<AuditEntries> {
                             ),
                             onDismissed: (DismissDirection){
                               setState(() {
-                                dbHelper!.delete(snapshot.data![index].entryId!);
-                                auditEntriesList = dbHelper!.getAuditEntriesList();
+                                dbHelper!.delete(snapshot.data![index].auditId!);
+                                auditList = dbHelper!.getAuditList();
                                 snapshot.data!.remove(snapshot.data![index]);
                               });
                             },
-                            key: ValueKey<int>(snapshot.data![index].entryId!),
+                            key: ValueKey<int>(snapshot.data![index]!.auditId!),
                             child: Card(
                               child: ListTile(
                                 contentPadding: EdgeInsets.all(0),
-                                title: Text(snapshot.data![index].productName.toString()),
-                                subtitle: Text(snapshot.data![index].brandName.toString()),
-                                trailing: InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>  AddAuditEntries(),
-                                        // Pass the arguments as part of the RouteSettings. The
-                                        // UpdateScreen reads the arguments from these settings.
-                                        settings: RouteSettings(
-                                          arguments: snapshot.data![index],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                    child: Icon(Icons.edit)
+                                title: Text(snapshot.data![index].companyId.toString()),
+                                subtitle: Text(snapshot.data![index].auditDescription.toString()),
+                                trailing: Column(
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>  UpdateAudit(),
+                                            // Pass the arguments as part of the RouteSettings. The
+                                            // UpdateScreen reads the arguments from these settings.
+                                            settings: RouteSettings(
+                                              arguments: snapshot.data![index],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                        child: Icon(Icons.edit)
+                                    ),
+                                    InkWell(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>  AuditEntries(),
+                                              // Pass the arguments as part of the RouteSettings. The
+                                              // UpdateScreen reads the arguments from these settings.
+                                              settings: RouteSettings(
+                                                arguments: snapshot.data![index],
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        child: Icon(Icons.add)
+                                    ),
+                                  ],
                                 ),
 
                               ),
@@ -95,9 +116,7 @@ class AuditEntriesList extends State<AuditEntries> {
                         );
                       });
                 }else{
-                  return Center(child: CircularProgressIndicator(
-
-                  ));
+                  return Center(child: CircularProgressIndicator());
                 }
 
                 }),
@@ -109,9 +128,9 @@ class AuditEntriesList extends State<AuditEntries> {
             height: 70,
           child: FloatingActionButton(
             onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => AddAuditEntries()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => AddAudit()));
             },
-            tooltip: 'Add Audit Entries',
+            tooltip: 'Add Audit',
             child: const Icon(Icons.add, color: Colors.white,),
             backgroundColor: Colors.lightBlue,
             shape: RoundedRectangleBorder(
