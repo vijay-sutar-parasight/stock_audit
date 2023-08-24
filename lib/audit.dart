@@ -64,12 +64,12 @@ class AuditList extends State<Audit> {
                             ),
                             onDismissed: (DismissDirection){
                               setState(() {
-                                dbHelper!.delete(snapshot.data![index].id!);
+                                dbHelper!.delete(snapshot.data![index].auditId!);
                                 auditList = dbHelper!.getAuditList();
                                 snapshot.data!.remove(snapshot.data![index]);
                               });
                             },
-                            key: ValueKey<int>(snapshot.data![index].id!),
+                            key: ValueKey<int>(snapshot.data![index].auditId!),
                             child: Card(
                               child: ListTile(
                                 contentPadding: EdgeInsets.all(0),

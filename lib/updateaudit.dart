@@ -33,7 +33,7 @@ class _UpdateAudit extends State<UpdateAudit>{
     final updateAudit = ModalRoute.of(context)!.settings.arguments as AuditModel;
     company.text = updateAudit.title!;
     shortDescription.text = updateAudit.description!;
-    recordId = updateAudit.id!;
+    recordId = updateAudit.auditId!;
     return Scaffold(
       appBar: AppBar(
         title: Text('Update Audit')
@@ -93,7 +93,7 @@ class _UpdateAudit extends State<UpdateAudit>{
                 String uStatus = status.text;
                 dbHelper!.update(
                     AuditModel(
-                      id: recordId,
+                      auditId: recordId,
                   title: uCompany,
                   description: uDescription,
                     )
