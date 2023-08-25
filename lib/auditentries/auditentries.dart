@@ -4,7 +4,6 @@ import 'package:stock_audit/util/constants.dart' as constants;
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import '../GetAuditData.dart';
 import '../models/auditentriesmodel.dart';
 import 'addauditentries.dart';
 import 'auditentries_handler.dart';
@@ -21,11 +20,9 @@ class AuditEntriesList extends State<AuditEntries> {
 
   AuditentriesDBHelper? dbHelper;
   late Future<List<AuditEntriesModel>> auditEntriesList;
-  List<GetAuditData>? apiList;
 
   void initState(){
     super.initState();
-    getApiData();
     dbHelper = AuditentriesDBHelper();
     loadData();
   }
@@ -122,53 +119,5 @@ class AuditEntriesList extends State<AuditEntries> {
           ),
         )
     );
-  }
-
-  Widget getList(){
-    return Expanded(
-      child: ListView.builder(
-          itemCount: apiList!.length,
-          itemBuilder: (BuildContext, int index)
-          {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Card(
-                    elevation: 5,
-                    child: Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.fromLTRB(5, 10, 0, 10),
-                      child: Column(
-                        children: [
-                          Text("${apiList![index].auditDiscription}"),
-                          InkWell(
-                              onTap: (){
-                               // Navigator.push(context, MaterialPageRoute(builder: (context) => AuditEntries()), {apiList![index].auditId);
-                              },
-                              child: Icon(Icons.add)),
-                        ],
-                      ),
-
-                    )
-                )
-              ],
-            );
-          }),
-    );
-  }
-
-
-  Future<void> getApiData() async{
-    String url = "${constants.apiBaseURL}/audit";
-    var result = await http.get(Uri.parse(url));
-    //print(result.body);
-    apiList = jsonDecode(result.body)
-        .map((item) => GetAuditData.fromJson(item))
-        .toList()
-        .cast<GetAuditData>();
-
-    // setState(() {
-    //
-    // });
   }
 }

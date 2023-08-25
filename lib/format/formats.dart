@@ -6,7 +6,6 @@ import 'package:stock_audit/format/updateformat.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 import 'package:http/http.dart' as http;
 
-import '../GetFormatData.dart';
 import '../db_handler.dart';
 import '../models/formatmodel.dart';
 import 'addformat.dart';

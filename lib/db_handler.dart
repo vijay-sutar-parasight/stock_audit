@@ -7,6 +7,9 @@ import 'package:stock_audit/util/constants.dart' as constants;
 
 import 'models/brandmodel.dart';
 import 'models/formatmodel.dart';
+import 'models/productmodel.dart';
+import 'models/variantmodel.dart';
+import 'models/warehousemodel.dart';
 class DBHelper{
   static Database? _db;
 
@@ -129,6 +132,100 @@ class DBHelper{
         formatModel.toMap(),
         where: 'format_id=?',
         whereArgs: [formatModel.formatId]
+    );
+  }
+
+  Future<VariantModel> insertVariant(VariantModel variantModel) async{
+    var dbClient = await db;
+    await dbClient!.insert('variant', variantModel.toMap());
+    return variantModel;
+  }
+
+  Future<List<VariantModel>> getVariantList() async{
+    var dbClient = await db;
+    final List<Map<String, Object?>> queryResult = await dbClient!.query("variant");
+    return queryResult.map((e) => VariantModel.fromMap(e)).toList();
+  }
+
+  Future<int> deleteVariant(int variantId) async{
+    var dbClient = await db;
+    return await dbClient!.delete(
+        'variant',
+        where: 'variant_id=?',
+        whereArgs: [variantId]
+    );
+  }
+
+  Future<int> updateVariant(VariantModel variantModel) async{
+    var dbClient = await db;
+    return await dbClient!.update(
+        'variant',
+        variantModel.toMap(),
+        where: 'variant_id=?',
+        whereArgs: [variantModel.variantId]
+    );
+  }
+
+
+  Future<WarehouseModel> insertWarehouse(WarehouseModel warehouseModel) async{
+    var dbClient = await db;
+    await dbClient!.insert('warehouse', warehouseModel.toMap());
+    return warehouseModel;
+  }
+
+  Future<List<WarehouseModel>> getWarehouseList() async{
+    var dbClient = await db;
+    final List<Map<String, Object?>> queryResult = await dbClient!.query("warehouse");
+    return queryResult.map((e) => WarehouseModel.fromMap(e)).toList();
+  }
+
+  Future<int> deleteWarehouse(int warehouseId) async{
+    var dbClient = await db;
+    return await dbClient!.delete(
+        'warehouse',
+        where: 'warehouse_id=?',
+        whereArgs: [warehouseId]
+    );
+  }
+
+  Future<int> updateWarehouse(WarehouseModel warehouseModel) async{
+    var dbClient = await db;
+    return await dbClient!.update(
+        'warehouse',
+        warehouseModel.toMap(),
+        where: 'warehouse_id=?',
+        whereArgs: [warehouseModel.warehouseId]
+    );
+  }
+
+  Future<ProductModel> insertProduct(ProductModel productModel) async{
+    var dbClient = await db;
+    await dbClient!.insert('product', productModel.toMap());
+    return productModel;
+  }
+
+  Future<List<ProductModel>> getProductList() async{
+    var dbClient = await db;
+    final List<Map<String, Object?>> queryResult = await dbClient!.query("product");
+    return queryResult.map((e) => ProductModel.fromMap(e)).toList();
+  }
+
+  Future<int> deleteProduct(int productId) async{
+    var dbClient = await db;
+    return await dbClient!.delete(
+        'product',
+        where: 'product_id=?',
+        whereArgs: [productId]
+    );
+  }
+
+  Future<int> updateProduct(ProductModel productModel) async{
+    var dbClient = await db;
+    return await dbClient!.update(
+        'product',
+        productModel.toMap(),
+        where: 'product_id=?',
+        whereArgs: [productModel.productId]
     );
   }
 

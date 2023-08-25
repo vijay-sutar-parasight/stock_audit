@@ -4,71 +4,122 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 import 'package:http/http.dart' as http;
+import 'package:stock_audit/warehouse/updatewarehouse.dart';
 
-import '../GetWarehouseData.dart';
+import '../db_handler.dart';
+import '../models/warehousemodel.dart';
+import 'addwarehouse.dart';
 
 class Warehouse extends StatefulWidget {
   @override
   State<Warehouse> createState() => WarehouseList();
 }
   class WarehouseList extends State<Warehouse> {
-    List<GetWarehouseData>? apiList;
 
-    void initState(){
+    DBHelper? dbHelper;
+    late Future<List<WarehouseModel>> warehouseList;
+
+    @override
+  void initState(){
       super.initState();
-      getApiData();
+      dbHelper = DBHelper();
+      loadData();
     }
+
+    loadData () async{
+      warehouseList = dbHelper!.getWarehouseList();
+    }
+
     @override
     Widget build(BuildContext context) {
       return Scaffold(
-        appBar: AppBar(
-            title: Text('Warehouse')
-        ),
-        body: Column(
-          children: [
-            if (apiList != null)
-              getList()
-          ],
-        ),
+          appBar: AppBar(
+              title: Text('Warehouse')
+          ),
+          body: Column(
+            children: [
+              // if (apiList != null)
+              // getList(),
+              Expanded(
+                child: FutureBuilder(
+                    future: warehouseList,
+                    builder: (context, AsyncSnapshot<List<WarehouseModel>> snapshot){
+                      if(snapshot.hasData){
+                        return ListView.builder(
+                            itemCount: snapshot.data?.length,
+                            reverse: false,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index){
+                              return InkWell(
+                                child: Dismissible(
+                                  direction: DismissDirection.endToStart,
+                                  background: Container(
+                                    color: Colors.red,
+                                    child: Icon(Icons.delete_forever),
+                                  ),
+                                  onDismissed: (DismissDirection){
+                                    setState(() {
+                                      dbHelper!.deleteBrand(snapshot.data![index].warehouseId!);
+                                      warehouseList = dbHelper!.getWarehouseList();
+                                      snapshot.data!.remove(snapshot.data![index]);
+                                    });
+                                  },
+                                  key: ValueKey<int>(snapshot.data![index]!.warehouseId!),
+                                  child: Card(
+                                    child: ListTile(
+                                      contentPadding: EdgeInsets.all(0),
+                                      title: Text(snapshot.data![index].companyId.toString()),
+                                      subtitle: Text(snapshot.data![index].warehouseName.toString()),
+                                      trailing: Column(
+                                        children: [
+                                          InkWell(
+                                              onTap: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>  UpdateWarehouse(),
+                                                    // Pass the arguments as part of the RouteSettings. The
+                                                    // UpdateScreen reads the arguments from these settings.
+                                                    settings: RouteSettings(
+                                                      arguments: snapshot.data![index],
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                              child: Icon(Icons.edit)
+                                          ),
+                                        ],
+                                      ),
+
+                                    ),
+                                  ),
+                                ),
+                              );
+                            });
+                      }else{
+                        return Center(child: CircularProgressIndicator());
+                      }
+
+                    }),
+              )
+            ],
+          ),
+          floatingActionButton: SizedBox(
+            width: 70,
+            height: 70,
+            child: FloatingActionButton(
+              onPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => AddWarehouse()));
+              },
+              tooltip: 'Add Warehouse',
+              child: const Icon(Icons.add, color: Colors.white,),
+              backgroundColor: Colors.lightBlue,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(50.0))
+              ),
+            ),
+          )
       );
     }
 
-
-    Widget getList(){
-      return Expanded(
-        child: ListView.builder(
-            itemCount: apiList!.length,
-            itemBuilder: (BuildContext, int index)
-            {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Card(
-                      elevation: 5,
-                      child: Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.fromLTRB(5, 10, 0, 10),
-                        child: Text("${apiList![index].warehouseName}"),
-                      )
-                  )
-                ],
-              );
-            }),
-      );
-    }
-
-
-    Future<void> getApiData() async{
-      String url = "${constants.apiBaseURL}/warehouse";
-      var result = await http.get(Uri.parse(url));
-      //print(result.body);
-      apiList = jsonDecode(result.body)
-          .map((item) => GetWarehouseData.fromJson(item))
-          .toList()
-          .cast<GetWarehouseData>();
-
-      setState(() {
-
-      });
-    }
   }

@@ -14,7 +14,7 @@ class VariantModel{
 
 Map<String, Object?> toMap(){
   return{
-    'variant_id' : formatId,
+    'variant_id' : variantId,
     'brand_id' : brandId,
     'format_id' : formatId,
     'variant_name' : variantName,

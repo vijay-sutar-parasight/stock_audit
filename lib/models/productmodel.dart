@@ -49,7 +49,7 @@ class ProductModel{
 
 Map<String, Object?> toMap(){
   return{
-    'product_id' : productName,
+    'product_id' : productId,
     'product_name' : productName,
     'company_id' : companyId,
     'format_id' : formatId,
