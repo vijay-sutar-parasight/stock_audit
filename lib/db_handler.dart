@@ -6,6 +6,7 @@ import 'dart:io' as io;
 import 'package:stock_audit/util/constants.dart' as constants;
 
 import 'models/brandmodel.dart';
+import 'models/companymodel.dart';
 import 'models/formatmodel.dart';
 import 'models/productmodel.dart';
 import 'models/variantmodel.dart';
@@ -226,6 +227,37 @@ class DBHelper{
         productModel.toMap(),
         where: 'product_id=?',
         whereArgs: [productModel.productId]
+    );
+  }
+
+  Future<CompanyModel> insertCompany(CompanyModel companyModel) async{
+    var dbClient = await db;
+    await dbClient!.insert('company', companyModel.toMap());
+    return companyModel;
+  }
+
+  Future<List<CompanyModel>> getCompanyList() async{
+    var dbClient = await db;
+    final List<Map<String, Object?>> queryResult = await dbClient!.query("company");
+    return queryResult.map((e) => CompanyModel.fromMap(e)).toList();
+  }
+
+  Future<int> deleteCompany(int companyId) async{
+    var dbClient = await db;
+    return await dbClient!.delete(
+        'company',
+        where: 'company_id=?',
+        whereArgs: [companyId]
+    );
+  }
+
+  Future<int> updateCompany(CompanyModel companyModel) async{
+    var dbClient = await db;
+    return await dbClient!.update(
+        'company',
+        companyModel.toMap(),
+        where: 'company_id=?',
+        whereArgs: [companyModel.companyId]
     );
   }
 

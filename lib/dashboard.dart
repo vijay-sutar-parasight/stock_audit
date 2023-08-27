@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:stock_audit/brand/brands.dart';
+import 'package:stock_audit/company/company.dart';
 import 'package:stock_audit/datasync/datasync.dart';
 import 'package:stock_audit/description/descriptions.dart';
 import 'package:stock_audit/variant/variants.dart';
@@ -99,6 +100,23 @@ class Dashboard extends StatelessWidget{
               children: [
                 Icon(Icons.storage_rounded, size: 80,color: Colors.lightBlue,),
                 Text('Warehouse',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+              ],
+            ),
+          ),
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: InkWell(
+          onTap: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => Company()));
+          },
+          child: Card(color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.list_alt, size: 80,color: Colors.lightBlue,),
+                Text('Company',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
               ],
             ),
           ),
