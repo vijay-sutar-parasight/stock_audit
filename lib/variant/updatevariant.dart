@@ -1,3 +1,4 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:stock_audit/brand/brands.dart';
@@ -6,6 +7,8 @@ import 'package:stock_audit/variant/variants.dart';
 
 import '../audit/audit.dart';
 import '../db_handler.dart';
+import '../jsondata/GetBrandData.dart';
+import '../jsondata/GetFormatData.dart';
 import '../models/auditmodel.dart';
 import '../models/brandmodel.dart';
 import '../models/formatmodel.dart';
@@ -22,12 +25,37 @@ class _UpdateVariant extends State<UpdateVariant>{
   var variantName = TextEditingController();
   var recordId;
 
+  List<String> _brandList = [];
+  List<GetBrandData> _brandMasterList = [];
+  List<String> _formatList = [];
+  List<GetFormatData> _formatMasterList = [];
+
   DBHelper? dbHelper;
 
   @override
   void initState(){
     super.initState();
     dbHelper = DBHelper();
+    getBrandData();
+  }
+
+  Future<void> getBrandData() async {
+    _brandMasterList = await dbHelper!.getBrandListArray();
+    for (int i = 0; i < _brandMasterList.length; i++) {
+      _brandList.add(_brandMasterList[i].brandName!);
+      print(_brandMasterList[i].brandName!);
+
+    }
+  }
+
+  Future<void> getFormatDataByBrand(selectedBrandId) async {
+    _formatMasterList = await dbHelper!.getFormatListByBrand(selectedBrandId);
+    print(_formatMasterList);
+    for (int i = 0; i < _formatMasterList.length; i++) {
+      _formatList.add(_formatMasterList[i].formatName!);
+      print("selected brand id is $selectedBrandId");
+
+    }
   }
 
   @override
@@ -38,6 +66,10 @@ class _UpdateVariant extends State<UpdateVariant>{
     formatId.text = updateVariant.formatId!;
     variantName.text = updateVariant.variantName!;
     recordId = updateVariant.variantId!;
+
+    // getFormatDataByBrand(updateVariant.brandId);
+
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Update Variant')
@@ -46,54 +78,9 @@ class _UpdateVariant extends State<UpdateVariant>{
           child: Column(
             children: [
               TextField(
-                controller: brandId,
-                decoration: InputDecoration(
-                    hintText: 'Select Brand',
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(11),
-                        borderSide: BorderSide(
-                            color: Colors.deepOrange,
-                            width: 2
-                        )
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(11),
-                        borderSide: BorderSide(
-                            color: Colors.blueAccent,
-                            width: 2
-                        )
-                    ),
-                    prefixIcon: Icon(Icons.add_business, color: Colors.orange)
-                ),
-              ),
-              Container(height: 11),
-              TextField(
-                controller: formatId,
-                decoration: InputDecoration(
-                    hintText: 'Select Format',
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(11),
-                        borderSide: BorderSide(
-                            color: Colors.deepOrange,
-                            width: 2
-                        )
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(11),
-                        borderSide: BorderSide(
-                            color: Colors.blueAccent,
-                            width: 2
-                        )
-                    ),
-                    prefixIcon: Icon(Icons.add_business, color: Colors.orange)
-                ),
-              ),
-              Container(height: 11),
-
-              TextField(
                   controller: variantName,
                   decoration: InputDecoration(
-                      hintText: 'Format Name',
+                      hintText: 'Variant Name',
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(11),
                           borderSide: BorderSide(
@@ -104,19 +91,62 @@ class _UpdateVariant extends State<UpdateVariant>{
 
                   )
               ),
-              Container(height: 20),
+              Container(height: 11),
 
+              DropdownSearch<String>(
+                popupProps: PopupProps.menu(
+                  showSelectedItems: true,
+                  disabledItemFn: (String s) => s.startsWith('I'),
+                ),
+                items: _brandList,
+                dropdownDecoratorProps: DropDownDecoratorProps(
+                  dropdownSearchDecoration: InputDecoration(
+                    labelText: "Brand",
+                    hintText: "Select Brand",
+                  ),
+                ),
+                onChanged: (val){
+                  setState(() {
+                    brandId.text = val!;
+                    _formatList.clear();
+                    getFormatDataByBrand(val);
+                    print(brandId.text.toString());
+                  });
+                },
+                selectedItem: updateVariant.brandId,
+              ),
+              Container(height: 11),
+              DropdownSearch<String>(
+                popupProps: PopupProps.menu(
+                  showSelectedItems: true,
+                  disabledItemFn: (String s) => s.startsWith('I'),
+                ),
+                items: _formatList,
+                dropdownDecoratorProps: DropDownDecoratorProps(
+                  dropdownSearchDecoration: InputDecoration(
+                    labelText: "Format",
+                    hintText: "Select Format",
+                  ),
+                ),
+                onChanged: (val1){
+                  formatId.text = val1!;
+                  print(brandId.text.toString());
+                },
+                selectedItem: formatId.text,
+              ),
+              Container(height: 20),
 
               ElevatedButton(onPressed: (){
                 String uBrandId = brandId.text.toString();
                 String uFormatId = formatId.text.toString();
-                String uFormatName = variantName.text;
+                String uVariantName = variantName.text;
+                print("final brand is $uBrandId");
                 dbHelper!.updateVariant(
                     VariantModel(
                       variantId: recordId,
                   formatId: uFormatId,
                   brandId: uBrandId,
-                      variantName: uFormatName,
+                      variantName: uVariantName,
                     )
                 ).then((value) {
                   print('Data added Successfully');

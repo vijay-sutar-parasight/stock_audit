@@ -1,12 +1,15 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:stock_audit/brand/brands.dart';
+import 'package:stock_audit/jsondata/GetCompanyData.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 
 import '../audit/audit.dart';
 import '../db_handler.dart';
 import '../models/auditmodel.dart';
 import '../models/brandmodel.dart';
+import '../models/companymodel.dart';
 
 class UpdateBrand extends StatefulWidget{
   @override
@@ -18,12 +21,27 @@ class _UpdateBrand extends State<UpdateBrand>{
   var brandName = TextEditingController();
   var recordId;
 
+  List<String> _CompanyList = [];
+  List<GetCompanyData> _companyMasterList = [];
+
   DBHelper? dbHelper;
 
   @override
   void initState(){
     super.initState();
     dbHelper = DBHelper();
+    getCompanyData();
+  }
+
+  Future<void> getCompanyData() async {
+    _companyMasterList = await dbHelper!.getCompanyListArray();
+    for (int i = 0; i < _companyMasterList.length; i++) {
+
+      _CompanyList.add(_companyMasterList[i].companyName!);
+      setState(() {
+
+      });
+    }
   }
 
   @override
@@ -40,27 +58,6 @@ class _UpdateBrand extends State<UpdateBrand>{
       body: Container(
           child: Column(
             children: [
-              TextField(
-                controller: companyId,
-                decoration: InputDecoration(
-                    hintText: 'Select Company',
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(11),
-                        borderSide: BorderSide(
-                            color: Colors.deepOrange,
-                            width: 2
-                        )
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(11),
-                        borderSide: BorderSide(
-                            color: Colors.blueAccent,
-                            width: 2
-                        )
-                    ),
-                    prefixIcon: Icon(Icons.add_business, color: Colors.orange)
-                ),
-              ),
               Container(height: 11),
               TextField(
                   controller: brandName,
@@ -75,6 +72,26 @@ class _UpdateBrand extends State<UpdateBrand>{
                       prefixIcon: Icon(Icons.list_alt, color: Colors.orange)
 
                   )
+              ),
+
+              Container(height: 11),
+              DropdownSearch<String>(
+                popupProps: PopupProps.menu(
+                  showSelectedItems: true,
+                  disabledItemFn: (String s) => s.startsWith('I'),
+                ),
+                items: _CompanyList,
+                dropdownDecoratorProps: DropDownDecoratorProps(
+                  dropdownSearchDecoration: InputDecoration(
+                    labelText: "Company",
+                    hintText: "Select Company",
+                  ),
+                ),
+                onChanged: (val){
+
+                  companyId.text = val!;
+                },
+                selectedItem: companyId.text,
               ),
               Container(height: 20),
 

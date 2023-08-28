@@ -1,5 +1,8 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:stock_audit/jsondata/GetBrandData.dart';
+import 'package:stock_audit/models/brandmodel.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 
 import '../../db_handler.dart';
@@ -15,11 +18,26 @@ class _AddFormat extends State<AddFormat>{
   var brandId = TextEditingController();
   var formatName = TextEditingController();
 
+  List<String> _brandList = [];
+  List<GetBrandData> _brandMasterList = [];
+
   DBHelper? dbHelper;
 
   void initState(){
     super.initState();
     dbHelper = DBHelper();
+    getBrandData();
+  }
+
+  Future<void> getBrandData() async {
+    _brandMasterList = await dbHelper!.getBrandListArray();
+    for (int i = 0; i < _brandMasterList.length; i++) {
+
+      _brandList.add(_brandMasterList[i].brandName!);
+      setState(() {
+
+      });
+    }
   }
 
   @override
@@ -47,26 +65,22 @@ class _AddFormat extends State<AddFormat>{
                   )
               ),
               Container(height: 11),
-              TextField(
-                controller: brandId,
-                decoration: InputDecoration(
-                    hintText: 'Select Brand',
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(11),
-                        borderSide: BorderSide(
-                            color: Colors.deepOrange,
-                            width: 2
-                        )
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(11),
-                        borderSide: BorderSide(
-                            color: Colors.blueAccent,
-                            width: 2
-                        )
-                    ),
-                    prefixIcon: Icon(Icons.add_business, color: Colors.orange)
+              DropdownSearch<String>(
+                popupProps: PopupProps.menu(
+                  showSelectedItems: true,
+                  disabledItemFn: (String s) => s.startsWith('I'),
                 ),
+                items: _brandList,
+                dropdownDecoratorProps: DropDownDecoratorProps(
+                  dropdownSearchDecoration: InputDecoration(
+                    labelText: "Brand",
+                    hintText: "Select Brand",
+                  ),
+                ),
+                onChanged: (val){
+                  brandId.text = val!;
+                },
+                selectedItem: "",
               ),
               Container(height: 20),
               ElevatedButton(onPressed: (){

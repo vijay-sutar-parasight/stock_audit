@@ -1,10 +1,15 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:stock_audit/jsondata/GetCompanyData.dart';
+import 'package:stock_audit/jsondata/GetWarehouseData.dart';
 import 'package:stock_audit/models/auditmodel.dart';
 import 'package:path/path.dart';
 import 'dart:io' as io;
 import 'package:stock_audit/util/constants.dart' as constants;
 
+import 'jsondata/GetBrandData.dart';
+import 'jsondata/GetFormatData.dart';
+import 'jsondata/GetVariantData.dart';
 import 'models/brandmodel.dart';
 import 'models/companymodel.dart';
 import 'models/formatmodel.dart';
@@ -85,6 +90,23 @@ class DBHelper{
     return queryResult.map((e) => BrandModel.fromMap(e)).toList();
   }
 
+  Future<List<GetBrandData>> getBrandListArray() async {
+    var dbClient = await db;
+    final res = await dbClient!.rawQuery("SELECT * FROM brand");
+    List<GetBrandData> list =
+    res.isNotEmpty ? res.map((c) => GetBrandData.fromJson(c)).toList() : [];
+    return list;
+  }
+
+  Future<List<GetBrandData>> getBrandListByCompany(var companyId) async {
+    var dbClient = await db;
+    print(companyId);
+    final res = await dbClient!.rawQuery("SELECT * FROM brand where company_id='$companyId'");
+    List<GetBrandData> list =
+    res.isNotEmpty ? res.map((c) => GetBrandData.fromJson(c)).toList() : [];
+    return list;
+  }
+
   Future<int> deleteBrand(int brandId) async{
     var dbClient = await db;
     return await dbClient!.delete(
@@ -115,6 +137,15 @@ class DBHelper{
     var dbClient = await db;
     final List<Map<String, Object?>> queryResult = await dbClient!.query("format");
     return queryResult.map((e) => FormatModel.fromMap(e)).toList();
+  }
+
+  Future<List<GetFormatData>> getFormatListByBrand(var brandId) async {
+    var dbClient = await db;
+    // print("SELECT * FROM format where brand_id='$brandId'");
+    final res = await dbClient!.rawQuery("SELECT * FROM format where brand_id='$brandId'");
+    List<GetFormatData> list =
+    res.isNotEmpty ? res.map((c) => GetFormatData.fromJson(c)).toList() : [];
+    return list;
   }
 
   Future<int> deleteFormat(int formatId) async{
@@ -148,6 +179,15 @@ class DBHelper{
     return queryResult.map((e) => VariantModel.fromMap(e)).toList();
   }
 
+  Future<List<GetVariantData>> getVariantListByBrandAndFormat(var brandId, var formatId) async {
+    var dbClient = await db;
+    // print("SELECT * FROM format where brand_id='$brandId'");
+    final res = await dbClient!.rawQuery("SELECT * FROM variant where brand_id='$brandId' and format_id='$formatId'");
+    List<GetVariantData> list =
+    res.isNotEmpty ? res.map((c) => GetVariantData.fromJson(c)).toList() : [];
+    return list;
+  }
+
   Future<int> deleteVariant(int variantId) async{
     var dbClient = await db;
     return await dbClient!.delete(
@@ -178,6 +218,15 @@ class DBHelper{
     var dbClient = await db;
     final List<Map<String, Object?>> queryResult = await dbClient!.query("warehouse");
     return queryResult.map((e) => WarehouseModel.fromMap(e)).toList();
+  }
+
+  Future<List<GetWarehouseData>> getWarehouseDataByCompany(var companyId) async {
+    var dbClient = await db;
+    // print("SELECT * FROM format where brand_id='$brandId'");
+    final res = await dbClient!.rawQuery("SELECT * FROM warehouse where company_id='$companyId'");
+    List<GetWarehouseData> list =
+    res.isNotEmpty ? res.map((c) => GetWarehouseData.fromJson(c)).toList() : [];
+    return list;
   }
 
   Future<int> deleteWarehouse(int warehouseId) async{
@@ -240,6 +289,14 @@ class DBHelper{
     var dbClient = await db;
     final List<Map<String, Object?>> queryResult = await dbClient!.query("company");
     return queryResult.map((e) => CompanyModel.fromMap(e)).toList();
+  }
+
+  Future<List<GetCompanyData>> getCompanyListArray() async {
+    var dbClient = await db;
+    final res = await dbClient!.rawQuery("SELECT * FROM company");
+    List<GetCompanyData> list =
+    res.isNotEmpty ? res.map((c) => GetCompanyData.fromJson(c)).toList() : [];
+    return list;
   }
 
   Future<int> deleteCompany(int companyId) async{

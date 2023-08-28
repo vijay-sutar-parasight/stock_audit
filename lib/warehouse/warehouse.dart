@@ -68,8 +68,8 @@ class Warehouse extends StatefulWidget {
                                   child: Card(
                                     child: ListTile(
                                       contentPadding: EdgeInsets.all(0),
-                                      title: Text(snapshot.data![index].companyId.toString()),
-                                      subtitle: Text(snapshot.data![index].warehouseName.toString()),
+                                      title: Text(snapshot.data![index].warehouseName.toString()),
+                                      subtitle: Text(snapshot.data![index].companyId.toString()),
                                       trailing: Column(
                                         children: [
                                           InkWell(

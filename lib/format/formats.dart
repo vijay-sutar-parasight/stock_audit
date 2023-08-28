@@ -67,8 +67,8 @@ class Formats extends StatefulWidget {
                                   child: Card(
                                     child: ListTile(
                                       contentPadding: EdgeInsets.all(0),
-                                      title: Text(snapshot.data![index].brandId.toString()),
-                                      subtitle: Text(snapshot.data![index].formatName.toString()),
+                                      title: Text(snapshot.data![index].formatName.toString()),
+                                      subtitle: Text(snapshot.data![index].brandId.toString()),
                                       trailing: Column(
                                         children: [
                                           InkWell(

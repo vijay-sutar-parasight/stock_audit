@@ -1,3 +1,4 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:stock_audit/description/descriptions.dart';
@@ -6,6 +7,11 @@ import 'package:stock_audit/variant/variants.dart';
 import 'package:stock_audit/warehouse/warehouse.dart';
 
 import '../../db_handler.dart';
+import '../jsondata/GetBrandData.dart';
+import '../jsondata/GetCompanyData.dart';
+import '../jsondata/GetFormatData.dart';
+import '../jsondata/GetVariantData.dart';
+import '../jsondata/GetWarehouseData.dart';
 import '../models/formatmodel.dart';
 import '../models/productmodel.dart';
 import '../models/variantmodel.dart';
@@ -39,11 +45,76 @@ class _AddDescription extends State<AddDescription>{
   var expMonth = TextEditingController();
   var expYear = TextEditingController();
 
+  List<String> _CompanyList = [];
+  List<GetCompanyData> _companyMasterList = [];
+  List<String> _brandList = [];
+  List<GetBrandData> _brandMasterList = [];
+  List<String> _formatList = [];
+  List<GetFormatData> _formatMasterList = [];
+  List<String> _variantList = [];
+  List<GetVariantData> _variantMasterList = [];
+  List<String> _warehouseList = [];
+  List<GetWarehouseData> _warehouseMasterList = [];
+
+  List<String> _Months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
+
   DBHelper? dbHelper;
 
   void initState(){
     super.initState();
     dbHelper = DBHelper();
+    getCompanyData();
+  }
+
+
+  Future<void> getCompanyData() async {
+    _companyMasterList = await dbHelper!.getCompanyListArray();
+    for (int i = 0; i < _companyMasterList.length; i++) {
+      _CompanyList.add(_companyMasterList[i].companyName!);
+      setState(() {
+
+      });
+    }
+  }
+
+  Future<void> getBrandData(selectedCompanyId) async {
+    _brandMasterList = await dbHelper!.getBrandListByCompany(selectedCompanyId);
+    for (int i = 0; i < _brandMasterList.length; i++) {
+      _brandList.add(_brandMasterList[i].brandName!);
+      setState(() {
+
+      });
+    }
+  }
+
+  Future<void> getFormatDataByBrand(brandId) async {
+    _formatMasterList = await dbHelper!.getFormatListByBrand(brandId);
+    print(_formatMasterList);
+    for (int i = 0; i < _formatMasterList.length; i++) {
+      _formatList.add(_formatMasterList[i].formatName!);
+      setState(() {
+      });
+    }
+  }
+
+  Future<void> getVariantDataByBrandAndFormat(brandId,formatId) async {
+    _variantMasterList = await dbHelper!.getVariantListByBrandAndFormat(brandId,formatId);
+    print(_variantMasterList);
+    for (int i = 0; i < _variantMasterList.length; i++) {
+      _variantList.add(_variantMasterList[i].variantName!);
+      setState(() {
+      });
+    }
+  }
+
+  Future<void> getWarehouseData(selectedCompanyId) async {
+    _warehouseMasterList = await dbHelper!.getWarehouseDataByCompany(selectedCompanyId);
+    for (int i = 0; i < _warehouseMasterList.length; i++) {
+      _warehouseList.add(_warehouseMasterList[i].warehouseName!);
+      setState(() {
+
+      });
+    }
   }
 
   @override
@@ -110,83 +181,99 @@ class _AddDescription extends State<AddDescription>{
                 Row(
                   children: [
                     Flexible(
-                      child: TextField(
-                          controller: companyId,
-                          decoration: InputDecoration(
-                            hintText: 'Select Company',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(11),
-                                borderSide: BorderSide(
-                                  color: Colors.blue,
-                                )
-                            ),
-                            prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
-                            contentPadding: EdgeInsets.symmetric(vertical: 15),
-
-                          )
-                      ),
-                    ),
-                    SizedBox(width: 10),
-
-                    Flexible(
-                      child: TextField(
-                          controller: brandId,
-                          decoration: InputDecoration(
-                            hintText: 'Select Brand',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(11),
-                                borderSide: BorderSide(
-                                  color: Colors.blue,
-                                )
-                            ),
-                            prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
-                            contentPadding: EdgeInsets.symmetric(vertical: 15),
-
-                          )
-                      ),
-                    ),
-                  ],
-                ),
-                Container(height: 11),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Flexible(
-                      child: TextField(
-                        controller: formatId,
-                        decoration: InputDecoration(
-
-                          hintText: 'Select Format',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(11),
-                              borderSide: BorderSide(
-                                color: Colors.blue,
-                              )
-                          ),
-                          prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
-                          contentPadding: EdgeInsets.symmetric(vertical: 15),
-
+                      child: DropdownSearch<String>(
+                        popupProps: PopupProps.menu(
+                          showSelectedItems: true,
+                          disabledItemFn: (String s) => s.startsWith('I'),
                         ),
+                        items: _CompanyList,
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            labelText: "Company",
+                            hintText: "Select Company",
+                          ),
+                        ),
+                        onChanged: (val){
+                          companyId.text = val!;
+                          _brandList.clear();
+                          _formatList.clear();
+                          _variantList.clear();
+                          getBrandData(val);
+                          getWarehouseData(val);
+                        },
+                        selectedItem: "",
                       ),
                     ),
                     SizedBox(width: 10),
 
                     Flexible(
-                      child: TextField(
-                          controller: variantId,
-                          decoration: InputDecoration(
-                            hintText: 'Select Variant',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(11),
-                                borderSide: BorderSide(
-                                  color: Colors.blue,
-                                )
-                            ),
-                            prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
-                            contentPadding: EdgeInsets.symmetric(vertical: 15),
+                      child: DropdownSearch<String>(
+                        popupProps: PopupProps.menu(
+                          showSelectedItems: true,
+                          disabledItemFn: (String s) => s.startsWith('I'),
+                        ),
+                        items: _brandList,
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            labelText: "Brand",
+                            hintText: "Select Brand",
+                          ),
+                        ),
+                        onChanged: (val){
+                          brandId.text = val!;
+                          _formatList.clear();
+                          getFormatDataByBrand(val);
+                        },
+                        selectedItem: "",
+                      ),
+                    ),
+                  ],
+                ),
+                Container(height: 11),
 
-                          )
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Flexible(
+                      child: DropdownSearch<String>(
+                        popupProps: PopupProps.menu(
+                          showSelectedItems: true,
+                          disabledItemFn: (String s) => s.startsWith('I'),
+                        ),
+                        items: _formatList,
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            labelText: "Format",
+                            hintText: "Select Format",
+                          ),
+                        ),
+                        onChanged: (val){
+                          formatId.text = val!;
+                          _variantList.clear();
+                          getVariantDataByBrandAndFormat(brandId.text, val);
+                        },
+                        selectedItem: "",
+                      ),
+                    ),
+                    SizedBox(width: 10),
+
+                    Flexible(
+                      child: DropdownSearch<String>(
+                        popupProps: PopupProps.menu(
+                          showSelectedItems: true,
+                          disabledItemFn: (String s) => s.startsWith('I'),
+                        ),
+                        items: _variantList,
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            labelText: "Variant",
+                            hintText: "Select Variant",
+                          ),
+                        ),
+                        onChanged: (val){
+                          variantId.text = val!;
+                        },
+                        selectedItem: "",
                       ),
                     ),
 
@@ -199,20 +286,22 @@ class _AddDescription extends State<AddDescription>{
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Flexible(
-                      child: TextField(
-                          controller: warehouseId,
-                          decoration: InputDecoration(
-                            hintText: 'Select Warehouse',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(11),
-                                borderSide: BorderSide(
-                                  color: Colors.blue,
-                                )
-                            ),
-                            prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
-                            contentPadding: EdgeInsets.symmetric(vertical: 15),
-
-                          )
+                      child: DropdownSearch<String>(
+                        popupProps: PopupProps.menu(
+                          showSelectedItems: true,
+                          disabledItemFn: (String s) => s.startsWith('I'),
+                        ),
+                        items: _warehouseList,
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            labelText: "Warehouse",
+                            hintText: "Select Warehouse",
+                          ),
+                        ),
+                        onChanged: (val){
+                          warehouseId.text = val!;
+                        },
+                        selectedItem: "",
                       ),
                     ),
                     SizedBox(width: 10),

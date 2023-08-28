@@ -69,8 +69,8 @@ class BrandList extends State<Brands>{
                                 child: Card(
                                   child: ListTile(
                                     contentPadding: EdgeInsets.all(0),
-                                    title: Text(snapshot.data![index].companyId.toString()),
-                                    subtitle: Text(snapshot.data![index].brandName.toString()),
+                                    title: Text(snapshot.data![index].brandName.toString()),
+                                    subtitle: Text(snapshot.data![index].companyId.toString()),
                                     trailing: Column(
                                       children: [
                                         InkWell(

@@ -67,8 +67,8 @@ class VariantList extends State<Variants> {
                                 child: Card(
                                   child: ListTile(
                                     contentPadding: EdgeInsets.all(0),
-                                    title: Text(snapshot.data![index].brandId.toString()),
-                                    subtitle: Text(snapshot.data![index].variantName.toString()),
+                                    title: Text(snapshot.data![index].variantName.toString()),
+                                    subtitle: Text(snapshot.data![index].brandId.toString()),
                                     trailing: Column(
                                       children: [
                                         InkWell(

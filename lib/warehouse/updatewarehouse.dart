@@ -1,3 +1,4 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:stock_audit/brand/brands.dart';
@@ -7,6 +8,7 @@ import 'package:stock_audit/warehouse/warehouse.dart';
 
 import '../audit/audit.dart';
 import '../db_handler.dart';
+import '../jsondata/GetCompanyData.dart';
 import '../models/auditmodel.dart';
 import '../models/brandmodel.dart';
 import '../models/formatmodel.dart';
@@ -23,12 +25,27 @@ class _UpdateWarehouse extends State<UpdateWarehouse>{
   var warehouseName = TextEditingController();
   var recordId;
 
+  List<String> _CompanyList = [];
+  List<GetCompanyData> _companyMasterList = [];
+
   DBHelper? dbHelper;
 
   @override
   void initState(){
     super.initState();
     dbHelper = DBHelper();
+    getCompanyData();
+  }
+
+  Future<void> getCompanyData() async {
+    _companyMasterList = await dbHelper!.getCompanyListArray();
+    for (int i = 0; i < _companyMasterList.length; i++) {
+
+      _CompanyList.add(_companyMasterList[i].companyName!);
+      setState(() {
+
+      });
+    }
   }
 
   @override
@@ -40,34 +57,11 @@ class _UpdateWarehouse extends State<UpdateWarehouse>{
     recordId = updateWarehouse.warehouseId!;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Update Variant')
+        title: Text('Update Warehouse')
       ),
       body: Container(
           child: Column(
             children: [
-              TextField(
-                controller: companyId,
-                decoration: InputDecoration(
-                    hintText: 'Select Brand',
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(11),
-                        borderSide: BorderSide(
-                            color: Colors.deepOrange,
-                            width: 2
-                        )
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(11),
-                        borderSide: BorderSide(
-                            color: Colors.blueAccent,
-                            width: 2
-                        )
-                    ),
-                    prefixIcon: Icon(Icons.add_business, color: Colors.orange)
-                ),
-              ),
-              Container(height: 11),
-
               TextField(
                   controller: warehouseName,
                   decoration: InputDecoration(
@@ -81,6 +75,26 @@ class _UpdateWarehouse extends State<UpdateWarehouse>{
                       prefixIcon: Icon(Icons.list_alt, color: Colors.orange)
 
                   )
+              ),
+              Container(height: 11),
+
+              DropdownSearch<String>(
+                popupProps: PopupProps.menu(
+                  showSelectedItems: true,
+                  disabledItemFn: (String s) => s.startsWith('I'),
+                ),
+                items: _CompanyList,
+                dropdownDecoratorProps: DropDownDecoratorProps(
+                  dropdownSearchDecoration: InputDecoration(
+                    labelText: "Company",
+                    hintText: "Select Company",
+                  ),
+                ),
+                onChanged: (val){
+
+                  companyId.text = val!;
+                },
+                selectedItem: companyId.text,
               ),
               Container(height: 20),
 
