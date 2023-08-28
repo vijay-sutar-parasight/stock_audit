@@ -5,6 +5,7 @@ import 'package:stock_audit/models/brandmodel.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 
 import '../../db_handler.dart';
+import '../models/companymodel.dart';
 
 class AddBrand extends StatefulWidget{
   @override
@@ -16,11 +17,19 @@ class _AddBrand extends State<AddBrand>{
   var companyId = TextEditingController();
   var brandName = TextEditingController();
 
+  late Future<List<CompanyModel>> companyList;
+
+
   DBHelper? dbHelper;
 
   void initState(){
     super.initState();
     dbHelper = DBHelper();
+    loadData();
+  }
+
+  loadData () async{
+    companyList = dbHelper!.getCompanyList();
   }
 
   @override

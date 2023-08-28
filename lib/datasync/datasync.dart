@@ -18,6 +18,7 @@ class _DataSyncState extends State<DataSync> {
   bool warehouses = true;
 
   bool audit = true;
+  bool company = true;
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +29,13 @@ class _DataSyncState extends State<DataSync> {
       ),
     body: Column(
       children: [
+        CheckboxListTile(
+            title: Text("Company"),
+            value: company, onChanged: (val){
+          setState((){
+            company = val!;
+          });
+        }),
         CheckboxListTile(
             title: Text("Brands"),
             value: brands, onChanged: (val){

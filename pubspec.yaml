@@ -38,6 +38,13 @@ dependencies:
   fluttertoast:
   sqflite:
   path_provider: ^2.1.0
+  shared_preferences:
+  flutter_spinkit:
+  intl_utils:
+  package_info:
+  permission_handler:
+  google_fonts:
+  dropdown_search:
 
 dev_dependencies:
   flutter_test:

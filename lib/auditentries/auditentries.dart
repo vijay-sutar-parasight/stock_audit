@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:stock_audit/auditentries/updateauditentries.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -76,7 +77,7 @@ class AuditEntriesList extends State<AuditEntries> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) =>  AddAuditEntries(),
+                                        builder: (context) =>  UpdateAuditEntries(),
                                         // Pass the arguments as part of the RouteSettings. The
                                         // UpdateScreen reads the arguments from these settings.
                                         settings: RouteSettings(
