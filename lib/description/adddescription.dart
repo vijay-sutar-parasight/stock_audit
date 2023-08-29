@@ -56,7 +56,7 @@ class _AddDescription extends State<AddDescription>{
   List<String> _warehouseList = [];
   List<GetWarehouseData> _warehouseMasterList = [];
 
-  List<String> _months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
+  List<String> _months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   List<String> _years = [];
   int fromYear = 2000;
   int toYear = 2050;
@@ -191,7 +191,7 @@ class _AddDescription extends State<AddDescription>{
                   children: [
                     Flexible(
                       child: DropdownSearch<String>(
-                        popupProps: PopupProps.menu(
+                        popupProps: PopupProps.modalBottomSheet(
                           showSelectedItems: true,
                           disabledItemFn: (String s) => s.startsWith('I'),
                         ),
@@ -217,7 +217,7 @@ class _AddDescription extends State<AddDescription>{
 
                     Flexible(
                       child: DropdownSearch<String>(
-                        popupProps: PopupProps.menu(
+                        popupProps: PopupProps.modalBottomSheet(
                           showSelectedItems: true,
                           disabledItemFn: (String s) => s.startsWith('I'),
                         ),
@@ -245,7 +245,7 @@ class _AddDescription extends State<AddDescription>{
                   children: [
                     Flexible(
                       child: DropdownSearch<String>(
-                        popupProps: PopupProps.menu(
+                        popupProps: PopupProps.modalBottomSheet(
                           showSelectedItems: true,
                           disabledItemFn: (String s) => s.startsWith('I'),
                         ),
@@ -268,7 +268,7 @@ class _AddDescription extends State<AddDescription>{
 
                     Flexible(
                       child: DropdownSearch<String>(
-                        popupProps: PopupProps.menu(
+                        popupProps: PopupProps.modalBottomSheet(
                           showSelectedItems: true,
                           disabledItemFn: (String s) => s.startsWith('I'),
                         ),
@@ -296,7 +296,7 @@ class _AddDescription extends State<AddDescription>{
                   children: [
                     Flexible(
                       child: DropdownSearch<String>(
-                        popupProps: PopupProps.menu(
+                        popupProps: PopupProps.modalBottomSheet(
                           showSelectedItems: true,
                           disabledItemFn: (String s) => s.startsWith('I'),
                         ),
@@ -317,7 +317,7 @@ class _AddDescription extends State<AddDescription>{
 
                     Flexible(
                       child: DropdownSearch<String>(
-                        popupProps: PopupProps.menu(
+                        popupProps: PopupProps.modalBottomSheet(
                           showSelectedItems: true,
                           disabledItemFn: (String s) => s.startsWith('I'),
                         ),
@@ -341,7 +341,7 @@ class _AddDescription extends State<AddDescription>{
                   children: [
                     Flexible(
                       child: DropdownSearch<String>(
-                        popupProps: PopupProps.menu(
+                        popupProps: PopupProps.modalBottomSheet(
                           showSelectedItems: true,
                           disabledItemFn: (String s) => s.startsWith('I'),
                         ),
@@ -362,7 +362,7 @@ class _AddDescription extends State<AddDescription>{
 
                     Flexible(
                       child: DropdownSearch<String>(
-                        popupProps: PopupProps.menu(
+                        popupProps: PopupProps.modalBottomSheet(
                           showSelectedItems: true,
                           disabledItemFn: (String s) => s.startsWith('I'),
                         ),
@@ -387,7 +387,7 @@ class _AddDescription extends State<AddDescription>{
                   children: [
                     Flexible(
                       child: DropdownSearch<String>(
-                        popupProps: PopupProps.menu(
+                        popupProps: PopupProps.modalBottomSheet(
                           showSelectedItems: true,
                           disabledItemFn: (String s) => s.startsWith('I'),
                         ),
@@ -545,7 +545,7 @@ class _AddDescription extends State<AddDescription>{
                 // Container(height: 20),
                 // DropdownButton(
                 //     value: selectedItem, items: statusDropdown.map((e) {
-                //   return DropdownMenuItem(value: e,child: Text(e));
+                //   return DropdownmodalBottomSheetItem(value: e,child: Text(e));
                 // }).toList(), onChanged: (val){
                 //   setState(() {
                 //     selectedItem = val as String;

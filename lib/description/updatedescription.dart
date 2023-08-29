@@ -1,3 +1,4 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:stock_audit/brand/brands.dart';
@@ -7,6 +8,11 @@ import 'package:stock_audit/warehouse/warehouse.dart';
 
 import '../audit/audit.dart';
 import '../db_handler.dart';
+import '../jsondata/GetBrandData.dart';
+import '../jsondata/GetCompanyData.dart';
+import '../jsondata/GetFormatData.dart';
+import '../jsondata/GetVariantData.dart';
+import '../jsondata/GetWarehouseData.dart';
 import '../models/auditmodel.dart';
 import '../models/brandmodel.dart';
 import '../models/formatmodel.dart';
@@ -21,28 +27,44 @@ class UpdateDescription extends StatefulWidget{
 }
 
 class _UpdateDescription extends State<UpdateDescription>{
-  var productId = TextEditingController();
-  var productName = TextEditingController();
-  var itemNumber = TextEditingController();
-  var companyId = TextEditingController();
-  var formatId = TextEditingController();
-  var brandId = TextEditingController();
-  var variantId = TextEditingController();
-  var warehouseId = TextEditingController();
-  var systemUnit = TextEditingController();
-  var valuationPerUnit = TextEditingController();
-  var weight = TextEditingController();
-  var mrp = TextEditingController();
-  var combiType = TextEditingController();
-  var pcsCases = TextEditingController();
-  var totalStockValue = TextEditingController();
-  var mfgDate = TextEditingController();
-  var mfgMonth = TextEditingController();
-  var mfgYear = TextEditingController();
-  var expDate = TextEditingController();
-  var expMonth = TextEditingController();
-  var expYear = TextEditingController();
+  TextEditingController productId = TextEditingController();
+  TextEditingController productName = TextEditingController();
+  TextEditingController itemNumber = TextEditingController();
+  TextEditingController companyId = TextEditingController();
+  TextEditingController formatId = TextEditingController();
+  TextEditingController brandId = TextEditingController();
+  TextEditingController variantId = TextEditingController();
+  TextEditingController warehouseId = TextEditingController();
+  TextEditingController systemUnit = TextEditingController();
+  TextEditingController valuationPerUnit = TextEditingController();
+  TextEditingController weight = TextEditingController();
+  TextEditingController mrp = TextEditingController();
+  TextEditingController combiType = TextEditingController();
+  TextEditingController pcsCases = TextEditingController();
+  TextEditingController totalStockValue = TextEditingController();
+  TextEditingController mfgDate = TextEditingController();
+  TextEditingController mfgMonth = TextEditingController();
+  TextEditingController mfgYear = TextEditingController();
+  TextEditingController expDate = TextEditingController();
+  TextEditingController expMonth = TextEditingController();
+  TextEditingController expYear = TextEditingController();
   var recordId;
+
+  List<String> _CompanyList = [];
+  List<GetCompanyData> _companyMasterList = [];
+  List<String> _brandList = [];
+  List<GetBrandData> _brandMasterList = [];
+  List<String> _formatList = [];
+  List<GetFormatData> _formatMasterList = [];
+  List<String> _variantList = [];
+  List<GetVariantData> _variantMasterList = [];
+  List<String> _warehouseList = [];
+  List<GetWarehouseData> _warehouseMasterList = [];
+
+  List<String> _months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  List<String> _years = [];
+  int fromYear = 2000;
+  int toYear = 2050;
 
   DBHelper? dbHelper;
 
@@ -50,6 +72,64 @@ class _UpdateDescription extends State<UpdateDescription>{
   void initState(){
     super.initState();
     dbHelper = DBHelper();
+    getCompanyData();
+    getYears();
+  }
+
+  Future<void> getYears() async {
+    for (int i = fromYear; i < toYear; i++) {
+      _years.add(i.toString());
+    }
+  }
+
+  Future<void> getCompanyData() async {
+    _companyMasterList = await dbHelper!.getCompanyListArray();
+    for (int i = 0; i < _companyMasterList.length; i++) {
+      _CompanyList.add(_companyMasterList[i].companyName!);
+      setState(() {
+
+      });
+    }
+  }
+
+  Future<void> getBrandData(selectedCompanyId) async {
+    _brandMasterList = await dbHelper!.getBrandListByCompany(selectedCompanyId);
+    for (int i = 0; i < _brandMasterList.length; i++) {
+      _brandList.add(_brandMasterList[i].brandName!);
+      setState(() {
+
+      });
+    }
+  }
+
+  Future<void> getFormatDataByBrand(brandId) async {
+    _formatMasterList = await dbHelper!.getFormatListByBrand(brandId);
+    print(_formatMasterList);
+    for (int i = 0; i < _formatMasterList.length; i++) {
+      _formatList.add(_formatMasterList[i].formatName!);
+      setState(() {
+      });
+    }
+  }
+
+  Future<void> getVariantDataByBrandAndFormat(brandId,formatId) async {
+    _variantMasterList = await dbHelper!.getVariantListByBrandAndFormat(brandId,formatId);
+    print(companyId.text+" "+formatId);
+    for (int i = 0; i < _variantMasterList.length; i++) {
+      _variantList.add(_variantMasterList[i].variantName!);
+      setState(() {
+      });
+    }
+  }
+
+  Future<void> getWarehouseData(selectedCompanyId) async {
+    _warehouseMasterList = await dbHelper!.getWarehouseDataByCompany(selectedCompanyId);
+    for (int i = 0; i < _warehouseMasterList.length; i++) {
+      _warehouseList.add(_warehouseMasterList[i].warehouseName!);
+      setState(() {
+
+      });
+    }
   }
 
   @override
@@ -58,11 +138,11 @@ class _UpdateDescription extends State<UpdateDescription>{
     final updateProduct = ModalRoute.of(context)!.settings.arguments as ProductModel;
     itemNumber.text = updateProduct.itemNumber!;
     productName.text = updateProduct.productName!;
-    companyId.text = updateProduct.companyId!;
-    brandId.text = updateProduct.brandId!;
-    formatId.text = updateProduct.formatId!;
-    variantId.text = updateProduct.variantId!;
-    warehouseId.text = updateProduct.warehouseId!;
+    // companyId.text = updateProduct.companyId!;
+    // brandId.text = updateProduct.brandId!;
+    // formatId.text = updateProduct.formatId!;
+    // variantId.text = updateProduct.variantId!;
+    // warehouseId.text = updateProduct.warehouseId!;
     mfgMonth.text = updateProduct.mfgMonth!;
     mfgYear.text = updateProduct.mfgYear!;
     expMonth.text = updateProduct.expMonth!;
@@ -137,83 +217,100 @@ class _UpdateDescription extends State<UpdateDescription>{
                 Row(
                   children: [
                     Flexible(
-                      child: TextField(
-                          controller: companyId,
-                          decoration: InputDecoration(
-                            hintText: 'Select Company',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(11),
-                                borderSide: BorderSide(
-                                  color: Colors.blue,
-                                )
-                            ),
-                            prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
-                            contentPadding: EdgeInsets.symmetric(vertical: 15),
-
-                          )
-                      ),
-                    ),
-                    SizedBox(width: 10),
-
-                    Flexible(
-                      child: TextField(
-                          controller: brandId,
-                          decoration: InputDecoration(
-                            hintText: 'Select Brand',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(11),
-                                borderSide: BorderSide(
-                                  color: Colors.blue,
-                                )
-                            ),
-                            prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
-                            contentPadding: EdgeInsets.symmetric(vertical: 15),
-
-                          )
-                      ),
-                    ),
-                  ],
-                ),
-                Container(height: 11),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Flexible(
-                      child: TextField(
-                        controller: formatId,
-                        decoration: InputDecoration(
-
-                          hintText: 'Select Format',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(11),
-                              borderSide: BorderSide(
-                                color: Colors.blue,
-                              )
-                          ),
-                          prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
-                          contentPadding: EdgeInsets.symmetric(vertical: 15),
-
+                      child: DropdownSearch<String>(
+                        popupProps: PopupProps.modalBottomSheet(
+                          showSelectedItems: true,
+                          disabledItemFn: (String s) => s.startsWith('I'),
                         ),
+                        items: _CompanyList,
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            labelText: "Company",
+                            hintText: "Select Company",
+                          ),
+                        ),
+                        onChanged: (val){
+                          companyId.text = val!;
+                          _brandList.clear();
+                          _formatList.clear();
+                          _variantList.clear();
+                          getBrandData(val);
+                          getWarehouseData(val);
+                        },
+                        selectedItem: updateProduct.companyId,
                       ),
                     ),
                     SizedBox(width: 10),
 
                     Flexible(
-                      child: TextField(
-                          controller: variantId,
-                          decoration: InputDecoration(
-                            hintText: 'Select Variant',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(11),
-                                borderSide: BorderSide(
-                                  color: Colors.blue,
-                                )
-                            ),
-                            prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
-                            contentPadding: EdgeInsets.symmetric(vertical: 15),
+                      child: DropdownSearch<String>(
+                        popupProps: PopupProps.modalBottomSheet(
+                          showSelectedItems: true,
+                          disabledItemFn: (String s) => s.startsWith('I'),
+                        ),
+                        items: _brandList,
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            labelText: "Brand",
+                            hintText: "Select Brand",
+                          ),
+                        ),
+                        onChanged: (val){
+                          brandId.text = val!;
+                          this.brandId.text = val;
+                          _formatList.clear();
+                          getFormatDataByBrand(val);
+                        },
+                        selectedItem: updateProduct.brandId,
+                      ),
+                    ),
+                  ],
+                ),
+                Container(height: 11),
 
-                          )
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Flexible(
+                      child: DropdownSearch<String>(
+                        popupProps: PopupProps.modalBottomSheet(
+                          showSelectedItems: true,
+                          disabledItemFn: (String s) => s.startsWith('I'),
+                        ),
+                        items: _formatList,
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            labelText: "Format",
+                            hintText: "Select Format",
+                          ),
+                        ),
+                        onChanged: (val){
+                          formatId.text = val!;
+                          _variantList.clear();
+                          getVariantDataByBrandAndFormat(brandId.text, val);
+                        },
+                        selectedItem: updateProduct.formatId,
+                      ),
+                    ),
+                    SizedBox(width: 10),
+
+                    Flexible(
+                      child: DropdownSearch<String>(
+                        popupProps: PopupProps.modalBottomSheet(
+                          showSelectedItems: true,
+                          disabledItemFn: (String s) => s.startsWith('I'),
+                        ),
+                        items: _variantList,
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            labelText: "Variant",
+                            hintText: "Select Variant",
+                          ),
+                        ),
+                        onChanged: (val){
+                          variantId.text = val!;
+                        },
+                        selectedItem: updateProduct.variantId,
                       ),
                     ),
 
@@ -226,39 +323,43 @@ class _UpdateDescription extends State<UpdateDescription>{
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Flexible(
-                      child: TextField(
-                          controller: warehouseId,
-                          decoration: InputDecoration(
-                            hintText: 'Select Warehouse',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(11),
-                                borderSide: BorderSide(
-                                  color: Colors.blue,
-                                )
-                            ),
-                            prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
-                            contentPadding: EdgeInsets.symmetric(vertical: 15),
-
-                          )
+                      child: DropdownSearch<String>(
+                        popupProps: PopupProps.modalBottomSheet(
+                          showSelectedItems: true,
+                          disabledItemFn: (String s) => s.startsWith('I'),
+                        ),
+                        items: _warehouseList,
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            labelText: "Warehouse",
+                            hintText: "Select Warehouse",
+                          ),
+                        ),
+                        onChanged: (val){
+                          warehouseId.text = val!;
+                        },
+                        selectedItem: updateProduct.warehouseId,
                       ),
                     ),
                     SizedBox(width: 10),
 
                     Flexible(
-                      child: TextField(
-                          controller: mfgMonth,
-                          decoration: InputDecoration(
-                            hintText: 'MFG Month',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(11),
-                                borderSide: BorderSide(
-                                  color: Colors.blue,
-                                )
-                            ),
-                            prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
-                            contentPadding: EdgeInsets.symmetric(vertical: 15),
-
-                          )
+                      child: DropdownSearch<String>(
+                        popupProps: PopupProps.modalBottomSheet(
+                          showSelectedItems: true,
+                          disabledItemFn: (String s) => s.startsWith('I'),
+                        ),
+                        items: _months,
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            labelText: "MFG Month",
+                            hintText: "Select MFG Month",
+                          ),
+                        ),
+                        onChanged: (val){
+                          mfgMonth.text = val!;
+                        },
+                        selectedItem: mfgMonth.text,
                       ),
                     ),
                   ],
@@ -267,39 +368,43 @@ class _UpdateDescription extends State<UpdateDescription>{
                 Row(
                   children: [
                     Flexible(
-                      child: TextField(
-                          controller: mfgYear,
-                          decoration: InputDecoration(
-                            hintText: 'MFG Year',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(11),
-                                borderSide: BorderSide(
-                                  color: Colors.blue,
-                                )
-                            ),
-                            prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
-                            contentPadding: EdgeInsets.symmetric(vertical: 15),
-
-                          )
+                      child: DropdownSearch<String>(
+                        popupProps: PopupProps.modalBottomSheet(
+                          showSelectedItems: true,
+                          disabledItemFn: (String s) => s.startsWith('I'),
+                        ),
+                        items: _years,
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            labelText: "MFG Year",
+                            hintText: "Select MFG Year",
+                          ),
+                        ),
+                        onChanged: (val){
+                          mfgYear.text = val!;
+                        },
+                        selectedItem: mfgYear.text,
                       ),
                     ),
                     SizedBox(width: 10),
 
                     Flexible(
-                      child: TextField(
-                          controller: expMonth,
-                          decoration: InputDecoration(
-                            hintText: 'EXP Month',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(11),
-                                borderSide: BorderSide(
-                                  color: Colors.blue,
-                                )
-                            ),
-                            prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
-                            contentPadding: EdgeInsets.symmetric(vertical: 15),
-
-                          )
+                      child: DropdownSearch<String>(
+                        popupProps: PopupProps.modalBottomSheet(
+                          showSelectedItems: true,
+                          disabledItemFn: (String s) => s.startsWith('I'),
+                        ),
+                        items: _months,
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            labelText: "EXP Month",
+                            hintText: "Select EXP Month",
+                          ),
+                        ),
+                        onChanged: (val){
+                          expMonth.text = val!;
+                        },
+                        selectedItem: expMonth.text,
                       ),
                     ),
                   ],
@@ -309,20 +414,22 @@ class _UpdateDescription extends State<UpdateDescription>{
                 Row(
                   children: [
                     Flexible(
-                      child: TextField(
-                          controller: expYear,
-                          decoration: InputDecoration(
-                            hintText: 'EXP Year',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(11),
-                                borderSide: BorderSide(
-                                  color: Colors.blue,
-                                )
-                            ),
-                            prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
-                            contentPadding: EdgeInsets.symmetric(vertical: 15),
-
-                          )
+                      child: DropdownSearch<String>(
+                        popupProps: PopupProps.modalBottomSheet(
+                          showSelectedItems: true,
+                          disabledItemFn: (String s) => s.startsWith('I'),
+                        ),
+                        items: _years,
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            labelText: "EXP Year",
+                            hintText: "Select EXP Year",
+                          ),
+                        ),
+                        onChanged: (val){
+                          expYear.text = val!;
+                        },
+                        selectedItem: expYear.text,
                       ),
                     ),
                     SizedBox(width: 10),
@@ -521,7 +628,7 @@ class _UpdateDescription extends State<UpdateDescription>{
                     print(error.toString());
                   });
                 }, child: Text(
-                    'Save'
+                    'Update'
                 ))
               ],
             )

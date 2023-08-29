@@ -79,7 +79,7 @@ class _AddVariant extends State<AddVariant>{
               ),
               Container(height: 11),
               DropdownSearch<String>(
-                popupProps: PopupProps.menu(
+                popupProps: PopupProps.modalBottomSheet(
                   showSelectedItems: true,
                   disabledItemFn: (String s) => s.startsWith('I'),
                 ),
@@ -99,7 +99,7 @@ class _AddVariant extends State<AddVariant>{
               ),
               Container(height: 11),
               DropdownSearch<String>(
-                popupProps: PopupProps.menu(
+                popupProps: PopupProps.modalBottomSheet(
                   showSelectedItems: true,
                   disabledItemFn: (String s) => s.startsWith('I'),
                 ),

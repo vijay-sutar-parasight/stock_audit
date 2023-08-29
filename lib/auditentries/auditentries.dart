@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:stock_audit/audit/audit.dart';
 import 'package:stock_audit/auditentries/updateauditentries.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../models/auditentriesmodel.dart';
+import '../models/auditmodel.dart';
 import 'addauditentries.dart';
 import 'auditentries_handler.dart';
 
@@ -34,6 +36,9 @@ class AuditEntriesList extends State<AuditEntries> {
 
   @override
   Widget build(BuildContext context) {
+    final audit = ModalRoute.of(context)!.settings.arguments as AuditModel;
+    var companyId = audit.companyId;
+    print(audit.companyId);
     return Scaffold(
       appBar: AppBar(
           title: Text('Audit Entries')

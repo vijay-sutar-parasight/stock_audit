@@ -34,7 +34,7 @@ class AuditentriesDBHelper{
     return auditEntriesModel;
   }
 
-  Future<List<AuditEntriesModel>> getAuditEntriesList() async{
+  Future<List<AuditEntriesModel>> getAuditEntriesList(companyId) async{
     var dbClient = await db;
     final List<Map<String, Object?>> queryResult = await dbClient!.query("audit_wise_entries");
     return queryResult.map((e) => AuditEntriesModel.fromMap(e)).toList();

@@ -1,8 +1,10 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 
 import '../db_handler.dart';
+import '../jsondata/GetCompanyData.dart';
 import '../models/auditmodel.dart';
 import 'audit.dart';
 
@@ -17,15 +19,30 @@ class _UpdateAudit extends State<UpdateAudit>{
   var auditStatus = TextEditingController();
   var recordId;
 
+  List<String> _CompanyList = [];
+  List<GetCompanyData> _companyMasterList = [];
+
   DBHelper? dbHelper;
 
   @override
   void initState(){
     super.initState();
     dbHelper = DBHelper();
+    getCompanyData();
   }
 
-  List statusDropdown = ['Active','Inactive'];
+  Future<void> getCompanyData() async {
+    _companyMasterList = await dbHelper!.getCompanyListArray();
+    for (int i = 0; i < _companyMasterList.length; i++) {
+
+      _CompanyList.add(_companyMasterList[i].companyName!);
+      setState(() {
+
+      });
+    }
+  }
+
+  List<String> statusDropdown = ['Active','Inactive'];
   String selectedItem = 'Active';
   @override
   Widget build(BuildContext context) {
@@ -42,26 +59,22 @@ class _UpdateAudit extends State<UpdateAudit>{
       body: Container(
           child: Column(
             children: [
-              TextField(
-                controller: companyId,
-                decoration: InputDecoration(
-                    hintText: 'Select Company',
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(11),
-                        borderSide: BorderSide(
-                            color: Colors.deepOrange,
-                            width: 2
-                        )
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(11),
-                        borderSide: BorderSide(
-                            color: Colors.blueAccent,
-                            width: 2
-                        )
-                    ),
-                    prefixIcon: Icon(Icons.add_business, color: Colors.orange)
+              DropdownSearch<String>(
+                popupProps: PopupProps.modalBottomSheet(
+                  showSelectedItems: true,
+                  disabledItemFn: (String s) => s.startsWith('I'),
                 ),
+                items: _CompanyList,
+                dropdownDecoratorProps: DropDownDecoratorProps(
+                  dropdownSearchDecoration: InputDecoration(
+                    labelText: "Company",
+                    hintText: "Select Company",
+                  ),
+                ),
+                onChanged: (val){
+                  companyId.text = val!;
+                },
+                selectedItem: updateAudit.companyId,
               ),
               Container(height: 11),
               TextField(
@@ -79,14 +92,23 @@ class _UpdateAudit extends State<UpdateAudit>{
                   )
               ),
               Container(height: 20),
-              DropdownButton(
-                  value: selectedItem, items: statusDropdown.map((e) {
-                return DropdownMenuItem(value: e,child: Text(e));
-              }).toList(), onChanged: (val){
-                setState(() {
-                  selectedItem = val as String;
-                });
-              }),
+              DropdownSearch<String>(
+                popupProps: PopupProps.modalBottomSheet(
+                  showSelectedItems: true,
+                  disabledItemFn: (String s) => s.startsWith('I'),
+                ),
+                items: statusDropdown,
+                dropdownDecoratorProps: DropDownDecoratorProps(
+                  dropdownSearchDecoration: InputDecoration(
+                    labelText: "Status",
+                    hintText: "Select Status",
+                  ),
+                ),
+                onChanged: (val){
+                  companyId.text = val!;
+                },
+                selectedItem: updateAudit.auditStatus,
+              ),
               Container(height: 20),
               ElevatedButton(onPressed: (){
                 String uCompany = companyId.text.toString();

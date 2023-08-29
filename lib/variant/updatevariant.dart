@@ -62,8 +62,8 @@ class _UpdateVariant extends State<UpdateVariant>{
   Widget build(BuildContext context) {
 
     final updateVariant = ModalRoute.of(context)!.settings.arguments as VariantModel;
-    brandId.text = updateVariant.brandId!;
-    formatId.text = updateVariant.formatId!;
+    //brandId.text = updateVariant.brandId!;
+    //formatId.text = updateVariant.formatId!;
     variantName.text = updateVariant.variantName!;
     recordId = updateVariant.variantId!;
 
@@ -94,9 +94,10 @@ class _UpdateVariant extends State<UpdateVariant>{
               Container(height: 11),
 
               DropdownSearch<String>(
-                popupProps: PopupProps.menu(
+                popupProps: PopupProps.modalBottomSheet(
                   showSelectedItems: true,
-                  disabledItemFn: (String s) => s.startsWith('I'),
+                  showSearchBox: true,
+                  // disabledItemFn: (String s) => s.startsWith('I'),
                 ),
                 items: _brandList,
                 dropdownDecoratorProps: DropDownDecoratorProps(
@@ -110,14 +111,13 @@ class _UpdateVariant extends State<UpdateVariant>{
                     brandId.text = val!;
                     _formatList.clear();
                     getFormatDataByBrand(val);
-                    print(brandId.text.toString());
                   });
                 },
                 selectedItem: updateVariant.brandId,
               ),
               Container(height: 11),
               DropdownSearch<String>(
-                popupProps: PopupProps.menu(
+                popupProps: PopupProps.modalBottomSheet(
                   showSelectedItems: true,
                   disabledItemFn: (String s) => s.startsWith('I'),
                 ),
@@ -128,11 +128,11 @@ class _UpdateVariant extends State<UpdateVariant>{
                     hintText: "Select Format",
                   ),
                 ),
-                onChanged: (val1){
-                  formatId.text = val1!;
+                onChanged: (val){
+                  formatId.text = val!;
                   print(brandId.text.toString());
                 },
-                selectedItem: formatId.text,
+                selectedItem: updateVariant.formatId,
               ),
               Container(height: 20),
 

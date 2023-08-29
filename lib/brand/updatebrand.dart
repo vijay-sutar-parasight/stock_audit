@@ -76,7 +76,7 @@ class _UpdateBrand extends State<UpdateBrand>{
 
               Container(height: 11),
               DropdownSearch<String>(
-                popupProps: PopupProps.menu(
+                popupProps: PopupProps.modalBottomSheet(
                   showSelectedItems: true,
                   disabledItemFn: (String s) => s.startsWith('I'),
                 ),

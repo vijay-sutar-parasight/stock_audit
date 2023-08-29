@@ -3,6 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 
 import '../../models/auditentriesmodel.dart';
+import '../jsondata/GetBrandData.dart';
+import '../jsondata/GetCompanyData.dart';
+import '../jsondata/GetFormatData.dart';
+import '../jsondata/GetVariantData.dart';
+import '../jsondata/GetWarehouseData.dart';
 import 'auditentries.dart';
 import 'auditentries_handler.dart';
 
@@ -12,10 +17,11 @@ class AddAuditEntries extends StatefulWidget{
 }
 
 class _AddAuditEntries extends State<AddAuditEntries>{
-  var brand = TextEditingController();
-  var format = TextEditingController();
-  var variant = TextEditingController();
-  var description = TextEditingController();
+
+  var brandId = TextEditingController();
+  var formatId = TextEditingController();
+  var variantId = TextEditingController();
+  var descriptionId = TextEditingController();
   var mfg_month = TextEditingController();
   var mfg_year = TextEditingController();
   var exp_month = TextEditingController();
@@ -30,6 +36,18 @@ class _AddAuditEntries extends State<AddAuditEntries>{
   var total_valuation = TextEditingController();
 
 
+  List<String> _CompanyList = [];
+  List<GetCompanyData> _companyMasterList = [];
+  List<String> _brandList = [];
+  List<GetBrandData> _brandMasterList = [];
+  List<String> _formatList = [];
+  List<GetFormatData> _formatMasterList = [];
+  List<String> _variantList = [];
+  List<GetVariantData> _variantMasterList = [];
+  List<String> _warehouseList = [];
+  List<GetWarehouseData> _warehouseMasterList = [];
+
+
 
   AuditentriesDBHelper? dbHelper;
 
@@ -38,8 +56,6 @@ class _AddAuditEntries extends State<AddAuditEntries>{
     dbHelper = AuditentriesDBHelper();
   }
 
-  List statusDropdown = ['Active','Inactive'];
-  String selectedItem = 'Active';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,7 +71,7 @@ class _AddAuditEntries extends State<AddAuditEntries>{
                   children: [
                     Flexible(
                       child: TextField(
-                        controller: brand,
+                        controller: brandId,
                         decoration: InputDecoration(
                             hintText: 'Brand',
                             focusedBorder: OutlineInputBorder(
@@ -81,7 +97,7 @@ class _AddAuditEntries extends State<AddAuditEntries>{
 
                     Flexible(
                       child: TextField(
-                          controller: format,
+                          controller: formatId,
                           decoration: InputDecoration(
                               hintText: 'Format',
                               border: OutlineInputBorder(
@@ -104,7 +120,7 @@ class _AddAuditEntries extends State<AddAuditEntries>{
                   children: [
                     Flexible(
                       child: TextField(
-                          controller: variant,
+                          controller: variantId,
                           decoration: InputDecoration(
                               hintText: 'Variant',
                               border: OutlineInputBorder(
@@ -123,7 +139,7 @@ class _AddAuditEntries extends State<AddAuditEntries>{
 
                     Flexible(
                       child: TextField(
-                          controller: description,
+                          controller: descriptionId,
                           decoration: InputDecoration(
                               hintText: 'Description',
                               border: OutlineInputBorder(
@@ -399,10 +415,10 @@ class _AddAuditEntries extends State<AddAuditEntries>{
                 // }),
                 Container(height: 20),
                 ElevatedButton(onPressed: (){
-                  String uBrand = brand.text.toString();
-                  String uFormat = format.text.toString();
-                  String uVariant = variant.text.toString();
-                  String uDescriiption = description.text.toString();
+                  String uBrand = brandId.text.toString();
+                  String uFormat = formatId.text.toString();
+                  String uVariant = variantId.text.toString();
+                  String uDescriiption = descriptionId.text.toString();
                   String uMfgMonth = mfg_month.text.toString();
                   String uMfgYear = mfg_month.text.toString();
                   String uExpMonth = exp_month.text.toString();
