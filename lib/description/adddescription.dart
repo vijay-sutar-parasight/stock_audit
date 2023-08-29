@@ -56,7 +56,10 @@ class _AddDescription extends State<AddDescription>{
   List<String> _warehouseList = [];
   List<GetWarehouseData> _warehouseMasterList = [];
 
-  List<String> _Months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
+  List<String> _months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
+  List<String> _years = [];
+  int fromYear = 2000;
+  int toYear = 2050;
 
   DBHelper? dbHelper;
 
@@ -64,8 +67,14 @@ class _AddDescription extends State<AddDescription>{
     super.initState();
     dbHelper = DBHelper();
     getCompanyData();
+    getYears();
   }
 
+  Future<void> getYears() async {
+    for (int i = fromYear; i < toYear; i++) {
+      _years.add(i.toString());
+    }
+  }
 
   Future<void> getCompanyData() async {
     _companyMasterList = await dbHelper!.getCompanyListArray();
@@ -307,20 +316,22 @@ class _AddDescription extends State<AddDescription>{
                     SizedBox(width: 10),
 
                     Flexible(
-                      child: TextField(
-                          controller: mfgMonth,
-                          decoration: InputDecoration(
-                            hintText: 'MFG Month',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(11),
-                                borderSide: BorderSide(
-                                  color: Colors.blue,
-                                )
-                            ),
-                            prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
-                            contentPadding: EdgeInsets.symmetric(vertical: 15),
-
-                          )
+                      child: DropdownSearch<String>(
+                        popupProps: PopupProps.menu(
+                          showSelectedItems: true,
+                          disabledItemFn: (String s) => s.startsWith('I'),
+                        ),
+                        items: _months,
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            labelText: "MFG Month",
+                            hintText: "Select MFG Month",
+                          ),
+                        ),
+                        onChanged: (val){
+                          mfgMonth.text = val!;
+                        },
+                        selectedItem: "",
                       ),
                     ),
                   ],
@@ -329,39 +340,43 @@ class _AddDescription extends State<AddDescription>{
                 Row(
                   children: [
                     Flexible(
-                      child: TextField(
-                          controller: mfgYear,
-                          decoration: InputDecoration(
-                            hintText: 'MFG Year',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(11),
-                                borderSide: BorderSide(
-                                  color: Colors.blue,
-                                )
-                            ),
-                            prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
-                            contentPadding: EdgeInsets.symmetric(vertical: 15),
-
-                          )
+                      child: DropdownSearch<String>(
+                        popupProps: PopupProps.menu(
+                          showSelectedItems: true,
+                          disabledItemFn: (String s) => s.startsWith('I'),
+                        ),
+                        items: _years,
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            labelText: "MFG Year",
+                            hintText: "Select MFG Year",
+                          ),
+                        ),
+                        onChanged: (val){
+                          mfgYear.text = val!;
+                        },
+                        selectedItem: "",
                       ),
                     ),
                     SizedBox(width: 10),
 
                     Flexible(
-                      child: TextField(
-                          controller: expMonth,
-                          decoration: InputDecoration(
-                            hintText: 'EXP Month',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(11),
-                                borderSide: BorderSide(
-                                  color: Colors.blue,
-                                )
-                            ),
-                            prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
-                            contentPadding: EdgeInsets.symmetric(vertical: 15),
-
-                          )
+                      child: DropdownSearch<String>(
+                        popupProps: PopupProps.menu(
+                          showSelectedItems: true,
+                          disabledItemFn: (String s) => s.startsWith('I'),
+                        ),
+                        items: _months,
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            labelText: "EXP Month",
+                            hintText: "Select EXP Month",
+                          ),
+                        ),
+                        onChanged: (val){
+                          expMonth.text = val!;
+                        },
+                        selectedItem: "",
                       ),
                     ),
                   ],
@@ -371,20 +386,22 @@ class _AddDescription extends State<AddDescription>{
                 Row(
                   children: [
                     Flexible(
-                      child: TextField(
-                          controller: expYear,
-                          decoration: InputDecoration(
-                            hintText: 'EXP Year',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(11),
-                                borderSide: BorderSide(
-                                  color: Colors.blue,
-                                )
-                            ),
-                            prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
-                            contentPadding: EdgeInsets.symmetric(vertical: 15),
-
-                          )
+                      child: DropdownSearch<String>(
+                        popupProps: PopupProps.menu(
+                          showSelectedItems: true,
+                          disabledItemFn: (String s) => s.startsWith('I'),
+                        ),
+                        items: _years,
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            labelText: "EXP Month",
+                            hintText: "Select EXP Month",
+                          ),
+                        ),
+                        onChanged: (val){
+                          mfgMonth.text = val!;
+                        },
+                        selectedItem: "",
                       ),
                     ),
                     SizedBox(width: 10),
