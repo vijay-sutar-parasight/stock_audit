@@ -16,10 +16,15 @@ import 'auditentries_handler.dart';
 
 class AuditEntries extends StatefulWidget{
   @override
-  State<AuditEntries> createState() => AuditEntriesList();
+  String auditCompanyId;
+  AuditEntries({required this.auditCompanyId});
+  State<AuditEntries> createState() => AuditEntriesList(auditCompanyId);
 }
 
 class AuditEntriesList extends State<AuditEntries> {
+
+  String auditCompanyId;
+  AuditEntriesList(this.auditCompanyId);
 
   AuditentriesDBHelper? dbHelper;
   late Future<List<AuditEntriesModel>> auditEntriesList;
@@ -27,18 +32,16 @@ class AuditEntriesList extends State<AuditEntries> {
   void initState(){
     super.initState();
     dbHelper = AuditentriesDBHelper();
-    loadData();
+    loadData(auditCompanyId);
+
   }
 
-  loadData () async{
-    auditEntriesList = dbHelper!.getAuditEntriesList();
+  loadData (companyId) async{
+    auditEntriesList = dbHelper!.getAuditEntriesList(companyId);
   }
 
   @override
   Widget build(BuildContext context) {
-    final audit = ModalRoute.of(context)!.settings.arguments as AuditModel;
-    var companyId = audit.companyId;
-    print(audit.companyId);
     return Scaffold(
       appBar: AppBar(
           title: Text('Audit Entries')
@@ -67,7 +70,7 @@ class AuditEntriesList extends State<AuditEntries> {
                             onDismissed: (DismissDirection){
                               setState(() {
                                 dbHelper!.delete(snapshot.data![index].entryId!);
-                                auditEntriesList = dbHelper!.getAuditEntriesList();
+                                auditEntriesList = dbHelper!.getAuditEntriesList(auditCompanyId);
                                 snapshot.data!.remove(snapshot.data![index]);
                               });
                             },
@@ -82,7 +85,7 @@ class AuditEntriesList extends State<AuditEntries> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) =>  UpdateAuditEntries(),
+                                        builder: (context) =>  UpdateAuditEntries(selectedCompanyId: auditCompanyId.toString()),
                                         // Pass the arguments as part of the RouteSettings. The
                                         // UpdateScreen reads the arguments from these settings.
                                         settings: RouteSettings(
@@ -114,7 +117,7 @@ class AuditEntriesList extends State<AuditEntries> {
             height: 70,
           child: FloatingActionButton(
             onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => AddAuditEntries()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => AddAuditEntries(selectedCompanyId: auditCompanyId.toString()),));
             },
             tooltip: 'Add Audit Entries',
             child: const Icon(Icons.add, color: Colors.white,),

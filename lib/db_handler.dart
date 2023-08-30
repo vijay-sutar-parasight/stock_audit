@@ -8,6 +8,7 @@ import 'dart:io' as io;
 import 'package:stock_audit/util/constants.dart' as constants;
 
 import 'jsondata/GetBrandData.dart';
+import 'jsondata/GetDescriptionData.dart';
 import 'jsondata/GetFormatData.dart';
 import 'jsondata/GetVariantData.dart';
 import 'models/brandmodel.dart';
@@ -316,6 +317,22 @@ class DBHelper{
         where: 'company_id=?',
         whereArgs: [companyModel.companyId]
     );
+  }
+
+  Future<List<GetDescriptionData>> getDescriptionListArray(var brandId, var formatId, var variantId) async {
+    var dbClient = await db;
+    final res = await dbClient!.rawQuery("SELECT * FROM product where brand_id='$brandId' and format_id='$formatId' and variant_id='$variantId'");
+    List<GetDescriptionData> list =
+    res.isNotEmpty ? res.map((c) => GetDescriptionData.fromJson(c)).toList() : [];
+    return list;
+  }
+
+  Future<List<GetDescriptionData>> getDescriptionRecord(var brandId, var formatId, var variantId, var descriptionId) async {
+    var dbClient = await db;
+    final res = await dbClient!.rawQuery("SELECT * FROM product where brand_id='$brandId' and format_id='$formatId' and variant_id='$variantId' and product_name='$descriptionId'");
+    List<GetDescriptionData> list =
+    res.isNotEmpty ? res.map((c) => GetDescriptionData.fromJson(c)).toList() : [];
+    return list;
   }
 
 }

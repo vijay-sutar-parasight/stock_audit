@@ -1,63 +1,157 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 
 import '../../models/auditentriesmodel.dart';
+import '../db_handler.dart';
+import '../jsondata/GetBrandData.dart';
+import '../jsondata/GetCompanyData.dart';
+import '../jsondata/GetDescriptionData.dart';
+import '../jsondata/GetFormatData.dart';
+import '../jsondata/GetVariantData.dart';
+import '../jsondata/GetWarehouseData.dart';
 import 'auditentries.dart';
 import 'auditentries_handler.dart';
 
 class UpdateAuditEntries extends StatefulWidget{
+  String selectedCompanyId;
+  UpdateAuditEntries({required this.selectedCompanyId});
   @override
-  State<UpdateAuditEntries> createState() => _UpdateAuditEntries();
+  State<UpdateAuditEntries> createState() => _UpdateAuditEntries(selectedCompanyId);
 }
 
 class _UpdateAuditEntries extends State<UpdateAuditEntries>{
-  var brand = TextEditingController();
-  var format = TextEditingController();
-  var variant = TextEditingController();
-  var description = TextEditingController();
-  var mfg_month = TextEditingController();
-  var mfg_year = TextEditingController();
-  var exp_month = TextEditingController();
-  var exp_year = TextEditingController();
-  var warehouse = TextEditingController();
+
+  String selectedCompanyId;
+  _UpdateAuditEntries(this.selectedCompanyId);
+  TextEditingController companyId = TextEditingController();
+  var brandId = TextEditingController();
+  var formatId = TextEditingController();
+  var variantId = TextEditingController();
+  var descriptionId = TextEditingController();
+  var mfgMonth = TextEditingController();
+  var mfgYear = TextEditingController();
+  var expMonth = TextEditingController();
+  var expYear = TextEditingController();
+  var warehouseId = TextEditingController();
   var weight = TextEditingController();
   var mrp = TextEditingController();
-  var valuation_per_unit = TextEditingController();
-  var system_unit = TextEditingController();
+  var valuationPerUnit = TextEditingController();
+  var systemUnit = TextEditingController();
   var calculation = TextEditingController();
-  var actual_units = TextEditingController();
-  var total_valuation = TextEditingController();
+  var actualUnits = TextEditingController();
+  var totalValuation = TextEditingController();
 
   var recordId;
 
+  List<String> _CompanyList = [];
+  List<GetCompanyData> _companyMasterList = [];
+  List<String> _brandList = [];
+  List<GetBrandData> _brandMasterList = [];
+  List<String> _formatList = [];
+  List<GetFormatData> _formatMasterList = [];
+  List<String> _variantList = [];
+  List<GetVariantData> _variantMasterList = [];
+  List<String> _warehouseList = [];
+  List<GetWarehouseData> _warehouseMasterList = [];
+  List<String> _descriptionList = [];
+  List<GetDescriptionData> _descriptionMasterList = [];
+
+  List<String> _months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  List<String> _years = [];
+  int fromYear = 2000;
+  int toYear = 2050;
+
   AuditentriesDBHelper? dbHelper;
+  DBHelper? db;
 
   void initState(){
     super.initState();
     dbHelper = AuditentriesDBHelper();
+    db = DBHelper();
+    getBrandData(selectedCompanyId);
+    getWarehouseData(selectedCompanyId);
+    getYears();
+  }
+
+  Future<void> getYears() async {
+    for (int i = fromYear; i < toYear; i++) {
+      _years.add(i.toString());
+    }
+  }
+
+  Future<void> getBrandData(selectedCompanyId) async {
+    print(selectedCompanyId);
+    _brandMasterList = await db!.getBrandListByCompany(selectedCompanyId);
+    for (int i = 0; i < _brandMasterList.length; i++) {
+      _brandList.add(_brandMasterList[i].brandName!);
+      setState(() {
+      });
+    }
+  }
+
+  Future<void> getFormatDataByBrand(brandId) async {
+    _formatMasterList = await db!.getFormatListByBrand(brandId);
+    print(_formatMasterList);
+    for (int i = 0; i < _formatMasterList.length; i++) {
+      _formatList.add(_formatMasterList[i].formatName!);
+      setState(() {
+      });
+    }
+  }
+
+  Future<void> getVariantDataByBrandAndFormat(brandId,formatId) async {
+    _variantMasterList = await db!.getVariantListByBrandAndFormat(brandId,formatId);
+    print(brandId);
+    for (int i = 0; i < _variantMasterList.length; i++) {
+      _variantList.add(_variantMasterList[i].variantName!);
+      setState(() {
+      });
+    }
+  }
+
+  Future<void> getWarehouseData(selectedCompanyId) async {
+    _warehouseMasterList = await db!.getWarehouseDataByCompany(selectedCompanyId);
+    for (int i = 0; i < _warehouseMasterList.length; i++) {
+      _warehouseList.add(_warehouseMasterList[i].warehouseName!);
+      setState(() {
+
+      });
+    }
+  }
+
+  Future<void> getDescriptionData(brandId,formatId, variantId) async {
+    _descriptionMasterList = await db!.getDescriptionListArray(brandId,formatId,variantId);
+    print(_descriptionMasterList);
+    for (int i = 0; i < _descriptionMasterList.length; i++) {
+      _descriptionList.add(_descriptionMasterList[i].productName!);
+      setState(() {
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
 
     final updateAuditEntries = ModalRoute.of(context)!.settings.arguments as AuditEntriesModel;
-    brand.text = updateAuditEntries.brandId!;
-    format.text = updateAuditEntries.formatId!;
-    variant.text = updateAuditEntries.variantId!;
-    description.text = updateAuditEntries.productId!;
-    mfg_month.text = updateAuditEntries.mfgMonth!;
-    mfg_year.text = updateAuditEntries.mfgYear!;
-    exp_month.text = updateAuditEntries.expMonth!;
-    exp_year.text = updateAuditEntries.expYear!;
-    warehouse.text = updateAuditEntries.warehouseId!;
+    companyId.text = selectedCompanyId;
+    // brandId.text = updateAuditEntries.brandId!;
+    // formatId.text = updateAuditEntries.formatId!;
+    // variantId.text = updateAuditEntries.variantId!;
+    // descriptionId.text = updateAuditEntries.productId!;
+    mfgMonth.text = updateAuditEntries.mfgMonth!;
+    mfgYear.text = updateAuditEntries.mfgYear!;
+    expMonth.text = updateAuditEntries.expMonth!;
+    expYear.text = updateAuditEntries.expYear!;
+    warehouseId.text = updateAuditEntries.warehouseId!;
     weight.text = updateAuditEntries.weight!;
     mrp.text = updateAuditEntries.mrp!;
-    valuation_per_unit.text = updateAuditEntries.valuationPerUnit!;
-    system_unit.text = updateAuditEntries.systemUnit!;
+    valuationPerUnit.text = updateAuditEntries.valuationPerUnit!;
+    systemUnit.text = updateAuditEntries.systemUnit!;
     calculation.text = updateAuditEntries.calculationArr!;
-    actual_units.text = updateAuditEntries.actualUnit!;
-    total_valuation.text = updateAuditEntries.totalStockValue!;
+    actualUnits.text = updateAuditEntries.actualUnit!;
+    totalValuation.text = updateAuditEntries.totalStockValue!;
 
     recordId = updateAuditEntries.entryId!;
 
@@ -73,46 +167,47 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                 Row(
                   children: [
                     Flexible(
-                      child: TextField(
-                        controller: brand,
-                        decoration: InputDecoration(
-                            hintText: 'Brand',
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(11),
-                                borderSide: BorderSide(
-                                    color: Colors.deepOrange,
-                                    width: 2
-                                )
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(11),
-                                borderSide: BorderSide(
-                                    color: Colors.blueAccent,
-                                    width: 2
-                                )
-                            ),
-                            prefixIcon: Icon(Icons.add_business, color: Colors.orange),
-                          contentPadding: EdgeInsets.symmetric(vertical: 15),
+                      child: DropdownSearch<String>(
+                        popupProps: PopupProps.modalBottomSheet(
+                          showSelectedItems: true,
+                          disabledItemFn: (String s) => s.startsWith('I'),
                         ),
+                        items: _brandList,
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            labelText: "Brand",
+                            hintText: "Select Brand",
+                          ),
+                        ),
+                        onChanged: (val){
+                          brandId.text = val!;
+                          _formatList.clear();
+                          getFormatDataByBrand(val);
+                        },
+                        selectedItem: updateAuditEntries.brandId,
                       ),
                     ),
                     SizedBox(width: 10),
 
                     Flexible(
-                      child: TextField(
-                          controller: format,
-                          decoration: InputDecoration(
-                              hintText: 'Format',
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(11),
-                                  borderSide: BorderSide(
-                                    color: Colors.blue,
-                                  )
-                              ),
-                              prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
-                            contentPadding: EdgeInsets.symmetric(vertical: 15),
-
-                          )
+                      child: DropdownSearch<String>(
+                        popupProps: PopupProps.modalBottomSheet(
+                          showSelectedItems: true,
+                          disabledItemFn: (String s) => s.startsWith('I'),
+                        ),
+                        items: _formatList,
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            labelText: "Format",
+                            hintText: "Select Format",
+                          ),
+                        ),
+                        onChanged: (val){
+                          formatId.text = val!;
+                          _variantList.clear();
+                          getVariantDataByBrandAndFormat(brandId.text, val);
+                        },
+                        selectedItem: updateAuditEntries.formatId,
                       ),
                     ),
                   ],
@@ -122,39 +217,52 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                 Row(
                   children: [
                     Flexible(
-                      child: TextField(
-                          controller: variant,
-                          decoration: InputDecoration(
-                              hintText: 'Variant',
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(11),
-                                  borderSide: BorderSide(
-                                    color: Colors.blue,
-                                  )
-                              ),
-                              prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
-                            contentPadding: EdgeInsets.symmetric(vertical: 15),
-
-                          )
+                      child: DropdownSearch<String>(
+                        popupProps: PopupProps.modalBottomSheet(
+                          showSelectedItems: true,
+                          disabledItemFn: (String s) => s.startsWith('I'),
+                        ),
+                        items: _variantList,
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            labelText: "Variant",
+                            hintText: "Select Variant",
+                          ),
+                        ),
+                        onChanged: (val){
+                          variantId.text = val!;
+                          _descriptionList.clear();
+                          getDescriptionData(brandId.text, formatId.text, val);
+                        },
+                        selectedItem: updateAuditEntries.variantId,
                       ),
                     ),
                     SizedBox(width: 10),
 
                     Flexible(
-                      child: TextField(
-                          controller: description,
-                          decoration: InputDecoration(
-                              hintText: 'Description',
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(11),
-                                  borderSide: BorderSide(
-                                    color: Colors.blue,
-                                  )
-                              ),
-                              prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
-                            contentPadding: EdgeInsets.symmetric(vertical: 15),
+                      child: DropdownSearch<String>(
+                        popupProps: PopupProps.modalBottomSheet(
+                          showSelectedItems: true,
+                          disabledItemFn: (String s) => s.startsWith('I'),
+                        ),
+                        items: _descriptionList,
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            labelText: "Description",
+                            hintText: "Select Description",
+                          ),
+                        ),
+                        onChanged: (val){
+                          descriptionId.text = val!;
+                          var descriptionRecord = db!.getDescriptionRecord(brandId.text, formatId.text, variantId.text, descriptionId.text);
+                          // var descriptionData = db.getDescription
+                          print(descriptionRecord);
+                          if(descriptionRecord == true){
+                            // mrp.text = descriptionRecord.mrp;
+                          }
 
-                          )
+                        },
+                        selectedItem: updateAuditEntries.productId,
                       ),
                     ),
                   ],
@@ -165,40 +273,43 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Flexible(
-                      child: TextField(
-                          controller: mfg_month,
-                          decoration: InputDecoration(
-
-                              hintText: 'MFG Month',
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(11),
-                                  borderSide: BorderSide(
-                                    color: Colors.blue,
-                                  )
-                              ),
-                              prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
-                            contentPadding: EdgeInsets.symmetric(vertical: 15),
-
+                      child: DropdownSearch<String>(
+                        popupProps: PopupProps.modalBottomSheet(
+                          showSelectedItems: true,
+                          disabledItemFn: (String s) => s.startsWith('I'),
+                        ),
+                        items: _months,
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            labelText: "MFG Month",
+                            hintText: "Select MFG Month",
                           ),
+                        ),
+                        onChanged: (val){
+                          mfgMonth.text = val!;
+                        },
+                        selectedItem: updateAuditEntries.mfgMonth,
                       ),
                     ),
                     SizedBox(width: 10),
 
                     Flexible(
-                      child: TextField(
-                          controller: mfg_year,
-                          decoration: InputDecoration(
-                              hintText: 'MFG Year',
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(11),
-                                  borderSide: BorderSide(
-                                    color: Colors.blue,
-                                  )
-                              ),
-                              prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
-                            contentPadding: EdgeInsets.symmetric(vertical: 15),
-
-                          )
+                      child: DropdownSearch<String>(
+                        popupProps: PopupProps.modalBottomSheet(
+                          showSelectedItems: true,
+                          disabledItemFn: (String s) => s.startsWith('I'),
+                        ),
+                        items: _years,
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            labelText: "MFG Year",
+                            hintText: "Select MFG Year",
+                          ),
+                        ),
+                        onChanged: (val){
+                          mfgYear.text = val!;
+                        },
+                        selectedItem: updateAuditEntries.mfgYear,
                       ),
                     ),
 
@@ -211,40 +322,44 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Flexible(
-                      child: TextField(
-                          controller: exp_month,
-                          decoration: InputDecoration(
-                              hintText: 'EXP Month',
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(11),
-                                  borderSide: BorderSide(
-                                    color: Colors.blue,
-                                  )
-                              ),
-                              prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
-                            contentPadding: EdgeInsets.symmetric(vertical: 15),
-
-                          )
+                      child: DropdownSearch<String>(
+                        popupProps: PopupProps.modalBottomSheet(
+                          showSelectedItems: true,
+                          disabledItemFn: (String s) => s.startsWith('I'),
+                        ),
+                        items: _months,
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            labelText: "EXP Month",
+                            hintText: "Select EXP Month",
+                          ),
+                        ),
+                        onChanged: (val){
+                          expMonth.text = val!;
+                        },
+                        selectedItem: updateAuditEntries.expMonth,
                       ),
                     ),
                     SizedBox(width: 10),
 
                     Flexible(
-                      child: TextField(
-                          controller: exp_year,
-                          decoration: InputDecoration(
-                              hintText: 'EXP Year',
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(11),
-                                  borderSide: BorderSide(
-                                    color: Colors.blue,
-                                  )
-                              ),
-                              prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
-                            contentPadding: EdgeInsets.symmetric(vertical: 15),
-
-                          )
-                      ),
+                      child: DropdownSearch<String>(
+                        popupProps: PopupProps.modalBottomSheet(
+                          showSelectedItems: true,
+                          disabledItemFn: (String s) => s.startsWith('I'),
+                        ),
+                        items: _years,
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            labelText: "EXP Year",
+                            hintText: "Select EXP Year",
+                          ),
+                        ),
+                        onChanged: (val){
+                          expYear.text = val!;
+                        },
+                        selectedItem: updateAuditEntries.expYear,
+                      )
                     ),
                   ],
                 ),
@@ -252,20 +367,22 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                 Row(
                   children: [
                     Flexible(
-                      child: TextField(
-                          controller: warehouse,
-                          decoration: InputDecoration(
-                              hintText: 'Warehouse',
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(11),
-                                  borderSide: BorderSide(
-                                    color: Colors.blue,
-                                  )
-                              ),
-                              prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
-                            contentPadding: EdgeInsets.symmetric(vertical: 15),
-
-                          )
+                      child: DropdownSearch<String>(
+                        popupProps: PopupProps.modalBottomSheet(
+                          showSelectedItems: true,
+                          disabledItemFn: (String s) => s.startsWith('I'),
+                        ),
+                        items: _warehouseList,
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            labelText: "Warehouse",
+                            hintText: "Select Warehouse",
+                          ),
+                        ),
+                        onChanged: (val){
+                          warehouseId.text = val!;
+                        },
+                        selectedItem: updateAuditEntries.warehouseId,
                       ),
                     ),
                     SizedBox(width: 10),
@@ -314,7 +431,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
 
                     Flexible(
                       child: TextField(
-                          controller: valuation_per_unit,
+                          controller: valuationPerUnit,
                           decoration: InputDecoration(
                               hintText: 'Valuation Per Unit',
                               border: OutlineInputBorder(
@@ -334,7 +451,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
 
                 Container(height: 11),
                 TextField(
-                    controller: system_unit,
+                    controller: systemUnit,
                     decoration: InputDecoration(
                         hintText: 'System Unit',
                         border: OutlineInputBorder(
@@ -369,7 +486,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                   children: [
                     Flexible(
                       child: TextField(
-                          controller: actual_units,
+                          controller: actualUnits,
                           decoration: InputDecoration(
                               hintText: 'Actual Units',
                               border: OutlineInputBorder(
@@ -388,7 +505,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
 
                     Flexible(
                       child: TextField(
-                          controller: total_valuation,
+                          controller: totalValuation,
                           decoration: InputDecoration(
                               hintText: 'Total Valuation',
                               border: OutlineInputBorder(
@@ -417,29 +534,29 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                 // }),
                 Container(height: 20),
                 ElevatedButton(onPressed: (){
-                  String uBrand = brand.text.toString();
-                  String uFormat = format.text.toString();
-                  String uVariant = variant.text.toString();
-                  String uDescriiption = description.text.toString();
-                  String uMfgMonth = mfg_month.text.toString();
-                  String uMfgYear = mfg_month.text.toString();
-                  String uExpMonth = exp_month.text.toString();
-                  String uExpYear = exp_year.text.toString();
-                  String uWarehouse = warehouse.text.toString();
+                  String uBrand = brandId.text.toString();
+                  String uFormat = formatId.text.toString();
+                  String uVariant = variantId.text.toString();
+                  String uDescription = descriptionId.text.toString();
+                  String uMfgMonth = mfgMonth.text.toString();
+                  String uMfgYear = mfgYear.text.toString();
+                  String uExpMonth = mfgMonth.text.toString();
+                  String uExpYear = expYear.text.toString();
+                  String uWarehouse = warehouseId.text.toString();
                   String uWeight = weight.text.toString();
                   String uMrp = mrp.text.toString();
-                  String uValuationPerUnit = valuation_per_unit.text.toString();
-                  String uSystemUnit = system_unit.text.toString();
+                  String uValuationPerUnit = valuationPerUnit.text.toString();
+                  String uSystemUnit = systemUnit.text.toString();
                   String uCalculation = calculation.text.toString();
-                  String uActualUnit = actual_units.text.toString();
-                  String uTotalValuation = total_valuation.text.toString();
+                  String uActualUnit = actualUnits.text.toString();
+                  String uTotalValuation = totalValuation.text.toString();
                   dbHelper!.update(
                       AuditEntriesModel(
                         entryId: recordId,
                     brandId: uBrand,
                     formatId: uFormat,
                         variantId: uVariant,
-                        productId: uDescriiption,
+                        productId: uDescription,
                         mfgMonth: uMfgMonth,
                         mfgYear: uMfgYear,
                         expMonth: uExpMonth,
@@ -455,7 +572,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                       )
                   ).then((value) {
                     print('Data added Successfully');
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => AuditEntries()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => AuditEntries(auditCompanyId: companyId.text)));
                   }).onError((error, stackTrace) {
                     print(error.toString());
                   });

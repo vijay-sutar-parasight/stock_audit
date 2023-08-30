@@ -93,7 +93,7 @@ class AuditList extends State<Audit> {
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                              builder: (context) =>  AuditEntries(),
+                                              builder: (context) =>  AuditEntries(auditCompanyId: snapshot.data![index].companyId.toString()),
                                               // Pass the arguments as part of the RouteSettings. The
                                               // UpdateScreen reads the arguments from these settings.
                                               settings: RouteSettings(
