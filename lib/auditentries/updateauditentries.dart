@@ -552,6 +552,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                   String uTotalValuation = totalValuation.text.toString();
                   dbHelper!.update(
                       AuditEntriesModel(
+                        companyId: selectedCompanyId,
                         entryId: recordId,
                     brandId: uBrand,
                     formatId: uFormat,
@@ -568,11 +569,16 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                         systemUnit: uSystemUnit,
                         calculationArr: uCalculation,
                         actualUnit: uActualUnit,
-                        totalStockValue: uTotalValuation
+                        totalStockValue: uTotalValuation,
+                        productName: uDescription,
+                        brandName: uBrand,
+                        formatName: uFormat,
+                        variantName: uVariant,
+                        warehouseName: uWarehouse,
                       )
                   ).then((value) {
                     print('Data added Successfully');
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => AuditEntries(auditCompanyId: companyId.text)));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => AuditEntries(auditCompanyId: selectedCompanyId)));
                   }).onError((error, stackTrace) {
                     print(error.toString());
                   });

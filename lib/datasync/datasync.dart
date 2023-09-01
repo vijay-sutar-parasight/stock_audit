@@ -1,5 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:stock_audit/db_handler.dart';
+import 'package:stock_audit/jsondata/GetBrandData.dart';
+import 'package:stock_audit/util/constants.dart' as constants;
+import 'package:http/http.dart' as http;
+
+import '../models/brandmodel.dart';
+
 
 class DataSync extends StatefulWidget{
   @override
@@ -19,6 +26,26 @@ class _DataSyncState extends State<DataSync> {
 
   bool audit = true;
   bool company = true;
+
+  DBHelper? dbHelper;
+  List<String> _brandList = [];
+  List<GetBrandData> _brandMasterList = [];
+
+  @override
+  void initState(){
+    super.initState();
+    dbHelper = DBHelper();
+  }
+    Future<void> getBrandData() async {
+      _brandMasterList = await dbHelper!.getBrandListArray();
+      for (int i = 0; i < _brandMasterList.length; i++) {
+
+        _brandList.add(_brandMasterList[i].toString());
+        setState(() {
+
+        });
+      }
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -90,8 +117,14 @@ class _DataSyncState extends State<DataSync> {
             ),
             SizedBox(width: 20,),
             Flexible(
-              child: ElevatedButton(onPressed: (){
-                print(brands);
+              child: ElevatedButton(onPressed: () async {
+                if(brands == true){
+                  getBrandData();
+                  String url = "${constants.apiBaseURL}/synchronizedata";
+                  final response = await http.post(Uri.parse(url),body: _brandList);
+                print(response.body);
+                }
+
               }, child: Text(
                   'Sync To Server'
               )),

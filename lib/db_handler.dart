@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:stock_audit/jsondata/GetCompanyData.dart';
@@ -334,5 +336,27 @@ class DBHelper{
     res.isNotEmpty ? res.map((c) => GetDescriptionData.fromJson(c)).toList() : [];
     return list;
   }
+
+
+
+  Future<String> getBrandDataJson() async {
+    var dbClient = await db;
+    var rtnObj;
+    List<Map<String, dynamic>> res = await dbClient!.rawQuery("SELECT * FROM brand");
+    var jsonMap = json.encode(res[0]['json']) as Map<String, dynamic>;
+    rtnObj = rtnObj.toJson();
+    return rtnObj;
+  }
+
+  // List<Map<String, dynamic>> list = await db.rawQuery(
+  // 'SELECT * FROM users WHERE id = ?',
+  // [id],
+  // );
+  //
+  // YourObjectType? rtnObj;
+  // if (list.isNotEmpty) {
+  // var jsonMap = json.decode(list[0]['json']) as Map<String, dynamic>;
+  // rtnObj = YourObjectType.fromJson(jsonMap);
+  // }
 
 }
