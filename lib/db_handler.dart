@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:stock_audit/jsondata/GetAuditEntriesData.dart';
 import 'package:stock_audit/jsondata/GetCompanyData.dart';
 import 'package:stock_audit/jsondata/GetWarehouseData.dart';
 import 'package:stock_audit/models/auditmodel.dart';
@@ -9,6 +10,7 @@ import 'package:path/path.dart';
 import 'dart:io' as io;
 import 'package:stock_audit/util/constants.dart' as constants;
 
+import 'jsondata/GetAuditData.dart';
 import 'jsondata/GetBrandData.dart';
 import 'jsondata/GetDescriptionData.dart';
 import 'jsondata/GetFormatData.dart';
@@ -46,6 +48,7 @@ class DBHelper{
     await db.execute("CREATE TABLE IF NOT EXISTS product (product_id INTEGER PRIMARY KEY AUTOINCREMENT, product_name TEXT NULL, item_number TEXT NULL, company_id TEXT NULL, format_id TEXT NULL, variant_id TEXT NULL, brand_id TEXT NULL, warehouse_id TEXT NULL, system_unit TEXT NULL, valuation_per_unit TEXT NULL, weight TEXT NULL, mrp TEXT NULL, combi_type TEXT NULL, pcs_cases TEXT NULL, total_stock_value TEXT NULL, mfg_date TEXT NULL, mfg_month TEXT NULL, mfg_year TEXT NULL, exp_date TEXT NULL, exp_month TEXT NULL, exp_year TEXT NULL)");
     await db.execute("CREATE TABLE IF NOT EXISTS variant (variant_id INTEGER PRIMARY KEY AUTOINCREMENT, brand_id TEXT NULL, variant_name TEXT NULL, format_id TEXT NULL)");
     await db.execute("CREATE TABLE IF NOT EXISTS warehouse (warehouse_id INTEGER PRIMARY KEY AUTOINCREMENT, warehouse_name TEXT NULL, company_id TEXT NULL)");
+    await db.execute("CREATE TABLE IF NOT EXISTS sync_date (sync_id INTEGER PRIMARY KEY AUTOINCREMENT, sync_code TEXT NULL, sync_date TEXT NULL)");
 
   }
 
@@ -59,6 +62,14 @@ class DBHelper{
     var dbClient = await db;
     final List<Map<String, Object?>> queryResult = await dbClient!.query("audit");
     return queryResult.map((e) => AuditModel.fromMap(e)).toList();
+  }
+
+  Future<List<GetAuditData>> getAuditListArray() async {
+    var dbClient = await db;
+    final res = await dbClient!.rawQuery("SELECT * FROM audit");
+    List<GetAuditData> list =
+    res.isNotEmpty ? res.map((c) => GetAuditData.fromJson(c)).toList() : [];
+    return list;
   }
 
   Future<int> delete(int auditId) async{
@@ -78,6 +89,15 @@ class DBHelper{
         where: 'audit_id=?',
         whereArgs: [auditModel.auditId]
     );
+  }
+
+
+  Future<List<GetAuditEntriesData>> getAuditEntriesListArray() async {
+    var dbClient = await db;
+    final res = await dbClient!.rawQuery("SELECT * FROM audit_wise_entries");
+    List<GetAuditEntriesData> list =
+    res.isNotEmpty ? res.map((c) => GetAuditEntriesData.fromJson(c)).toList() : [];
+    return list;
   }
 
 
@@ -142,6 +162,14 @@ class DBHelper{
     return queryResult.map((e) => FormatModel.fromMap(e)).toList();
   }
 
+  Future<List<GetFormatData>> getFormatListArray() async {
+    var dbClient = await db;
+    final res = await dbClient!.rawQuery("SELECT * FROM format");
+    List<GetFormatData> list =
+    res.isNotEmpty ? res.map((c) => GetFormatData.fromJson(c)).toList() : [];
+    return list;
+  }
+
   Future<List<GetFormatData>> getFormatListByBrand(var brandId) async {
     var dbClient = await db;
     // print("SELECT * FROM format where brand_id='$brandId'");
@@ -181,6 +209,15 @@ class DBHelper{
     final List<Map<String, Object?>> queryResult = await dbClient!.query("variant");
     return queryResult.map((e) => VariantModel.fromMap(e)).toList();
   }
+
+  Future<List<GetVariantData>> getVariantListArray() async {
+    var dbClient = await db;
+    final res = await dbClient!.rawQuery("SELECT * FROM variant");
+    List<GetVariantData> list =
+    res.isNotEmpty ? res.map((c) => GetVariantData.fromJson(c)).toList() : [];
+    return list;
+  }
+
 
   Future<List<GetVariantData>> getVariantListByBrandAndFormat(var brandId, var formatId) async {
     var dbClient = await db;
@@ -223,6 +260,14 @@ class DBHelper{
     return queryResult.map((e) => WarehouseModel.fromMap(e)).toList();
   }
 
+  Future<List<GetWarehouseData>> getWarehouseListArray() async {
+    var dbClient = await db;
+    final res = await dbClient!.rawQuery("SELECT * FROM warehouse");
+    List<GetWarehouseData> list =
+    res.isNotEmpty ? res.map((c) => GetWarehouseData.fromJson(c)).toList() : [];
+    return list;
+  }
+
   Future<List<GetWarehouseData>> getWarehouseDataByCompany(var companyId) async {
     var dbClient = await db;
     // print("SELECT * FROM format where brand_id='$brandId'");
@@ -261,6 +306,14 @@ class DBHelper{
     var dbClient = await db;
     final List<Map<String, Object?>> queryResult = await dbClient!.query("product");
     return queryResult.map((e) => ProductModel.fromMap(e)).toList();
+  }
+
+  Future<List<GetDescriptionData>> getDescriptionListRecords() async {
+    var dbClient = await db;
+    final res = await dbClient!.rawQuery("SELECT * FROM product");
+    List<GetDescriptionData> list =
+    res.isNotEmpty ? res.map((c) => GetDescriptionData.fromJson(c)).toList() : [];
+    return list;
   }
 
   Future<int> deleteProduct(int productId) async{
@@ -336,27 +389,5 @@ class DBHelper{
     res.isNotEmpty ? res.map((c) => GetDescriptionData.fromJson(c)).toList() : [];
     return list;
   }
-
-
-
-  Future<String> getBrandDataJson() async {
-    var dbClient = await db;
-    var rtnObj;
-    List<Map<String, dynamic>> res = await dbClient!.rawQuery("SELECT * FROM brand");
-    var jsonMap = json.encode(res[0]['json']) as Map<String, dynamic>;
-    rtnObj = rtnObj.toJson();
-    return rtnObj;
-  }
-
-  // List<Map<String, dynamic>> list = await db.rawQuery(
-  // 'SELECT * FROM users WHERE id = ?',
-  // [id],
-  // );
-  //
-  // YourObjectType? rtnObj;
-  // if (list.isNotEmpty) {
-  // var jsonMap = json.decode(list[0]['json']) as Map<String, dynamic>;
-  // rtnObj = YourObjectType.fromJson(jsonMap);
-  // }
 
 }

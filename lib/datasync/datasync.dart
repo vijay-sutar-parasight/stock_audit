@@ -1,10 +1,19 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:stock_audit/db_handler.dart';
+import 'package:stock_audit/jsondata/GetAuditEntriesData.dart';
 import 'package:stock_audit/jsondata/GetBrandData.dart';
+import 'package:stock_audit/jsondata/GetCompanyData.dart';
+import 'package:stock_audit/jsondata/GetDescriptionData.dart';
+import 'package:stock_audit/jsondata/GetVariantData.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 import 'package:http/http.dart' as http;
 
+import '../jsondata/GetAuditData.dart';
+import '../jsondata/GetFormatData.dart';
+import '../jsondata/GetWarehouseData.dart';
 import '../models/brandmodel.dart';
 
 
@@ -28,8 +37,25 @@ class _DataSyncState extends State<DataSync> {
   bool company = true;
 
   DBHelper? dbHelper;
-  List<String> _brandList = [];
+  String _brandList = "";
+  String _formatList = "";
+  String _variantList = "";
+  String _descriptionList = "";
+  String _warehouseList = "";
+  String _auditList = "";
+  String _auditEntriesList = "";
+  String _companyList = "";
+
   List<GetBrandData> _brandMasterList = [];
+  List<GetFormatData> _formatMasterList = [];
+  List<GetVariantData> _variantMasterList = [];
+  List<GetCompanyData> _companyMasterList = [];
+  List<GetDescriptionData> _descriptionMasterList = [];
+  List<GetWarehouseData> _warehouseMasterList = [];
+  List<GetAuditData> _auditMasterList = [];
+  List<GetAuditEntriesData> _auditEntriesMasterList = [];
+
+  String lastSyncDate = "Not Synced Yet!";
 
   @override
   void initState(){
@@ -38,14 +64,38 @@ class _DataSyncState extends State<DataSync> {
   }
     Future<void> getBrandData() async {
       _brandMasterList = await dbHelper!.getBrandListArray();
-      for (int i = 0; i < _brandMasterList.length; i++) {
-
-        _brandList.add(_brandMasterList[i].toString());
-        setState(() {
-
-        });
-      }
+      _brandList = jsonEncode(_brandMasterList);
     }
+  Future<void> getFormatData() async {
+    _formatMasterList = await dbHelper!.getFormatListArray();
+    _formatList = jsonEncode(_formatMasterList);
+  }
+  Future<void> getVariantData() async {
+    _variantMasterList = await dbHelper!.getVariantListArray();
+    _variantList = jsonEncode(_variantMasterList);
+  }
+  Future<void> getWarehouseData() async {
+    _warehouseMasterList = await dbHelper!.getWarehouseListArray();
+    _warehouseList = jsonEncode(_warehouseMasterList);
+  }
+  Future<void> getCompanyData() async {
+    _companyMasterList = await dbHelper!.getCompanyListArray();
+    _companyList = jsonEncode(_companyMasterList);
+  }
+  Future<void> getDescriptionData() async {
+    _descriptionMasterList = await dbHelper!.getDescriptionListRecords();
+    _descriptionList = jsonEncode(_descriptionMasterList);
+  }
+  Future<void> getAuditData() async {
+    _auditMasterList = await dbHelper!.getAuditListArray();
+    _auditList = jsonEncode(_auditMasterList);
+  }
+  Future<void> getAuditEntriesData() async {
+    _auditEntriesMasterList = await dbHelper!.getAuditEntriesListArray();
+    _auditEntriesList = jsonEncode(_auditEntriesMasterList);
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -56,58 +106,14 @@ class _DataSyncState extends State<DataSync> {
       ),
     body: Column(
       children: [
-        CheckboxListTile(
-            title: Text("Company"),
-            value: company, onChanged: (val){
-          setState((){
-            company = val!;
-          });
-        }),
-        CheckboxListTile(
-            title: Text("Brands"),
-            value: brands, onChanged: (val){
-          setState((){
-                brands = val!;
-              });
-        }),
-        CheckboxListTile(
-            title: Text("Formats"),
-            value: formats, onChanged: (val){
-          setState((){
-            formats = val!;
-          });
-        }),
-        CheckboxListTile(
-            title: Text("Variants"),
-            value: variants, onChanged: (val){
-          setState((){
-            variants = val!;
-          });
-        }),
-        CheckboxListTile(
-            title: Text("Descriptions"),
-            value: descriptions, onChanged: (val){
-          setState((){
-            descriptions = val!;
-          });
-        }),
-        CheckboxListTile(
-            title: Text("Warehouse"),
-            value: warehouses, onChanged: (val){
-          setState((){
-            warehouses = val!;
-          });
-        }),
-        CheckboxListTile(
-            title: Text("Audit & Audit Entries"),
-            value: audit, onChanged: (val){
-          setState((){
-            audit = val!;
-          });
-        }),
+        Padding(
+          padding: const EdgeInsets.all(28.0),
+          child: Text("Last Sync Date: $lastSyncDate", style: TextStyle(color: Colors.black),),
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+
             Flexible(
               child: ElevatedButton(onPressed: (){
 
@@ -118,12 +124,28 @@ class _DataSyncState extends State<DataSync> {
             SizedBox(width: 20,),
             Flexible(
               child: ElevatedButton(onPressed: () async {
-                if(brands == true){
-                  getBrandData();
+                getBrandData();
+                getCompanyData();
+                getFormatData();
+                getVariantData();
+                getWarehouseData();
+                getDescriptionData();
+                getAuditData();
+                getAuditEntriesData();
+                var dataPayload = {
+                    'brand' : _brandList,
+                    'company' : _companyList,
+                    'format' : _formatList,
+                    'variant' : _variantList,
+                    'warehouse' : _warehouseList,
+                    'description' : _descriptionList,
+                    'audit' : _auditList,
+                    'audit_entries' : _auditEntriesList,
+                  };
                   String url = "${constants.apiBaseURL}/synchronizedata";
-                  final response = await http.post(Uri.parse(url),body: _brandList);
+                  final response = await http.post(Uri.parse(url),body: dataPayload);
                 print(response.body);
-                }
+
 
               }, child: Text(
                   'Sync To Server'
