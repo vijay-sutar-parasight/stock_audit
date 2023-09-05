@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +42,7 @@ class _AddBrand extends State<AddBrand>{
 
       });
     }
+    print(jsonEncode(_CompanyList));
   }
 
   @override
@@ -71,7 +74,7 @@ class _AddBrand extends State<AddBrand>{
               DropdownSearch<String>(
                 popupProps: PopupProps.modalBottomSheet(
                   showSelectedItems: true,
-                  disabledItemFn: (String s) => s.startsWith('I'),
+                  //disabledItemFn: (String s) => s.startsWith('I'),
                 ),
                 items: _CompanyList,
                 dropdownDecoratorProps: DropDownDecoratorProps(

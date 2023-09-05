@@ -97,6 +97,9 @@ class _UpdateBrand extends State<UpdateBrand>{
 
               ElevatedButton(onPressed: (){
                 String uCompany = companyId.text.toString();
+                if(uCompany == ''){
+                  uCompany = updateAudit.companyId.toString();
+                }
                 String uBrandName = brandName.text;
                 dbHelper!.updateBrand(
                     BrandModel(
