@@ -593,8 +593,9 @@ class _AddDescription extends State<AddDescription>{
                           totalStockValue: uTotalStockValue
                       )
                   ).then((value) {
-                    print('Data added Successfully');
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => Descriptions()));
+                    constants.Notification("Description Added Successfully");
+                    // Navigator.push(context, MaterialPageRoute(builder: (context) => Descriptions()));
+                    Navigator.pop(context,value);
                   }).onError((error, stackTrace) {
                     print(error.toString());
                   });

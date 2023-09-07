@@ -115,8 +115,9 @@ class _AddAudit extends State<AddAudit>{
                       auditStatus: uStatus,
                     )
                 ).then((value) {
-                  print('Data added Successfully');
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => Audit()));
+                  constants.Notification("Audit Added Successfully");
+                  // Navigator.push(context, MaterialPageRoute(builder: (context) => Audit()));
+                  Navigator.pop(context,value);
                 }).onError((error, stackTrace) {
                   print(error.toString());
                 });

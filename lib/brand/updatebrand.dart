@@ -1,6 +1,7 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:stock_audit/brand/brands.dart';
 import 'package:stock_audit/jsondata/GetCompanyData.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
@@ -108,8 +109,9 @@ class _UpdateBrand extends State<UpdateBrand>{
                       brandName: uBrandName,
                     )
                 ).then((value) {
-                  print('Data added Successfully');
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => Brands()));
+                  constants.Notification("Brand Updated Successfully");
+                  // Navigator.push(context, MaterialPageRoute(builder: (context) => Brands()));
+                  Navigator.pop(context,value);
                 }).onError((error, stackTrace) {
                   print(error.toString());
                 });

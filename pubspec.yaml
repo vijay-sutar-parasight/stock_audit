@@ -45,7 +45,6 @@ dependencies:
   permission_handler:
   google_fonts:
   dropdown_search:
-  connectivity_plus:
   flutter_easyloading:
 
 dev_dependencies:

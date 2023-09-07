@@ -99,6 +99,11 @@ class _UpdateFormat extends State<UpdateFormat>{
               ElevatedButton(onPressed: (){
                 String uBrandId = brandId.text.toString();
                 String uFormatName = formatName.text;
+
+                if(uBrandId == ''){
+                  uBrandId = updateFormat.brandId.toString();
+                }
+
                 dbHelper!.updateFormat(
                     FormatModel(
                       formatId: recordId,
@@ -106,8 +111,9 @@ class _UpdateFormat extends State<UpdateFormat>{
                       formatName: uFormatName,
                     )
                 ).then((value) {
-                  print('Data added Successfully');
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => Formats()));
+                  constants.Notification("Format Updated Successfully");
+                  // Navigator.push(context, MaterialPageRoute(builder: (context) => Formats()));
+                  Navigator.pop(context,value);
                 }).onError((error, stackTrace) {
                   print(error.toString());
                 });

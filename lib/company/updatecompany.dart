@@ -141,8 +141,9 @@ class _UpdateCompany extends State<UpdateCompany>{
                         city: uCity
                     )
                 ).then((value) {
-                  print('Data added Successfully');
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => Company()));
+                  constants.Notification("Company Updated Successfully");
+                  // Navigator.push(context, MaterialPageRoute(builder: (context) => Company()));
+                  Navigator.pop(context,value);
                 }).onError((error, stackTrace) {
                   print(error.toString());
                 });

@@ -140,7 +140,14 @@ class _UpdateVariant extends State<UpdateVariant>{
                 String uBrandId = brandId.text.toString();
                 String uFormatId = formatId.text.toString();
                 String uVariantName = variantName.text;
-                print("final brand is $uBrandId");
+
+                if(uBrandId == ''){
+                  uBrandId = updateVariant.brandId.toString();
+                }
+                if(uFormatId == ''){
+                  uFormatId = updateVariant.formatId.toString();
+                }
+
                 dbHelper!.updateVariant(
                     VariantModel(
                       variantId: recordId,
@@ -149,8 +156,9 @@ class _UpdateVariant extends State<UpdateVariant>{
                       variantName: uVariantName,
                     )
                 ).then((value) {
-                  print('Data added Successfully');
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => Variants()));
+                  constants.Notification("Variant Updated Successfully");
+                  // Navigator.push(context, MaterialPageRoute(builder: (context) => Variants()));
+                  Navigator.pop(context,value);
                 }).onError((error, stackTrace) {
                   print(error.toString());
                 });

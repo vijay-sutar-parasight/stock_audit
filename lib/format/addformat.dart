@@ -92,8 +92,10 @@ class _AddFormat extends State<AddFormat>{
                   formatName: uFormatName
                     )
                 ).then((value) {
-                  print('Data added Successfully');
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => Formats()));
+                  constants.Notification("Format Added Successfully");
+
+                  // Navigator.push(context, MaterialPageRoute(builder: (context) => Formats()));
+                  Navigator.pop(context,value);
                 }).onError((error, stackTrace) {
                   print(error.toString());
                 });

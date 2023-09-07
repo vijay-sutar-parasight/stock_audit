@@ -101,16 +101,22 @@ class _UpdateWarehouse extends State<UpdateWarehouse>{
 
               ElevatedButton(onPressed: (){
                 String uCompanyId = companyId.text.toString();
-                String uFormatName = warehouseName.text;
+                String uWarehouseName = warehouseName.text;
+
+                if(uCompanyId == ''){
+                  uCompanyId = updateWarehouse.companyId.toString();
+                }
+
                 dbHelper!.updateWarehouse(
                     WarehouseModel(
                       warehouseId: recordId,
                   companyId: uCompanyId,
-                      warehouseName: uFormatName,
+                      warehouseName: uWarehouseName,
                     )
                 ).then((value) {
-                  print('Data added Successfully');
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => Warehouse()));
+                  constants.Notification("Warehouse Updated Successfully");
+                  // Navigator.push(context, MaterialPageRoute(builder: (context) => Warehouse()));
+                  Navigator.pop(context,value);
                 }).onError((error, stackTrace) {
                   print(error.toString());
                 });

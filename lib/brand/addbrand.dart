@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:stock_audit/brand/brands.dart';
 import 'package:stock_audit/company/company.dart';
 import 'package:stock_audit/jsondata/GetCompanyData.dart';
@@ -121,8 +122,9 @@ class _AddBrand extends State<AddBrand>{
                   brandName: uBrandName
                     )
                 ).then((value) {
-                  print('Data added Successfully');
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => Brands()));
+                  constants.Notification("Brand Added Successfully");
+                  //Navigator.push(context, MaterialPageRoute(builder: (context) => Brands()));
+                  Navigator.pop(context,value);
                 }).onError((error, stackTrace) {
                   print(error.toString());
                 });

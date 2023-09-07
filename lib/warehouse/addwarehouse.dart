@@ -96,8 +96,9 @@ class _AddWarehouse extends State<AddWarehouse>{
                   warehouseName: uWarehouseName
                     )
                 ).then((value) {
-                  print('Data added Successfully');
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => Warehouse()));
+                  constants.Notification("Warehouse Added Successfully");
+                  // Navigator.push(context, MaterialPageRoute(builder: (context) => Warehouse()));
+                  Navigator.pop(context,value);
                 }).onError((error, stackTrace) {
                   print(error.toString());
                 });

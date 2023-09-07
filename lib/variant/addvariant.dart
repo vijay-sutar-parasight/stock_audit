@@ -127,8 +127,9 @@ class _AddVariant extends State<AddVariant>{
                   variantName: uVariantName
                     )
                 ).then((value) {
-                  print('Data added Successfully');
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => Variants()));
+                  constants.Notification("Variant Added Successfully");
+                  // Navigator.push(context, MaterialPageRoute(builder: (context) => Variants()));
+                  Navigator.pop(context,value);
                 }).onError((error, stackTrace) {
                   print(error.toString());
                 });

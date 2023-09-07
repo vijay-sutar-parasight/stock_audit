@@ -1,6 +1,7 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 
 import '../db_handler.dart';
@@ -114,6 +115,11 @@ class _UpdateAudit extends State<UpdateAudit>{
                 String uCompany = companyId.text.toString();
                 String uDescription = auditDescription.text;
                 String uStatus = auditStatus.text;
+
+                if(uCompany == ''){
+                  uCompany = updateAudit.companyId.toString();
+                }
+
                 dbHelper!.update(
                     AuditModel(
                       auditId: recordId,
@@ -122,8 +128,9 @@ class _UpdateAudit extends State<UpdateAudit>{
                   auditStatus: uStatus,
                     )
                 ).then((value) {
-                  print('Data added Successfully');
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => Audit()));
+                  constants.Notification("Audit Updated Successfully");
+                  // Navigator.push(context, MaterialPageRoute(builder: (context) => Audit()));
+                  Navigator.pop(context,value);
                 }).onError((error, stackTrace) {
                   print(error.toString());
                 });

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 import 'package:stock_audit/variant/variants.dart';
 
@@ -132,8 +133,9 @@ class _AddCompany extends State<AddCompany>{
                   city: uCity
                     )
                 ).then((value) {
-                  print('Data added Successfully');
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => Company()));
+                  constants.Notification("Company Added Successfully");
+                  // Navigator.push(context, MaterialPageRoute(builder: (context) => Company()));
+                  Navigator.pop(context,value);
                 }).onError((error, stackTrace) {
                   print(error.toString());
                 });

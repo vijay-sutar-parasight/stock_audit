@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:stock_audit/db_handler.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 
@@ -44,6 +47,7 @@ class _AddAuditEntries extends State<AddAuditEntries>{
   var calculation = TextEditingController();
   var actualUnits = TextEditingController();
   var totalValuation = TextEditingController();
+  List _calculations = [];
 
 
   List<String> _CompanyList = [];
@@ -455,7 +459,7 @@ class _AddAuditEntries extends State<AddAuditEntries>{
                         prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
                       contentPadding: EdgeInsets.symmetric(vertical: 15),
 
-                    )
+                    ),
                 ),
                 Container(height: 11),
                 Row(
@@ -524,7 +528,7 @@ class _AddAuditEntries extends State<AddAuditEntries>{
                   String uMrp = mrp.text.toString();
                   String uValuationPerUnit = valuationPerUnit.text.toString();
                   String uSystemUnit = systemUnit.text.toString();
-                  String uCalculation = calculation.text.toString();
+                  String uCalculation = jsonEncode(calculation);
                   String uActualUnit = actualUnits.text.toString();
                   String uTotalValuation = totalValuation.text.toString();
                   dbHelper!.insert(
@@ -553,8 +557,9 @@ class _AddAuditEntries extends State<AddAuditEntries>{
                         warehouseName: uWarehouse,
                       )
                   ).then((value) {
-                    print('Data added Successfully');
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => AuditEntries(auditCompanyId: selectedCompanyId.toString())));
+                    constants.Notification("Audit Entry Added Successfully");
+                    // Navigator.push(context, MaterialPageRoute(builder: (context) => AuditEntries(auditCompanyId: selectedCompanyId.toString())));
+                    Navigator.pop(context,value);
                   }).onError((error, stackTrace) {
                     print(error.toString());
                   });

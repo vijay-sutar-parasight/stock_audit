@@ -1,6 +1,7 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 
 import '../../models/auditentriesmodel.dart';
@@ -550,6 +551,36 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                   String uCalculation = calculation.text.toString();
                   String uActualUnit = actualUnits.text.toString();
                   String uTotalValuation = totalValuation.text.toString();
+
+                  if(uBrand == ''){
+                    uBrand = updateAuditEntries.brandId.toString();
+                  }
+                  if(uFormat == ''){
+                    uFormat = updateAuditEntries.formatId.toString();
+                  }
+                  if(uVariant == ''){
+                    uVariant = updateAuditEntries.variantId.toString();
+                  }
+                  if(uDescription == ''){
+                    uDescription = updateAuditEntries.productId.toString();
+                  }
+                  if(uMfgMonth == ''){
+                    uMfgMonth = updateAuditEntries.mfgMonth.toString();
+                  }
+                  if(uMfgYear == ''){
+                    uMfgYear = updateAuditEntries.mfgYear.toString();
+                  }
+                  if(uExpMonth == ''){
+                    uExpMonth = updateAuditEntries.expMonth.toString();
+                  }
+                  if(uExpYear == ''){
+                    uExpYear = updateAuditEntries.expYear.toString();
+                  }
+                  if(uWarehouse == ''){
+                    uWarehouse = updateAuditEntries.warehouseId.toString();
+                  }
+
+
                   dbHelper!.update(
                       AuditEntriesModel(
                         companyId: selectedCompanyId,
@@ -577,8 +608,9 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                         warehouseName: uWarehouse,
                       )
                   ).then((value) {
-                    print('Data added Successfully');
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => AuditEntries(auditCompanyId: selectedCompanyId)));
+                    constants.Notification("Audit Entry Updated Successfully");
+                    // Navigator.push(context, MaterialPageRoute(builder: (context) => AuditEntries(auditCompanyId: selectedCompanyId)));
+                    Navigator.pop(context,value);
                   }).onError((error, stackTrace) {
                     print(error.toString());
                   });

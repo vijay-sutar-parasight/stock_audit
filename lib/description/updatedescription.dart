@@ -599,6 +599,39 @@ class _UpdateDescription extends State<UpdateDescription>{
                   String uCombiType = combiType.text.toString();
                   String uPcsCases = pcsCases.text.toString();
                   String uTotalStockValue = totalStockValue.text.toString();
+
+                  if(uCompanyId == ''){
+                    uCompanyId = updateProduct.companyId.toString();
+                  }
+                  if(uBrandId == ''){
+                    uBrandId = updateProduct.brandId.toString();
+                  }
+                  if(uFormatId == ''){
+                    uFormatId = updateProduct.formatId.toString();
+                  }
+                  if(uVariantId == ''){
+                    uVariantId = updateProduct.variantId.toString();
+                  }
+                  if(uWarehouseId == ''){
+                    uWarehouseId = updateProduct.warehouseId.toString();
+                  }
+                  if(uMfgMonth == ''){
+                    uMfgMonth = updateProduct.mfgMonth.toString();
+                  }
+                  if(uMfgYear == ''){
+                    uMfgYear = updateProduct.mfgYear.toString();
+                  }
+                  if(uExpMonth == ''){
+                    uExpMonth = updateProduct.expMonth.toString();
+                  }
+                  if(uExpYear == ''){
+                    uExpYear = updateProduct.expYear.toString();
+                  }
+                  if(uCompanyId == ''){
+                    uCompanyId = updateProduct.companyId.toString();
+                  }
+
+
                   dbHelper!.updateProduct(
                       ProductModel(
                           productId: recordId,
@@ -622,8 +655,9 @@ class _UpdateDescription extends State<UpdateDescription>{
                           totalStockValue: uTotalStockValue
                       )
                   ).then((value) {
-                    print('Data added Successfully');
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => Descriptions()));
+                    constants.Notification("Description Updated Successfully");
+                    // Navigator.push(context, MaterialPageRoute(builder: (context) => Descriptions()));
+                    Navigator.pop(context,value);
                   }).onError((error, stackTrace) {
                     print(error.toString());
                   });
