@@ -5,6 +5,7 @@ import 'package:stock_audit/util/constants.dart' as constants;
 import 'package:stock_audit/variant/variants.dart';
 
 import '../../db_handler.dart';
+import '../appbar.dart';
 import '../models/companymodel.dart';
 import '../models/formatmodel.dart';
 import '../models/variantmodel.dart';
@@ -31,9 +32,7 @@ class _AddCompany extends State<AddCompany>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Add Company')
-      ),
+      appBar: appbar(context, 'Add Company', {'icons' : Icons.menu}),
       body: Container(
 
           child: Column(

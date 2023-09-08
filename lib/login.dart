@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stock_audit/dashboard.dart';
+import 'package:stock_audit/splash_screen.dart';
+import 'package:bcrypt/bcrypt.dart';
+import 'package:stock_audit/util/constants.dart' as constants;
 
 class Login extends StatelessWidget{
 var emailText = TextEditingController();
@@ -70,11 +74,31 @@ var passwordText = TextEditingController();
                   )
               ),
               Container(height: 20),
-              ElevatedButton(onPressed: (){
+              ElevatedButton(onPressed: () async {
               String uEmail = emailText.text.toString();
               String uPass = passwordText.text;
               print("Email: $uEmail, Password: $uPass");
-              Navigator.push(context, MaterialPageRoute(builder: (context) => Dashboard()));
+              String storedHashedPassword = "YOUR_STORED_HASHED_PASSWORD"; // Replace with the actual stored hash
+              String inputPassword = uPass; // Replace with the user's input password
+
+              // bool isPasswordValid = Bcrypt.compare(inputPassword, storedHashedPassword);
+              final String hashed = BCrypt.hashpw("password", BCrypt.gensalt());
+              // $2a$10$r6huirn1laq6UXBVu6ga9.sHca6sr6tQl3Tiq9LB6/6LMpR37XEGu
+
+                final bool isPasswordValid = BCrypt.checkpw(inputPassword, hashed);
+              // true
+
+              if (isPasswordValid) {
+                // Password is valid
+                var sharedPref = await SharedPreferences.getInstance();
+                sharedPref.setBool(SplashScreenState.KEYLOGIN, true);
+                constants.Notification("Logged In Successfully");
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Dashboard()));
+              } else {
+                // Password is invalid
+                constants.Notification("Invalid username or password!");
+              }
+
               }, child: Text(
                 'Login'
               ))

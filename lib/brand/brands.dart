@@ -8,6 +8,7 @@ import 'package:stock_audit/models/brandmodel.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 import 'package:http/http.dart' as http;
 
+import '../appbar.dart';
 import '../db_handler.dart';
 
 class Brands extends StatefulWidget{
@@ -34,9 +35,7 @@ class BrandList extends State<Brands>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-            title: Text('Brands')
-        ),
+        appBar: appbar(context, 'Brands', {'icons' : Icons.menu}),
         body: Column(
           children: [
             // if (apiList != null)

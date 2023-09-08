@@ -6,6 +6,7 @@ import 'package:stock_audit/util/constants.dart' as constants;
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+import '../appbar.dart';
 import '../auditentries/auditentries.dart';
 import '../db_handler.dart';
 import '../models/auditmodel.dart';
@@ -33,9 +34,7 @@ class AuditList extends State<Audit> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title: Text('Audit')
-      ),
+      appBar: appbar(context, 'Audit', {'icons' : Icons.menu}),
       body: Column(
         children: [
           // if (apiList != null)

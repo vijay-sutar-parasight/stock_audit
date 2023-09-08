@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 
+import '../appbar.dart';
 import '../db_handler.dart';
 import '../jsondata/GetCompanyData.dart';
 import '../models/auditmodel.dart';
@@ -54,9 +55,7 @@ class _UpdateAudit extends State<UpdateAudit>{
     auditStatus.text = updateAudit.auditStatus!;
     recordId = updateAudit.auditId!;
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Update Audit')
-      ),
+      appBar: appbar(context, 'Update Audit', {'icons' : Icons.menu}),
       body: Container(
           child: Column(
             children: [

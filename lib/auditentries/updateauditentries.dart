@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 
 import '../../models/auditentriesmodel.dart';
+import '../appbar.dart';
 import '../db_handler.dart';
 import '../jsondata/GetBrandData.dart';
 import '../jsondata/GetCompanyData.dart';
@@ -157,9 +158,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
     recordId = updateAuditEntries.entryId!;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Update Audit Entries')
-      ),
+      appBar: appbar(context, 'Update Audit Entries', {'icons' : Icons.menu}),
       body: Padding(
         padding: const EdgeInsets.all(8),
         child: SingleChildScrollView(

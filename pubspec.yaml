@@ -46,6 +46,7 @@ dependencies:
   google_fonts:
   dropdown_search:
   flutter_easyloading:
+  bcrypt:
 
 dev_dependencies:
   flutter_test:

@@ -11,6 +11,7 @@ import 'package:stock_audit/jsondata/GetVariantData.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 import 'package:http/http.dart' as http;
 
+import '../appbar.dart';
 import '../jsondata/GetAuditData.dart';
 import '../jsondata/GetFormatData.dart';
 import '../jsondata/GetWarehouseData.dart';
@@ -100,10 +101,7 @@ class _DataSyncState extends State<DataSync> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Database Sync', style: TextStyle(color: Colors.white)),
-        centerTitle: true,
-      ),
+      appBar: appbar(context, 'Data Sync', {'icons' : Icons.menu}),
     body: Column(
       children: [
         Padding(

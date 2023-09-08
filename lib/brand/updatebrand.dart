@@ -6,6 +6,7 @@ import 'package:stock_audit/brand/brands.dart';
 import 'package:stock_audit/jsondata/GetCompanyData.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 
+import '../appbar.dart';
 import '../audit/audit.dart';
 import '../db_handler.dart';
 import '../models/auditmodel.dart';
@@ -53,9 +54,7 @@ class _UpdateBrand extends State<UpdateBrand>{
     brandName.text = updateAudit.brandName!;
     recordId = updateAudit.brandId!;
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Update Audit')
-      ),
+      appBar: appbar(context, 'Update Brand', {'icons' : Icons.menu}),
       body: Container(
           child: Column(
             children: [

@@ -5,6 +5,7 @@ import 'package:stock_audit/util/constants.dart' as constants;
 
 import '../../db_handler.dart';
 import '../../models/auditmodel.dart';
+import '../appbar.dart';
 import '../jsondata/GetCompanyData.dart';
 import 'audit.dart';
 
@@ -45,9 +46,7 @@ class _AddAudit extends State<AddAudit>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Add Audit')
-      ),
+      appBar: appbar(context, 'Add Audit', {'icons' : Icons.menu}),
       body: Container(
 
           child: Column(

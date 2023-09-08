@@ -6,6 +6,7 @@ import 'package:stock_audit/variant/variants.dart';
 import 'package:stock_audit/warehouse/warehouse.dart';
 
 import '../../db_handler.dart';
+import '../appbar.dart';
 import '../jsondata/GetCompanyData.dart';
 import '../models/formatmodel.dart';
 import '../models/variantmodel.dart';
@@ -45,9 +46,7 @@ class _AddWarehouse extends State<AddWarehouse>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Add Warehouse')
-      ),
+      appBar: appbar(context, 'Add Warehouse', {'icons' : Icons.menu}),
       body: Container(
 
           child: Column(

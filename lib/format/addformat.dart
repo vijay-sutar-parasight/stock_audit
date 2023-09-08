@@ -6,6 +6,7 @@ import 'package:stock_audit/models/brandmodel.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 
 import '../../db_handler.dart';
+import '../appbar.dart';
 import '../models/formatmodel.dart';
 import 'formats.dart';
 
@@ -43,9 +44,7 @@ class _AddFormat extends State<AddFormat>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Add Format')
-      ),
+      appBar: appbar(context, 'Add Format', {'icons' : Icons.menu}),
       body: Container(
 
           child: Column(

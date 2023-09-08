@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:stock_audit/variant/updatevariant.dart';
 
+import '../appbar.dart';
 import '../db_handler.dart';
 import '../models/companymodel.dart';
 import '../models/variantmodel.dart';
@@ -34,9 +35,7 @@ class CompanyList extends State<Company> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-            title: Text('Company')
-        ),
+        appBar: appbar(context, 'Company', {'icons' : Icons.menu}),
         body: Column(
           children: [
             // if (apiList != null)

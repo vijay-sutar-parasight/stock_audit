@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:stock_audit/variant/updatevariant.dart';
 
+import '../appbar.dart';
 import '../db_handler.dart';
 import '../models/variantmodel.dart';
 import 'addvariant.dart';
@@ -32,9 +33,7 @@ class VariantList extends State<Variants> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-            title: Text('Variants')
-        ),
+        appBar: appbar(context, 'Variants', {'icons' : Icons.menu}),
         body: Column(
           children: [
             // if (apiList != null)

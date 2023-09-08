@@ -6,6 +6,7 @@ import 'package:stock_audit/util/constants.dart' as constants;
 import 'package:stock_audit/variant/variants.dart';
 import 'package:stock_audit/warehouse/warehouse.dart';
 
+import '../appbar.dart';
 import '../audit/audit.dart';
 import '../db_handler.dart';
 import '../jsondata/GetCompanyData.dart';
@@ -56,9 +57,7 @@ class _UpdateWarehouse extends State<UpdateWarehouse>{
     warehouseName.text = updateWarehouse.warehouseName!;
     recordId = updateWarehouse.warehouseId!;
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Update Warehouse')
-      ),
+      appBar: appbar(context, 'Update Warehouse', {'icons' : Icons.menu}),
       body: Container(
           child: Column(
             children: [

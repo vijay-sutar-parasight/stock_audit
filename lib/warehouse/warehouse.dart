@@ -6,6 +6,7 @@ import 'package:stock_audit/util/constants.dart' as constants;
 import 'package:http/http.dart' as http;
 import 'package:stock_audit/warehouse/updatewarehouse.dart';
 
+import '../appbar.dart';
 import '../db_handler.dart';
 import '../models/warehousemodel.dart';
 import 'addwarehouse.dart';
@@ -33,9 +34,7 @@ class Warehouse extends StatefulWidget {
     @override
     Widget build(BuildContext context) {
       return Scaffold(
-          appBar: AppBar(
-              title: Text('Warehouse')
-          ),
+          appBar: appbar(context, 'Warehouse', {'icons' : Icons.menu}),
           body: Column(
             children: [
               // if (apiList != null)

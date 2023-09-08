@@ -5,6 +5,7 @@ import 'package:stock_audit/util/constants.dart' as constants;
 import 'package:stock_audit/variant/variants.dart';
 
 import '../../db_handler.dart';
+import '../appbar.dart';
 import '../jsondata/GetBrandData.dart';
 import '../jsondata/GetFormatData.dart';
 import '../models/formatmodel.dart';
@@ -56,9 +57,7 @@ class _AddVariant extends State<AddVariant>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Add Variant')
-      ),
+      appBar: appbar(context, 'Add Variant', {'icons' : Icons.menu}),
       body: Container(
 
           child: Column(

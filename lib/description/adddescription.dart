@@ -7,6 +7,7 @@ import 'package:stock_audit/variant/variants.dart';
 import 'package:stock_audit/warehouse/warehouse.dart';
 
 import '../../db_handler.dart';
+import '../appbar.dart';
 import '../jsondata/GetBrandData.dart';
 import '../jsondata/GetCompanyData.dart';
 import '../jsondata/GetFormatData.dart';
@@ -130,9 +131,7 @@ class _AddDescription extends State<AddDescription>{
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title: Text('Add Description')
-      ),
+      appBar: appbar(context, 'Add Description', {'icons' : Icons.menu}),
       body: Padding(
         padding: const EdgeInsets.all(8),
         child: SingleChildScrollView(

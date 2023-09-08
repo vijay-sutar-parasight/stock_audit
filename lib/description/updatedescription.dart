@@ -6,6 +6,7 @@ import 'package:stock_audit/util/constants.dart' as constants;
 import 'package:stock_audit/variant/variants.dart';
 import 'package:stock_audit/warehouse/warehouse.dart';
 
+import '../appbar.dart';
 import '../audit/audit.dart';
 import '../db_handler.dart';
 import '../jsondata/GetBrandData.dart';
@@ -157,9 +158,7 @@ class _UpdateDescription extends State<UpdateDescription>{
 
     recordId = updateProduct.productId!;
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Update Description')
-      ),
+      appBar: appbar(context, 'Update Description', {'icons' : Icons.menu}),
       body: Padding(
         padding: const EdgeInsets.all(8),
         child: SingleChildScrollView(

@@ -49,6 +49,7 @@ class DBHelper{
     await db.execute("CREATE TABLE IF NOT EXISTS variant (variant_id INTEGER PRIMARY KEY AUTOINCREMENT, brand_id TEXT NULL, variant_name TEXT NULL, format_id TEXT NULL)");
     await db.execute("CREATE TABLE IF NOT EXISTS warehouse (warehouse_id INTEGER PRIMARY KEY AUTOINCREMENT, warehouse_name TEXT NULL, company_id TEXT NULL)");
     await db.execute("CREATE TABLE IF NOT EXISTS sync_date (sync_id INTEGER PRIMARY KEY AUTOINCREMENT, sync_code TEXT NULL, sync_date TEXT NULL)");
+    await db.execute("CREATE TABLE IF NOT EXISTS admin_users (admin_user_id INTEGER PRIMARY KEY AUTOINCREMENT, first_name TEXT NULL, last_name TEXT NULL, email TEXT NULL, password TEXT NULL, mobile_no TEXT NULL)");
 
   }
 

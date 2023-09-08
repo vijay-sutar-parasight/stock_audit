@@ -5,6 +5,7 @@ import 'package:stock_audit/util/constants.dart' as constants;
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+import '../appbar.dart';
 import '../db_handler.dart';
 import '../models/productmodel.dart';
 import 'adddescription.dart';
@@ -31,9 +32,7 @@ class DescriptionList extends State<Descriptions> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-            title: Text('Descriptions')
-        ),
+        appBar: appbar(context, 'Description', {'icons' : Icons.menu}),
         body: Column(
           children: [
             // if (apiList != null)

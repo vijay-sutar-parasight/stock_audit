@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:stock_audit/brand/brands.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 
+import '../appbar.dart';
 import '../audit/audit.dart';
 import '../db_handler.dart';
 import '../jsondata/GetBrandData.dart';
@@ -53,9 +54,7 @@ class _UpdateFormat extends State<UpdateFormat>{
     formatName.text = updateFormat.formatName!;
     recordId = updateFormat.formatId!;
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Update Format')
-      ),
+      appBar: appbar(context, 'Update Format', {'icons' : Icons.menu}),
       body: Container(
           child: Column(
             children: [

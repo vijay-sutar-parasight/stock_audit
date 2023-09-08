@@ -11,6 +11,7 @@ import 'package:stock_audit/models/brandmodel.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 
 import '../../db_handler.dart';
+import '../appbar.dart';
 import '../models/companymodel.dart';
 
 class AddBrand extends StatefulWidget{
@@ -49,9 +50,7 @@ class _AddBrand extends State<AddBrand>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Add Brand')
-      ),
+      appBar: appbar(context, 'Add Brand', {'icons' : Icons.menu}),
       body: Container(
 
           child: Column(

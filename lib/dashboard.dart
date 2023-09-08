@@ -1,22 +1,30 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stock_audit/brand/brands.dart';
 import 'package:stock_audit/company/company.dart';
 import 'package:stock_audit/datasync/datasync.dart';
 import 'package:stock_audit/description/descriptions.dart';
+import 'package:stock_audit/splash_screen.dart';
 import 'package:stock_audit/variant/variants.dart';
 import 'package:stock_audit/warehouse/warehouse.dart';
 import 'package:stock_audit/audit/audit.dart';
 import 'package:stock_audit/format/formats.dart';
+import 'package:stock_audit/util/constants.dart' as constants;
 
-class Dashboard extends StatelessWidget{
+import 'appbar.dart';
+import 'login.dart';
+
+class Dashboard extends StatefulWidget{
+  @override
+  State<Dashboard> createState() => _DashboardState();
+}
+
+class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Dashboard', style: TextStyle(color: Colors.white)),
-        centerTitle: true,
-      ),
+      appBar: appbar(context, 'Dashboard', {'icons' : Icons.menu}),
       body: Container(
         child: GridView.count(crossAxisCount: 2,
     children: [
@@ -161,5 +169,6 @@ class Dashboard extends StatelessWidget{
       ),
     );
   }
-  
+
+
 }

@@ -5,6 +5,7 @@ import 'package:stock_audit/brand/brands.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 import 'package:stock_audit/variant/variants.dart';
 
+import '../appbar.dart';
 import '../audit/audit.dart';
 import '../db_handler.dart';
 import '../jsondata/GetBrandData.dart';
@@ -71,9 +72,7 @@ class _UpdateVariant extends State<UpdateVariant>{
 
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Update Variant')
-      ),
+      appBar: appbar(context, 'Update Variant', {'icons' : Icons.menu}),
       body: Container(
           child: Column(
             children: [

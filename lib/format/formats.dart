@@ -6,6 +6,7 @@ import 'package:stock_audit/format/updateformat.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 import 'package:http/http.dart' as http;
 
+import '../appbar.dart';
 import '../db_handler.dart';
 import '../models/formatmodel.dart';
 import 'addformat.dart';
@@ -32,9 +33,7 @@ class Formats extends StatefulWidget {
     @override
     Widget build(BuildContext context) {
       return Scaffold(
-          appBar: AppBar(
-              title: Text('Formats')
-          ),
+          appBar: appbar(context, 'Formats', {'icons' : Icons.menu}),
           body: Column(
             children: [
               // if (apiList != null)

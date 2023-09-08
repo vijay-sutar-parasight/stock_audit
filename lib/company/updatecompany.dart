@@ -4,6 +4,7 @@ import 'package:stock_audit/brand/brands.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 import 'package:stock_audit/variant/variants.dart';
 
+import '../appbar.dart';
 import '../audit/audit.dart';
 import '../db_handler.dart';
 import '../models/auditmodel.dart';
@@ -43,9 +44,7 @@ class _UpdateCompany extends State<UpdateCompany>{
     city.text = updateCompany.city!;
     recordId = updateCompany.companyId!;
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Update Company')
-      ),
+      appBar: appbar(context, 'Update Company', {'icons' : Icons.menu}),
       body: Container(
           child: Column(
             children: [

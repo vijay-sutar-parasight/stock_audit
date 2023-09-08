@@ -8,6 +8,7 @@ import 'package:stock_audit/db_handler.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 
 import '../../models/auditentriesmodel.dart';
+import '../appbar.dart';
 import '../jsondata/GetBrandData.dart';
 import '../jsondata/GetCompanyData.dart';
 import '../jsondata/GetDescriptionData.dart';
@@ -139,9 +140,7 @@ class _AddAuditEntries extends State<AddAuditEntries>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Add Audit Entries')
-      ),
+      appBar: appbar(context, 'Add Audit Entries', {'icons' : Icons.menu}),
       body: Padding(
         padding: const EdgeInsets.all(8),
         child: SingleChildScrollView(
