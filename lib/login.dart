@@ -20,6 +20,7 @@ var passwordText = TextEditingController();
 
 String lastSyncDate = "";
 DBHelper? dbHelper;
+bool isPasswordValid = false;
 @override
 void initState() {
   // TODO: implement initState
@@ -96,34 +97,33 @@ void initState() {
               String uEmail = emailText.text.toString();
               String uPass = passwordText.text;
               print("Email: $uEmail, Password: $uPass");
-              var user = dbHelper!.getAdminUser();
-              user.then((value) => {
-                lastSyncDate = value,
-                dbHelper!.fetchAllData(lastSyncDate)
+              var hashedPassword = "";
+              if(uEmail != '' && uPass != '') {
+                var user_info = dbHelper!.getAdminUser(uEmail);
+                user_info.then((value) =>
+                {
+                  hashedPassword = value[0]['password'],
+                  isPasswordValid = BCrypt.checkpw(uPass, hashedPassword),
+                  passwordCheck(isPasswordValid)
+                });
+              }else{
+                passwordCheck(isPasswordValid);
               }
-              );
-              String storedHashedPassword = "YOUR_STORED_HASHED_PASSWORD"; // Replace with the actual stored hash
-              String inputPassword = uPass; // Replace with the user's input password
+              // user.then((value) => {
+              //   lastSyncDate = value,
+              //   dbHelper!.fetchAllData(lastSyncDate)
+              // }
+              // );
+              // String storedHashedPassword = hashedPassword; // Replace with the actual stored hash
+              // String inputPassword = uPass; // Replace with the user's input password
 
               // bool isPasswordValid = Bcrypt.compare(inputPassword, storedHashedPassword);
-              final String hashed = BCrypt.hashpw("password", BCrypt.gensalt());
+              //final String hashed = BCrypt.hashpw("password", BCrypt.gensalt());
               // $2a$10$r6huirn1laq6UXBVu6ga9.sHca6sr6tQl3Tiq9LB6/6LMpR37XEGu
 
-                final bool isPasswordValid = BCrypt.checkpw(inputPassword, hashed);
+
               // true
 
-              if (isPasswordValid) {
-                // Password is valid
-                var sharedPref = await SharedPreferences.getInstance();
-                sharedPref.setBool(SplashScreenState.KEYLOGIN, true);
-                constants.Notification("Logged In Successfully");
-                //Navigator.push(context, MaterialPageRoute(builder: (context) => Dashboard()));
-                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => Dashboard()), (route) => false);
-
-              } else {
-                // Password is invalid
-                constants.Notification("Invalid username or password!");
-              }
 
               }, child: Text(
                 'Login'
@@ -132,4 +132,20 @@ void initState() {
           ))),
     );
   }
+
+Future<void> passwordCheck(isPasswordValid) async {
+  if (isPasswordValid) {
+    // Password is valid
+    var sharedPref = await SharedPreferences.getInstance();
+    sharedPref.setBool(SplashScreenState.KEYLOGIN, true);
+    constants.Notification("Logged In Successfully");
+    //Navigator.push(context, MaterialPageRoute(builder: (context) => Dashboard()));
+    Navigator.pushAndRemoveUntil(context,
+        MaterialPageRoute(builder: (context) => Dashboard()), (
+            route) => false);
+  } else {
+    // Password is invalid
+    constants.Notification("Invalid username or password!");
+  }
+}
 }

@@ -436,13 +436,20 @@ class DBHelper{
     );
   }
 
-  Future<AdminUsersModel> getAdminUser(AdminUsersModel adminUserModel) async{
+  // Future<AdminUsersModel> getAdminUser(AdminUsersModel adminUserModel) async{
+  //   var dbClient = await db;
+  //   var sql = "Select * from admin_users where email=${adminUserModel.email}";
+  //   final List<Map<String, Object?>> queryResult = dbClient!.rawQuery(sql) as List<Map<String, Object?>>;
+  //   return queryResult.map((e) => AdminUsersModel.fromMap(e)).toList();
+  // }
+
+  Future<dynamic> getAdminUser(String email) async {
     var dbClient = await db;
     return await dbClient!.query(
-        'admin_users',
-        adminUserModel.toMap(),
-        where: 'admin_user_id=?',
-        whereArgs: [adminUserModel.adminUserId]
+        "admin_users",
+        where: "email = ?",
+        whereArgs: [email],
+        limit: 1
     );
   }
 
@@ -450,10 +457,11 @@ class DBHelper{
   Future<String> getLastSyncDate() async {
     var dbClient = await db;
     final res = await dbClient!.rawQuery("SELECT * FROM sync_date");
-    print(res.length);
+    //print(res.length);
     if(res.length == 0){
       var dbHelper = DBHelper();
       dbHelper.insertSyncdate(SyncDate(syncId: 1, syncCode: 'lastsyncdate', syncDate: null));
+     print('last sync date was not found in db');
     }
     String lastSyncDate = "";
     // raw query

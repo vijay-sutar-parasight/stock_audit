@@ -66,8 +66,9 @@ class _DataSyncState extends State<DataSync> {
 
     getSyncDate(){
       dbHelper!.getLastSyncDate().then((value) => {
-        lastSyncDate = value
+        lastSyncDate = value,
       });
+      return lastSyncDate;
     }
 
     Future<void> getBrandData() async {
@@ -113,7 +114,7 @@ class _DataSyncState extends State<DataSync> {
       children: [
         Padding(
           padding: const EdgeInsets.all(28.0),
-          child: Text("Last Sync Date: $lastSyncDate", style: TextStyle(color: Colors.black),),
+          child: Text("Last Sync Date: ${getSyncDate()}", style: TextStyle(color: Colors.black),),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
