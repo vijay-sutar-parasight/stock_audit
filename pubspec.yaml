@@ -47,6 +47,7 @@ dependencies:
   dropdown_search:
   flutter_easyloading:
   bcrypt:
+  math_expressions:
 
 dev_dependencies:
   flutter_test:
