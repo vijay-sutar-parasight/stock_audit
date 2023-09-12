@@ -63,6 +63,13 @@ class _DataSyncState extends State<DataSync> {
     super.initState();
     dbHelper = DBHelper();
   }
+
+    getSyncDate(){
+      dbHelper!.getLastSyncDate().then((value) => {
+        lastSyncDate = value
+      });
+    }
+
     Future<void> getBrandData() async {
       _brandMasterList = await dbHelper!.getBrandListArray();
       _brandList = jsonEncode(_brandMasterList);
@@ -114,7 +121,7 @@ class _DataSyncState extends State<DataSync> {
 
             Flexible(
               child: ElevatedButton(onPressed: (){
-
+                dbHelper!.syncDatabase();
               }, child: Text(
                   'Import From Server'
               )),

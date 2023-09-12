@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stock_audit/dashboard.dart';
+import 'package:stock_audit/db_handler.dart';
 
 import 'login.dart';
 import 'main.dart';
@@ -15,11 +16,20 @@ class SplashScreen extends StatefulWidget{
 class SplashScreenState extends State<SplashScreen> {
 
   static const String KEYLOGIN="login";
+  String lastSyncDate = "";
+  DBHelper? dbHelper;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     loginCheck();
+    dbHelper = DBHelper();
+    var syncDate = dbHelper!.getLastSyncDate();
+    syncDate.then((value) => {
+    lastSyncDate = value,
+    dbHelper!.fetchAllData(lastSyncDate)
+    }
+    );
 
   }
 

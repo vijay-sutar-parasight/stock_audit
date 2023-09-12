@@ -6,9 +6,27 @@ import 'package:stock_audit/splash_screen.dart';
 import 'package:bcrypt/bcrypt.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 
-class Login extends StatelessWidget{
+import 'db_handler.dart';
+
+class Login extends StatefulWidget{
+  @override
+  State<Login> createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
 var emailText = TextEditingController();
+
 var passwordText = TextEditingController();
+
+String lastSyncDate = "";
+DBHelper? dbHelper;
+@override
+void initState() {
+  // TODO: implement initState
+  super.initState();
+  dbHelper = DBHelper();
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,6 +96,12 @@ var passwordText = TextEditingController();
               String uEmail = emailText.text.toString();
               String uPass = passwordText.text;
               print("Email: $uEmail, Password: $uPass");
+              var user = dbHelper!.getAdminUser();
+              user.then((value) => {
+                lastSyncDate = value,
+                dbHelper!.fetchAllData(lastSyncDate)
+              }
+              );
               String storedHashedPassword = "YOUR_STORED_HASHED_PASSWORD"; // Replace with the actual stored hash
               String inputPassword = uPass; // Replace with the user's input password
 
@@ -93,7 +117,9 @@ var passwordText = TextEditingController();
                 var sharedPref = await SharedPreferences.getInstance();
                 sharedPref.setBool(SplashScreenState.KEYLOGIN, true);
                 constants.Notification("Logged In Successfully");
-                Navigator.push(context, MaterialPageRoute(builder: (context) => Dashboard()));
+                //Navigator.push(context, MaterialPageRoute(builder: (context) => Dashboard()));
+                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => Dashboard()), (route) => false);
+
               } else {
                 // Password is invalid
                 constants.Notification("Invalid username or password!");
@@ -106,5 +132,4 @@ var passwordText = TextEditingController();
           ))),
     );
   }
-  
 }

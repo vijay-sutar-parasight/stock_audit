@@ -17,7 +17,8 @@ PreferredSizeWidget appbar(BuildContext context, String title, dynamic otherData
               var sharedPref = await SharedPreferences.getInstance();
               sharedPref.setBool(SplashScreenState.KEYLOGIN, false);
               constants.Notification("Logged Out Successfully");
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Login()));
+              // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Login()));
+              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => Login()), (route) => false);
               break;
           }
         },

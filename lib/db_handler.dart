@@ -1,12 +1,15 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:stock_audit/auditentries/auditentries_handler.dart';
 import 'package:stock_audit/jsondata/GetAuditEntriesData.dart';
 import 'package:stock_audit/jsondata/GetCompanyData.dart';
 import 'package:stock_audit/jsondata/GetWarehouseData.dart';
 import 'package:stock_audit/models/auditmodel.dart';
 import 'package:path/path.dart';
+import 'package:stock_audit/models/syncdate.dart';
 import 'dart:io' as io;
 import 'package:stock_audit/util/constants.dart' as constants;
 
@@ -15,12 +18,16 @@ import 'jsondata/GetBrandData.dart';
 import 'jsondata/GetDescriptionData.dart';
 import 'jsondata/GetFormatData.dart';
 import 'jsondata/GetVariantData.dart';
+import 'models/adminusers.dart';
+import 'models/auditentriesmodel.dart';
 import 'models/brandmodel.dart';
 import 'models/companymodel.dart';
 import 'models/formatmodel.dart';
 import 'models/productmodel.dart';
 import 'models/variantmodel.dart';
 import 'models/warehousemodel.dart';
+import 'package:http/http.dart' as http;
+
 class DBHelper{
   static Database? _db;
 
@@ -51,6 +58,12 @@ class DBHelper{
     await db.execute("CREATE TABLE IF NOT EXISTS sync_date (sync_id INTEGER PRIMARY KEY AUTOINCREMENT, sync_code TEXT NULL, sync_date TEXT NULL)");
     await db.execute("CREATE TABLE IF NOT EXISTS admin_users (admin_user_id INTEGER PRIMARY KEY AUTOINCREMENT, first_name TEXT NULL, last_name TEXT NULL, email TEXT NULL, password TEXT NULL, mobile_no TEXT NULL)");
 
+  }
+
+  Future<SyncDate> insertSyncdate(SyncDate syncDate) async{
+    var dbClient = await db;
+    await dbClient!.insert('sync_date', syncDate.toMap());
+    return syncDate;
   }
 
   Future<AuditModel> insert(AuditModel auditModel) async{
@@ -389,6 +402,158 @@ class DBHelper{
     List<GetDescriptionData> list =
     res.isNotEmpty ? res.map((c) => GetDescriptionData.fromJson(c)).toList() : [];
     return list;
+  }
+
+
+  Future<AdminUsersModel> insertAdminUser(AdminUsersModel adminUserModel) async{
+    var dbClient = await db;
+    await dbClient!.insert('admin_users', adminUserModel.toMap());
+    return adminUserModel;
+  }
+
+  Future<List<AdminUsersModel>> getAdminUsersList() async{
+    var dbClient = await db;
+    final List<Map<String, Object?>> queryResult = await dbClient!.query("admin_users");
+    return queryResult.map((e) => AdminUsersModel.fromMap(e)).toList();
+  }
+
+  Future<int> deleteAdminUser(int adminUserId) async{
+    var dbClient = await db;
+    return await dbClient!.delete(
+        'admin_users',
+        where: 'admin_user_id=?',
+        whereArgs: [adminUserId]
+    );
+  }
+
+  Future<int> updateAdminUser(AdminUsersModel adminUserModel) async{
+    var dbClient = await db;
+    return await dbClient!.update(
+        'admin_users',
+        adminUserModel.toMap(),
+        where: 'admin_user_id=?',
+        whereArgs: [adminUserModel.adminUserId]
+    );
+  }
+
+  Future<AdminUsersModel> getAdminUser(AdminUsersModel adminUserModel) async{
+    var dbClient = await db;
+    return await dbClient!.query(
+        'admin_users',
+        adminUserModel.toMap(),
+        where: 'admin_user_id=?',
+        whereArgs: [adminUserModel.adminUserId]
+    );
+  }
+
+
+  Future<String> getLastSyncDate() async {
+    var dbClient = await db;
+    final res = await dbClient!.rawQuery("SELECT * FROM sync_date");
+    print(res.length);
+    if(res.length == 0){
+      var dbHelper = DBHelper();
+      dbHelper.insertSyncdate(SyncDate(syncId: 1, syncCode: 'lastsyncdate', syncDate: null));
+    }
+    String lastSyncDate = "";
+    // raw query
+    //List<Map> result = await dbClient.rawQuery('SELECT * FROM my_table WHERE name=?', ['Mary']);
+    // List<Map> result = await dbClient.rawQuery("SELECT * FROM sync_date");
+    //
+    // // print the results
+    res.forEach((row) => lastSyncDate = row['sync_date'].toString());
+    // {_id: 2, name: Mary, age: 32}
+    return lastSyncDate;
+  }
+
+  Future<int> updateSyncDate(SyncDate syncDate) async{
+    var dbClient = await db;
+    return await dbClient!.update(
+        'sync_date',
+        syncDate.toMap(),
+        where: 'sync_id=?',
+        whereArgs: [syncDate.syncId]
+    );
+  }
+
+
+  Future<void> fetchAllData(lastSyncDate) async {
+    if(lastSyncDate == ''){
+      lastSyncDate = 'null';
+    }
+    String url = "${constants.apiBaseURL}/alldata/${lastSyncDate}";
+    final response = await http.get(Uri.parse(url));
+    var dbHelper = DBHelper();
+    var dba = AuditentriesDBHelper();
+    List<dynamic> response_data = jsonDecode(response.body);
+    for(var data in response_data){
+      if(data['adminusers'] != null) {
+        for (var users in data['adminusers']) {
+          dbHelper.insertAdminUser(AdminUsersModel.fromMap(users));
+        }
+      }
+      if(data['brand'] != null) {
+        for (var brand in data['brand']) {
+          dbHelper.insertBrand(BrandModel.fromMap(brand));
+        }
+      }
+      if(data['format'] != null){
+        for(var format in data['format']){
+          dbHelper!.insertFormat(FormatModel.fromMap(format));
+        }
+      }
+      if(data['company'] != null){
+        for(var company in data['company']){
+          dbHelper!.insertCompany(CompanyModel.fromMap(company));
+        }
+      }
+
+      if(data['variant'] != null){
+        for(var variant in data['variant']){
+          dbHelper!.insertVariant(VariantModel.fromMap(variant));
+        }
+      }
+
+      if(data['warehouse'] != null){
+        for(var warehouse in data['warehouse']){
+          dbHelper!.insertWarehouse(WarehouseModel.fromMap(warehouse));
+        }
+      }
+
+      if(data['product'] != null){
+        for(var description in data['product']){
+          dbHelper!.insertProduct(ProductModel.fromMap(description));
+        }
+      }
+
+      if(data['audit'] != null){
+        for(var audit in data['audit']){
+          dbHelper!.insert(AuditModel.fromMap(audit));
+        }
+      }
+
+      if(data['auditentries'] != null){
+        for(var auditentries in data['auditentries']){
+          dba!.insert(AuditEntriesModel.fromMap(auditentries));
+        }
+      }
+
+      // update last sync date
+      String datetime = DateTime.now().toString();
+      print(datetime);
+      dbHelper.updateSyncDate(SyncDate(syncId: 1, syncCode: "lastsyncdate", syncDate: datetime));
+    }
+  }
+
+  Future<void> syncDatabase() async {
+    var dbHelper = DBHelper();
+    dbHelper = DBHelper();
+    String lastSyncDate = "";
+    var syncDate = dbHelper!.getLastSyncDate();
+    syncDate.then((value) => {
+      lastSyncDate = value,
+      dbHelper!.fetchAllData(lastSyncDate)
+    });
   }
 
 }
