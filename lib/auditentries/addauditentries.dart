@@ -65,7 +65,7 @@ class _AddAuditEntries extends State<AddAuditEntries>{
   List<GetWarehouseData> _warehouseMasterList = [];
   List<String> _descriptionList = [];
   List<GetDescriptionData> _descriptionMasterList = [];
-
+  List<String> _calculationArr = [];
   List<String> _months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   List<String> _years = [];
   int fromYear = 2000;
@@ -485,6 +485,10 @@ class _AddAuditEntries extends State<AddAuditEntries>{
                         }
                         print(existingActualUnits);
                         actualUnits.text = (existingActualUnits + calculationResult).toString();
+                        if(calculations != ''){
+                          _calculationArr.add(calculations);
+                        }
+                        print(_calculationArr);
                       }, child: Text(
                           'Calculate'
                       )),
@@ -558,7 +562,7 @@ class _AddAuditEntries extends State<AddAuditEntries>{
                   String uMrp = mrp.text.toString();
                   String uValuationPerUnit = valuationPerUnit.text.toString();
                   String uSystemUnit = systemUnit.text.toString();
-                  String uCalculation = jsonEncode(calculation);
+                  String uCalculation = jsonEncode(_calculationArr);
                   String uActualUnit = actualUnits.text.toString();
                   String uTotalValuation = totalValuation.text.toString();
                   dbHelper!.insert(

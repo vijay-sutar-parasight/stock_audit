@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:math_expressions/math_expressions.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 
 import '../../models/auditentriesmodel.dart';
@@ -26,6 +29,7 @@ class UpdateAuditEntries extends StatefulWidget{
 class _UpdateAuditEntries extends State<UpdateAuditEntries>{
 
   String selectedCompanyId;
+  double existingActualUnits = 0;
   _UpdateAuditEntries(this.selectedCompanyId);
   TextEditingController companyId = TextEditingController();
   var brandId = TextEditingController();
@@ -59,7 +63,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
   List<GetWarehouseData> _warehouseMasterList = [];
   List<String> _descriptionList = [];
   List<GetDescriptionData> _descriptionMasterList = [];
-
+  List<String> _calculationArr = [];
   List<String> _months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   List<String> _years = [];
   int fromYear = 2000;
@@ -151,9 +155,11 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
     mrp.text = updateAuditEntries.mrp!;
     valuationPerUnit.text = updateAuditEntries.valuationPerUnit!;
     systemUnit.text = updateAuditEntries.systemUnit!;
-    calculation.text = updateAuditEntries.calculationArr!;
+    calculation.text = "";
+    var jsonString = jsonDecode(updateAuditEntries.calculationArr!);
     actualUnits.text = updateAuditEntries.actualUnit!;
     totalValuation.text = updateAuditEntries.totalStockValue!;
+    print(jsonString);
 
     recordId = updateAuditEntries.entryId!;
 
@@ -466,20 +472,53 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                     )
                 ),
                 Container(height: 11),
-                TextField(
-                    controller: calculation,
-                    decoration: InputDecoration(
-                        hintText: 'Calculation',
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(11),
-                            borderSide: BorderSide(
-                              color: Colors.blue,
-                            )
-                        ),
-                        prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
-                      contentPadding: EdgeInsets.symmetric(vertical: 15),
+                Row(
+                  children: [
+                    Flexible(
+                      child: TextField(
+                        controller: calculation,
+                        decoration: InputDecoration(
+                          hintText: 'Calculation',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(11),
+                              borderSide: BorderSide(
+                                color: Colors.blue,
+                              )
+                          ),
+                          prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
+                          contentPadding: EdgeInsets.symmetric(vertical: 15),
 
-                    )
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Flexible(
+                      child: ElevatedButton(onPressed: (){
+                        var calculations = calculation.text;
+                        double calculationResult = 0;
+                        if(calculations != '') {
+                          Parser expression = Parser();
+                          Expression calcActualUnit = expression.parse(
+                              calculations);
+                          ContextModel cm = ContextModel();
+                          calculationResult = calcActualUnit.evaluate(EvaluationType.REAL,cm);
+                          print(calculationResult);
+                        }
+
+                        if(actualUnits.text != ''){
+                          existingActualUnits = double.parse(actualUnits.text);
+                        }
+                        print(existingActualUnits);
+                        actualUnits.text = (existingActualUnits + calculationResult).toString();
+                        if(calculations != ''){
+                          _calculationArr.add(calculations);
+                        }
+                        print(_calculationArr);
+                      }, child: Text(
+                          'Calculate'
+                      )),
+                    ),
+                  ],
                 ),
                 Container(height: 11),
                 Row(
