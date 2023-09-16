@@ -156,11 +156,16 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
     valuationPerUnit.text = updateAuditEntries.valuationPerUnit!;
     systemUnit.text = updateAuditEntries.systemUnit!;
     calculation.text = "";
-    var jsonString = jsonDecode(updateAuditEntries.calculationArr!);
     actualUnits.text = updateAuditEntries.actualUnit!;
     totalValuation.text = updateAuditEntries.totalStockValue!;
-    print(jsonString);
-
+    Map data = updateAuditEntries.calculationArr! == '' ? {} : json.decode(updateAuditEntries.calculationArr!);
+    if(data.length > 0){
+        for(var item in data.entries) {
+          _calculationArr.add(item.value);
+          print(item.key);
+        };
+        print(_calculationArr);
+    }
     recordId = updateAuditEntries.entryId!;
 
     return Scaffold(
@@ -513,7 +518,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                         if(calculations != ''){
                           _calculationArr.add(calculations);
                         }
-                        print(_calculationArr);
+                        print(json.encode(_calculationArr));
                       }, child: Text(
                           'Calculate'
                       )),
@@ -586,10 +591,11 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                   String uMrp = mrp.text.toString();
                   String uValuationPerUnit = valuationPerUnit.text.toString();
                   String uSystemUnit = systemUnit.text.toString();
-                  String uCalculation = calculation.text.toString();
+                  String uCalculation = json.encode(_calculationArr);
                   String uActualUnit = actualUnits.text.toString();
                   String uTotalValuation = totalValuation.text.toString();
 
+                  print("actual units are $uActualUnit");
                   if(uBrand == ''){
                     uBrand = updateAuditEntries.brandId.toString();
                   }

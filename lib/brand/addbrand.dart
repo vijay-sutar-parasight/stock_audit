@@ -27,6 +27,9 @@ class _AddBrand extends State<AddBrand>{
   List<String> _CompanyList = [];
   List<GetCompanyData> _companyMasterList = [];
 
+  String selectedValue = "";
+  Map<String, String> keyValuePairs = {};
+
   DBHelper? dbHelper;
 
   void initState(){
@@ -39,12 +42,12 @@ class _AddBrand extends State<AddBrand>{
     _companyMasterList = await dbHelper!.getCompanyListArray();
     for (int i = 0; i < _companyMasterList.length; i++) {
 
-      _CompanyList.add(_companyMasterList[i].companyName!);
+      // _CompanyList.add(_companyMasterList[i].companyName!);
+      keyValuePairs[_companyMasterList[i].companyId!.toString()] = _companyMasterList[i].companyName!;
       setState(() {
 
       });
     }
-    print(jsonEncode(_CompanyList));
   }
 
   @override
@@ -76,7 +79,8 @@ class _AddBrand extends State<AddBrand>{
                   showSelectedItems: true,
                   //disabledItemFn: (String s) => s.startsWith('I'),
                 ),
-                items: _CompanyList,
+                // items: _CompanyList,
+                items: keyValuePairs.values.toList(),
                 dropdownDecoratorProps: DropDownDecoratorProps(
                   dropdownSearchDecoration: InputDecoration(
                     labelText: "Company",
@@ -84,8 +88,14 @@ class _AddBrand extends State<AddBrand>{
                   ),
                 ),
                 onChanged: (val){
+                      var key = keyValuePairs.keys.firstWhere((k)
+                      => keyValuePairs[k] == val!, orElse: () => "");
+                      companyId.text = key!;
 
-                      companyId.text = val!;
+                      setState(() {
+                        selectedValue = val!;
+                      });
+                      print(companyId.text);
                 },
                 selectedItem: "",
               ),
@@ -111,6 +121,7 @@ class _AddBrand extends State<AddBrand>{
               //       prefixIcon: Icon(Icons.add_business, color: Colors.orange)
               //   ),
               // ),
+
               Container(height: 20),
               ElevatedButton(onPressed: (){
                 String uCompany = companyId.text.toString();

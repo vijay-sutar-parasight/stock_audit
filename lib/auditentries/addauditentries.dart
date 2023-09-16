@@ -477,7 +477,7 @@ class _AddAuditEntries extends State<AddAuditEntries>{
                               calculations);
                           ContextModel cm = ContextModel();
                           calculationResult = calcActualUnit.evaluate(EvaluationType.REAL,cm);
-                          print(calculationResult);
+                          print(json.encode(calculationResult));
                         }
 
                         if(actualUnits.text != ''){
@@ -562,7 +562,7 @@ class _AddAuditEntries extends State<AddAuditEntries>{
                   String uMrp = mrp.text.toString();
                   String uValuationPerUnit = valuationPerUnit.text.toString();
                   String uSystemUnit = systemUnit.text.toString();
-                  String uCalculation = jsonEncode(_calculationArr);
+                  String uCalculation = json.encode(_calculationArr);
                   String uActualUnit = actualUnits.text.toString();
                   String uTotalValuation = totalValuation.text.toString();
                   dbHelper!.insert(

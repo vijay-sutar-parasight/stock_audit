@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 
 import '../appbar.dart';
 import '../db_handler.dart';
+import '../jsondata/GetCompanyData.dart';
 
 class Brands extends StatefulWidget{
   @override
@@ -21,15 +22,37 @@ class BrandList extends State<Brands>{
   DBHelper? dbHelper;
   late Future<List<BrandModel>> brandList;
 
+  List<GetCompanyData> _companyMasterList = [];
+
+  String selectedValue = "";
+  Map<int, String> companyData = {};
+
   @override
   void initState(){
     super.initState();
     dbHelper = DBHelper();
     loadData();
+    getCompanyData();
   }
 
   loadData () async{
     brandList = dbHelper!.getBrandList();
+  }
+
+  Future<void> getCompanyData() async {
+    _companyMasterList = await dbHelper!.getCompanyListArray();
+    for (int i = 0; i < _companyMasterList.length; i++) {
+      companyData[_companyMasterList[i].companyId!] = _companyMasterList[i].companyName!;
+    }
+  }
+
+
+  getCompanyName(companyId){
+    var companyName = "";
+    if(companyId != ''){
+      companyName =  companyData[companyId].toString();
+    }
+    return companyName;
   }
 
   @override
@@ -69,7 +92,7 @@ class BrandList extends State<Brands>{
                                   child: ListTile(
                                     contentPadding: EdgeInsets.all(0),
                                     title: Text(snapshot.data![index].brandName.toString()),
-                                    subtitle: Text(snapshot.data![index].companyId.toString()),
+                                    subtitle: Text(getCompanyName(snapshot.data![index].companyId)),
                                     trailing: Column(
                                       children: [
                                         InkWell(
