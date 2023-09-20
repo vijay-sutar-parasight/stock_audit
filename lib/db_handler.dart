@@ -53,7 +53,7 @@ class DBHelper{
   _onCreate (Database db, int version) async{
     await db.execute("CREATE TABLE IF NOT EXISTS admin_users (admin_user_id INTEGER PRIMARY KEY AUTOINCREMENT, first_name TEXT NULL, last_name TEXT NULL, email TEXT NULL, password TEXT NULL, mobile_no TEXT NULL)");
     await db.execute("CREATE TABLE IF NOT EXISTS company (company_id INTEGER PRIMARY KEY AUTOINCREMENT, company_name TEXT NULL, company_address TEXT NULL, cm_mobile TEXT NULL, city TEXT NULL)");
-    await db.execute("CREATE TABLE IF NOT EXISTS brand (brand_id INTEGER PRIMARY KEY AUTOINCREMENT, brand_name TEXT NULL, company_id TEXT NULL, FOREIGN KEY(company_id) REFERENCES company(company_id))");
+    await db.execute("CREATE TABLE IF NOT EXISTS brand (brand_id INTEGER PRIMARY KEY AUTOINCREMENT, brand_name TEXT NULL, company_id TEXT NULL)");
     await db.execute("CREATE TABLE IF NOT EXISTS format (format_id INTEGER PRIMARY KEY AUTOINCREMENT, format_name TEXT NULL, brand_id TEXT NULL)");
     await db.execute("CREATE TABLE IF NOT EXISTS variant (variant_id INTEGER PRIMARY KEY AUTOINCREMENT, brand_id TEXT NULL, variant_name TEXT NULL, format_id TEXT NULL)");
     await db.execute("CREATE TABLE IF NOT EXISTS warehouse (warehouse_id INTEGER PRIMARY KEY AUTOINCREMENT, warehouse_name TEXT NULL, company_id TEXT NULL)");
@@ -126,8 +126,8 @@ class DBHelper{
 
   Future<List<BrandModel>> getBrandList() async{
     var dbClient = await db;
-    final List<Map<String, Object?>> queryResult = await dbClient!.rawQuery("Select * from brand left join company on brand.company_id = company.company_id");
-    print(queryResult);
+    final List<Map<String, Object?>> queryResult = await dbClient!.query("brand");
+    //print(queryResult);
     return queryResult.map((e) => BrandModel.fromMap(e)).toList();
   }
 
@@ -141,7 +141,7 @@ class DBHelper{
 
   Future<List<GetBrandData>> getBrandListByCompany(var companyId) async {
     var dbClient = await db;
-    print(companyId);
+    // print(companyId);
     final res = await dbClient!.rawQuery("SELECT * FROM brand where company_id='$companyId'");
     List<GetBrandData> list =
     res.isNotEmpty ? res.map((c) => GetBrandData.fromJson(c)).toList() : [];

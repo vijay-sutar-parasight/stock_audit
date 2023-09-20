@@ -21,7 +21,9 @@ class _AddFormat extends State<AddFormat>{
 
   List<String> _brandList = [];
   List<GetBrandData> _brandMasterList = [];
+  String selectedValue = "";
 
+  Map<String, String> brandData = {};
   DBHelper? dbHelper;
 
   void initState(){
@@ -34,7 +36,8 @@ class _AddFormat extends State<AddFormat>{
     _brandMasterList = await dbHelper!.getBrandListArray();
     for (int i = 0; i < _brandMasterList.length; i++) {
 
-      _brandList.add(_brandMasterList[i].brandName!);
+      // _brandList.add(_brandMasterList[i].brandName!);
+      brandData[_brandMasterList[i].brandId!.toString()] = _brandMasterList[i].brandName!;
       setState(() {
 
       });
@@ -69,7 +72,7 @@ class _AddFormat extends State<AddFormat>{
                   showSelectedItems: true,
                   disabledItemFn: (String s) => s.startsWith('I'),
                 ),
-                items: _brandList,
+                items: brandData.values.toList(),
                 dropdownDecoratorProps: DropDownDecoratorProps(
                   dropdownSearchDecoration: InputDecoration(
                     labelText: "Brand",
@@ -77,7 +80,14 @@ class _AddFormat extends State<AddFormat>{
                   ),
                 ),
                 onChanged: (val){
-                  brandId.text = val!;
+                  var key = brandData.keys.firstWhere((k)
+                  => brandData[k] == val!, orElse: () => "");
+                  brandId.text = key!;
+
+                  setState(() {
+                    selectedValue = val!;
+                  });
+                  print(brandId.text);
                 },
                 selectedItem: "",
               ),

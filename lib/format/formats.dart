@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:stock_audit/format/updateformat.dart';
+import 'package:stock_audit/jsondata/GetBrandData.dart';
+import 'package:stock_audit/jsondata/GetFormatData.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 import 'package:http/http.dart' as http;
 
@@ -17,17 +19,37 @@ class Formats extends StatefulWidget {
 }
   class FormatsList extends State<Formats> {
 
+    String selectedValue = "";
+    Map<int, String> brandData = {};
+
     DBHelper? dbHelper;
     late Future<List<FormatModel>> formatList;
+    List<GetBrandData> _brandMasterList = [];
 
     void initState(){
       super.initState();
       dbHelper = DBHelper();
       loadData();
+      getBrandData();
     }
 
     loadData () async{
       formatList = dbHelper!.getFormatList();
+    }
+
+    Future<void> getBrandData() async {
+      _brandMasterList = await dbHelper!.getBrandListArray();
+      for (int i = 0; i < _brandMasterList.length; i++) {
+        brandData[_brandMasterList[i].brandId!] = _brandMasterList[i].brandName!;
+      }
+    }
+
+    getBrandName(brandId){
+      var brandName = "";
+      if(brandId != ''){
+        brandName = brandData[int.parse(brandId)].toString();
+      }
+      return brandName;
     }
 
     @override
@@ -67,7 +89,7 @@ class Formats extends StatefulWidget {
                                     child: ListTile(
                                       contentPadding: EdgeInsets.all(0),
                                       title: Text(snapshot.data![index].formatName.toString()),
-                                      subtitle: Text(snapshot.data![index].brandId.toString()),
+                                      subtitle: Text("Brand: "+getBrandName(snapshot.data![index].brandId)),
                                       trailing: Column(
                                         children: [
                                           InkWell(

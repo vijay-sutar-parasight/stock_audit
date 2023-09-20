@@ -25,6 +25,8 @@ class _UpdateBrand extends State<UpdateBrand>{
 
   List<String> _CompanyList = [];
   List<GetCompanyData> _companyMasterList = [];
+  String selectedValue = "";
+  Map<String, String> companyData = {};
 
   DBHelper? dbHelper;
 
@@ -38,21 +40,30 @@ class _UpdateBrand extends State<UpdateBrand>{
   Future<void> getCompanyData() async {
     _companyMasterList = await dbHelper!.getCompanyListArray();
     for (int i = 0; i < _companyMasterList.length; i++) {
-
-      _CompanyList.add(_companyMasterList[i].companyName!);
-      setState(() {
-
-      });
+      // _CompanyList.add(_companyMasterList[i].companyName!);
+      companyData[_companyMasterList[i].companyId!.toString()] = _companyMasterList[i].companyName!;
     }
+    setState(() {
+
+    });
+  }
+
+  getCompanyName(companyId){
+    var companyName = "";
+    if(companyId != ''){
+      companyName = companyData[companyId].toString();
+    }
+    return companyName;
   }
 
   @override
   Widget build(BuildContext context) {
 
-    final updateAudit = ModalRoute.of(context)!.settings.arguments as BrandModel;
-    companyId.text = updateAudit.companyId!;
-    brandName.text = updateAudit.brandName!;
-    recordId = updateAudit.brandId!;
+    final updateBrand = ModalRoute.of(context)!.settings.arguments as BrandModel;
+    //companyId.text = updateBrand.companyId!;
+    brandName.text = updateBrand.brandName!;
+    selectedValue = getCompanyName(updateBrand.companyId!);
+    recordId = updateBrand.brandId!;
     return Scaffold(
       appBar: appbar(context, 'Update Brand', {'icons' : Icons.menu}),
       body: Container(
@@ -78,9 +89,9 @@ class _UpdateBrand extends State<UpdateBrand>{
               DropdownSearch<String>(
                 popupProps: PopupProps.modalBottomSheet(
                   showSelectedItems: true,
-                  disabledItemFn: (String s) => s.startsWith('I'),
+                  //disabledItemFn: (String s) => s.startsWith('I'),
                 ),
-                items: _CompanyList,
+                items: companyData.values.toList(),
                 dropdownDecoratorProps: DropDownDecoratorProps(
                   dropdownSearchDecoration: InputDecoration(
                     labelText: "Company",
@@ -88,18 +99,24 @@ class _UpdateBrand extends State<UpdateBrand>{
                   ),
                 ),
                 onChanged: (val){
-
-                  companyId.text = val!;
+                  var key = companyData.keys.firstWhere((k)
+                  => companyData[k] == val!, orElse: () => "");
+                  companyId.text = key!;
+                  setState(() {
+                    selectedValue = val!;
+                  });
+                  print(companyId.text);
                 },
-                selectedItem: companyId.text,
+                selectedItem: selectedValue,
               ),
               Container(height: 20),
 
               ElevatedButton(onPressed: (){
                 String uCompany = companyId.text.toString();
                 if(uCompany == ''){
-                  uCompany = updateAudit.companyId.toString();
+                  uCompany = updateBrand.companyId.toString();
                 }
+                print("changed company id is $uCompany");
                 String uBrandName = brandName.text;
                 dbHelper!.updateBrand(
                     BrandModel(

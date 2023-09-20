@@ -28,7 +28,7 @@ class _AddBrand extends State<AddBrand>{
   List<GetCompanyData> _companyMasterList = [];
 
   String selectedValue = "";
-  Map<String, String> keyValuePairs = {};
+  Map<String, String> companyData = {};
 
   DBHelper? dbHelper;
 
@@ -41,13 +41,12 @@ class _AddBrand extends State<AddBrand>{
   Future<void> getCompanyData() async {
     _companyMasterList = await dbHelper!.getCompanyListArray();
     for (int i = 0; i < _companyMasterList.length; i++) {
-
       // _CompanyList.add(_companyMasterList[i].companyName!);
-      keyValuePairs[_companyMasterList[i].companyId!.toString()] = _companyMasterList[i].companyName!;
-      setState(() {
-
-      });
+      companyData[_companyMasterList[i].companyId!.toString()] = _companyMasterList[i].companyName!;
     }
+    setState(() {
+
+    });
   }
 
   @override
@@ -80,7 +79,7 @@ class _AddBrand extends State<AddBrand>{
                   //disabledItemFn: (String s) => s.startsWith('I'),
                 ),
                 // items: _CompanyList,
-                items: keyValuePairs.values.toList(),
+                items: companyData.values.toList(),
                 dropdownDecoratorProps: DropDownDecoratorProps(
                   dropdownSearchDecoration: InputDecoration(
                     labelText: "Company",
@@ -88,8 +87,8 @@ class _AddBrand extends State<AddBrand>{
                   ),
                 ),
                 onChanged: (val){
-                      var key = keyValuePairs.keys.firstWhere((k)
-                      => keyValuePairs[k] == val!, orElse: () => "");
+                      var key = companyData.keys.firstWhere((k)
+                      => companyData[k] == val!, orElse: () => "");
                       companyId.text = key!;
 
                       setState(() {

@@ -46,11 +46,10 @@ class BrandList extends State<Brands>{
     }
   }
 
-
   getCompanyName(companyId){
     var companyName = "";
     if(companyId != ''){
-      companyName =  companyData[companyId].toString();
+      companyName = companyData[int.parse(companyId)].toString();
     }
     return companyName;
   }

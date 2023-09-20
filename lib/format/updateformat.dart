@@ -25,6 +25,8 @@ class _UpdateFormat extends State<UpdateFormat>{
 
   List<String> _brandList = [];
   List<GetBrandData> _brandMasterList = [];
+  String selectedValue = "";
+  Map<String, String> brandData = {};
 
   DBHelper? dbHelper;
 
@@ -39,19 +41,29 @@ class _UpdateFormat extends State<UpdateFormat>{
     _brandMasterList = await dbHelper!.getBrandListArray();
     for (int i = 0; i < _brandMasterList.length; i++) {
 
-      _brandList.add(_brandMasterList[i].brandName!);
+      // _brandList.add(_brandMasterList[i].brandName!);
+      brandData[_brandMasterList[i].brandId!.toString()] = _brandMasterList[i].brandName!;
       setState(() {
 
       });
     }
   }
 
+  getBrandName(brandId){
+    var brandName = "";
+    if(brandId != ''){
+      brandName = brandData[int.parse(brandId)].toString();
+    }
+    return brandName;
+  }
+
   @override
   Widget build(BuildContext context) {
 
     final updateFormat = ModalRoute.of(context)!.settings.arguments as FormatModel;
-    brandId.text = updateFormat.brandId!;
+    //brandId.text = updateFormat.brandId!;
     formatName.text = updateFormat.formatName!;
+    selectedValue = getBrandName(updateFormat.brandId!);
     recordId = updateFormat.formatId!;
     return Scaffold(
       appBar: appbar(context, 'Update Format', {'icons' : Icons.menu}),
