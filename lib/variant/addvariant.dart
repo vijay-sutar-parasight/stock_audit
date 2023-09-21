@@ -26,6 +26,11 @@ class _AddVariant extends State<AddVariant>{
   List<String> _formatList = [];
   List<GetFormatData> _formatMasterList = [];
 
+  String selectedBrand = "";
+  String selectedFormat = "";
+  Map<int, String> brandData = {};
+  Map<int, String> formatData = {};
+
   DBHelper? dbHelper;
 
   void initState(){
@@ -37,20 +42,20 @@ class _AddVariant extends State<AddVariant>{
   Future<void> getBrandData() async {
     _brandMasterList = await dbHelper!.getBrandListArray();
     for (int i = 0; i < _brandMasterList.length; i++) {
-      _brandList.add(_brandMasterList[i].brandName!);
-      setState(() {
-
-      });
+      brandData[_brandMasterList[i].brandId!] = _brandMasterList[i].brandName!;
     }
+    setState(() {
+    });
   }
 
-  Future<void> getFormatDataByBrand(brandId) async {
-    _formatMasterList = await dbHelper!.getFormatListByBrand(brandId);
+  Future<void> getFormatDataByBrand(selectedBrandId) async {
+    _formatMasterList = await dbHelper!.getFormatListByBrand(selectedBrandId);
     print(_formatMasterList);
     for (int i = 0; i < _formatMasterList.length; i++) {
-      _formatList.add(_formatMasterList[i].formatName!);
-      setState(() {
-      });
+      // _formatList.add(_formatMasterList[i].formatName!);
+      formatData[_formatMasterList[i].formatId!] = _formatMasterList[i].formatName!;
+      print("selected brand id is $selectedBrandId");
+
     }
   }
 
@@ -80,19 +85,32 @@ class _AddVariant extends State<AddVariant>{
               DropdownSearch<String>(
                 popupProps: PopupProps.modalBottomSheet(
                   showSelectedItems: true,
-                  disabledItemFn: (String s) => s.startsWith('I'),
+                  //disabledItemFn: (String s) => s.startsWith('I'),
                 ),
-                items: _brandList,
+                items: brandData.values.toList(),
                 dropdownDecoratorProps: DropDownDecoratorProps(
                   dropdownSearchDecoration: InputDecoration(
                     labelText: "Brand",
                     hintText: "Select Brand",
                   ),
                 ),
+                // onChanged: (val){
+                //   brandId.text = val!;
+                //   _formatList.clear();
+                //   getFormatDataByBrand(val);
+                // },
                 onChanged: (val){
-                  brandId.text = val!;
-                  _formatList.clear();
-                  getFormatDataByBrand(val);
+                  var key = brandData.keys.firstWhere((k)
+                  => brandData[k] == val!, orElse: () => 0);
+
+                  setState(() {
+                    selectedBrand = val!;
+                    brandId.text = key!.toString();
+                    formatData.clear();
+                    getFormatDataByBrand(brandId.text);
+                    selectedFormat= "";
+                  });
+                  print(brandId.text);
                 },
                 selectedItem: "",
               ),
@@ -102,7 +120,7 @@ class _AddVariant extends State<AddVariant>{
                   showSelectedItems: true,
                   disabledItemFn: (String s) => s.startsWith('I'),
                 ),
-                items: _formatList,
+                items: formatData.values.toList(),
                 dropdownDecoratorProps: DropDownDecoratorProps(
                   dropdownSearchDecoration: InputDecoration(
                     labelText: "Format",
@@ -110,9 +128,16 @@ class _AddVariant extends State<AddVariant>{
                   ),
                 ),
                 onChanged: (val){
-                  formatId.text = val!;
+                  var key = formatData.keys.firstWhere((k)
+                  => formatData[k] == val!, orElse: () => 0);
+
+                  setState(() {
+                    selectedFormat = val!;
+                    formatId.text = key!.toString();
+                  });
+                  print(formatId.text);
                 },
-                selectedItem: "",
+                selectedItem: selectedFormat,
               ),
               Container(height: 20),
               ElevatedButton(onPressed: (){

@@ -52,8 +52,9 @@ class _UpdateFormat extends State<UpdateFormat>{
   getBrandName(brandId){
     var brandName = "";
     if(brandId != ''){
-      brandName = brandData[int.parse(brandId)].toString();
+      brandName = brandData[brandId].toString();
     }
+    print(brandName);
     return brandName;
   }
 
@@ -89,20 +90,25 @@ class _UpdateFormat extends State<UpdateFormat>{
               DropdownSearch<String>(
                 popupProps: PopupProps.modalBottomSheet(
                   showSelectedItems: true,
-                  disabledItemFn: (String s) => s.startsWith('I'),
+                  //disabledItemFn: (String s) => s.startsWith('I'),
                 ),
-                items: _brandList,
+                items: brandData.values.toList(),
                 dropdownDecoratorProps: DropDownDecoratorProps(
                   dropdownSearchDecoration: InputDecoration(
                     labelText: "Brand",
                     hintText: "Select Brand",
                   ),
                 ),
-                onChanged: (val){
-
-                  brandId.text = val!;
-                },
-                selectedItem: brandId.text,
+      onChanged: (val){
+        var key = brandData.keys.firstWhere((k)
+        => brandData[k] == val!, orElse: () => "");
+        brandId.text = key!;
+        setState(() {
+          selectedValue = val!;
+        });
+        print(brandId.text);
+      },
+                selectedItem: selectedValue,
               ),
               Container(height: 20),
 

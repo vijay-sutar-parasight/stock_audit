@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:stock_audit/jsondata/GetFormatData.dart';
 import 'package:stock_audit/util/constants.dart' as constants;
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -7,6 +8,7 @@ import 'package:stock_audit/variant/updatevariant.dart';
 
 import '../appbar.dart';
 import '../db_handler.dart';
+import '../jsondata/GetBrandData.dart';
 import '../models/variantmodel.dart';
 import 'addvariant.dart';
 
@@ -19,15 +21,59 @@ class VariantList extends State<Variants> {
   DBHelper? dbHelper;
   late Future<List<VariantModel>> variantList;
 
+  String selectedValue = "";
+  Map<int, String> brandData = {};
+  Map<int, String> formatData = {};
+
+  List<GetBrandData> _brandMasterList = [];
+  List<GetFormatData> _formatMasterList = [];
+
+
   @override
   void initState(){
     super.initState();
     dbHelper = DBHelper();
     loadData();
+    getBrandData();
+    getFormatData();
   }
 
   loadData () async{
     variantList = dbHelper!.getVariantList();
+  }
+
+  Future<void> getBrandData() async {
+    _brandMasterList = await dbHelper!.getBrandListArray();
+    for (int i = 0; i < _brandMasterList.length; i++) {
+      brandData[_brandMasterList[i].brandId!] = _brandMasterList[i].brandName!;
+    }
+    setState(() {
+    });
+  }
+
+  getBrandName(brandId){
+    var brandName = "";
+    if(brandId != ''){
+      brandName = brandData[int.parse(brandId)].toString();
+    }
+    return brandName;
+  }
+
+  Future<void> getFormatData() async {
+    _formatMasterList = await dbHelper!.getFormatListArray();
+    for (int i = 0; i < _formatMasterList.length; i++) {
+      formatData[_formatMasterList[i].formatId!] = _formatMasterList[i].formatName!;
+    }
+    setState(() {
+    });
+  }
+
+  getFormatName(formatId){
+    var formatName = "";
+    if(formatId != ''){
+      formatName = formatData[int.parse(formatId)].toString();
+    }
+    return formatName;
   }
 
   @override
@@ -67,7 +113,7 @@ class VariantList extends State<Variants> {
                                   child: ListTile(
                                     contentPadding: EdgeInsets.all(0),
                                     title: Text(snapshot.data![index].variantName.toString()),
-                                    subtitle: Text(snapshot.data![index].brandId.toString()),
+                                    subtitle: Text("Brand: "+getBrandName(snapshot.data![index].brandId)+" Format: "+getFormatName(snapshot.data![index].formatId)),
                                     trailing: Column(
                                       children: [
                                         InkWell(

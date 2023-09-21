@@ -66,7 +66,7 @@ class DescriptionList extends State<Descriptions> {
                                   child: ListTile(
                                     contentPadding: EdgeInsets.all(0),
                                     title: Text(snapshot.data![index].productName.toString()),
-                                    subtitle: Text(snapshot.data![index].itemNumber.toString()),
+                                    subtitle: Text("Item No: "+snapshot.data![index].itemNumber.toString()),
                                     trailing: Column(
                                       children: [
                                         InkWell(
