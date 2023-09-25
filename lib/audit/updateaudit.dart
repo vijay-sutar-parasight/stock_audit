@@ -23,6 +23,8 @@ class _UpdateAudit extends State<UpdateAudit>{
 
   List<String> _CompanyList = [];
   List<GetCompanyData> _companyMasterList = [];
+  String selectedValue = "";
+  Map<String, String> companyData = {};
 
   DBHelper? dbHelper;
 
@@ -36,12 +38,20 @@ class _UpdateAudit extends State<UpdateAudit>{
   Future<void> getCompanyData() async {
     _companyMasterList = await dbHelper!.getCompanyListArray();
     for (int i = 0; i < _companyMasterList.length; i++) {
-
-      _CompanyList.add(_companyMasterList[i].companyName!);
-      setState(() {
-
-      });
+      // _CompanyList.add(_companyMasterList[i].companyName!);
+      companyData[_companyMasterList[i].companyId!.toString()] = _companyMasterList[i].companyName!;
     }
+    setState(() {
+
+    });
+  }
+
+  getCompanyName(companyId){
+    var companyName = "";
+    if(companyId != ''){
+      companyName = companyData[companyId].toString();
+    }
+    return companyName;
   }
 
   List<String> statusDropdown = ['Active','Inactive'];
@@ -50,9 +60,10 @@ class _UpdateAudit extends State<UpdateAudit>{
   Widget build(BuildContext context) {
 
     final updateAudit = ModalRoute.of(context)!.settings.arguments as AuditModel;
-    companyId.text = updateAudit.companyId!;
-    auditDescription.text = updateAudit.auditDescription!;
-    auditStatus.text = updateAudit.auditStatus!;
+    //companyId.text = updateAudit.companyId ?? "";
+    auditDescription.text = updateAudit.auditDescription ?? "";
+    auditStatus.text = updateAudit.auditStatus ?? "";
+    selectedValue = getCompanyName(updateAudit.companyId!);
     recordId = updateAudit.auditId!;
     return Scaffold(
       appBar: appbar(context, 'Update Audit', {'icons' : Icons.menu}),
@@ -62,9 +73,9 @@ class _UpdateAudit extends State<UpdateAudit>{
               DropdownSearch<String>(
                 popupProps: PopupProps.modalBottomSheet(
                   showSelectedItems: true,
-                  disabledItemFn: (String s) => s.startsWith('I'),
+                  //disabledItemFn: (String s) => s.startsWith('I'),
                 ),
-                items: _CompanyList,
+                items: companyData.values.toList(),
                 dropdownDecoratorProps: DropDownDecoratorProps(
                   dropdownSearchDecoration: InputDecoration(
                     labelText: "Company",
@@ -72,9 +83,14 @@ class _UpdateAudit extends State<UpdateAudit>{
                   ),
                 ),
                 onChanged: (val){
-                  companyId.text = val!;
+                  var key = companyData.keys.firstWhere((k)
+                  => companyData[k] == val!, orElse: () => "");
+                  companyId.text = key!;
+                  setState(() {
+                    selectedValue = val!;
+                  });
                 },
-                selectedItem: updateAudit.companyId,
+                selectedItem: selectedValue,
               ),
               Container(height: 11),
               TextField(
@@ -95,7 +111,7 @@ class _UpdateAudit extends State<UpdateAudit>{
               DropdownSearch<String>(
                 popupProps: PopupProps.modalBottomSheet(
                   showSelectedItems: true,
-                  disabledItemFn: (String s) => s.startsWith('I'),
+                  //disabledItemFn: (String s) => s.startsWith('I'),
                 ),
                 items: statusDropdown,
                 dropdownDecoratorProps: DropDownDecoratorProps(
@@ -105,9 +121,13 @@ class _UpdateAudit extends State<UpdateAudit>{
                   ),
                 ),
                 onChanged: (val){
-                  companyId.text = val!;
+                  var status = 0;
+                  if(val == 'Active'){
+                    status = 1;
+                  }
+                  auditStatus.text = status.toString();
                 },
-                selectedItem: updateAudit.auditStatus,
+                selectedItem: selectedItem,
               ),
               Container(height: 20),
               ElevatedButton(onPressed: (){

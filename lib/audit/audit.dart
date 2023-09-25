@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import '../appbar.dart';
 import '../auditentries/auditentries.dart';
 import '../db_handler.dart';
+import '../jsondata/GetCompanyData.dart';
 import '../models/auditmodel.dart';
 
 class Audit extends StatefulWidget{
@@ -20,15 +21,45 @@ class AuditList extends State<Audit> {
 
   DBHelper? dbHelper;
   late Future<List<AuditModel>> auditList;
+  List<GetCompanyData> _companyMasterList = [];
+
+  String selectedValue = "";
+  Map<int, String> companyData = {};
 
   void initState(){
     super.initState();
     dbHelper = DBHelper();
     loadData();
+    getCompanyData();
   }
 
   loadData () async{
     auditList = dbHelper!.getAuditList();
+  }
+
+  Future<void> getCompanyData() async {
+    _companyMasterList = await dbHelper!.getCompanyListArray();
+    for (int i = 0; i < _companyMasterList.length; i++) {
+      companyData[_companyMasterList[i].companyId!] = _companyMasterList[i].companyName!;
+    }
+  }
+
+  getCompanyName(companyId){
+    var companyName = "";
+    if(companyId != ''){
+      print(companyId);
+      companyName = companyData[int.parse(companyId)].toString();
+    }
+    return companyName;
+  }
+  getStatus(auditStatus){
+    var status = "";
+    if(auditStatus == '1'){
+      status = 'Active';
+    }else{
+      status = "Inactive";
+    }
+    return status;
   }
 
   @override
@@ -67,8 +98,8 @@ class AuditList extends State<Audit> {
                             child: Card(
                               child: ListTile(
                                 contentPadding: EdgeInsets.all(0),
-                                title: Text(snapshot.data![index].companyId.toString()),
-                                subtitle: Text(snapshot.data![index].auditDescription.toString()),
+                                title: Text("Company: "+getCompanyName(snapshot.data![index].companyId)),
+                                subtitle: Text("Status: "+getStatus(snapshot.data![index].auditStatus.toString())),
                                 trailing: Column(
                                   children: [
                                     InkWell(

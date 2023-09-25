@@ -64,6 +64,17 @@ class _AddDescription extends State<AddDescription>{
 
   DBHelper? dbHelper;
 
+  String selectedCompany = "";
+  Map<String, String> companyData = {};
+  String selectedBrand = "";
+  Map<String, String> brandData = {};
+  String selectedFormat = "";
+  Map<String, String> formatData = {};
+  String selectedVariant = "";
+  Map<String, String> variantData = {};
+  String selectedWarehouse = "";
+  Map<String, String> warehouseData = {};
+
   void initState(){
     super.initState();
     dbHelper = DBHelper();
@@ -80,51 +91,96 @@ class _AddDescription extends State<AddDescription>{
   Future<void> getCompanyData() async {
     _companyMasterList = await dbHelper!.getCompanyListArray();
     for (int i = 0; i < _companyMasterList.length; i++) {
-      _CompanyList.add(_companyMasterList[i].companyName!);
-      setState(() {
-
-      });
+      // _CompanyList.add(_companyMasterList[i].companyName!);
+      companyData[_companyMasterList[i].companyId!.toString()] = _companyMasterList[i].companyName!;
     }
+    setState(() {
+
+    });
+  }
+
+  getCompanyName(companyId){
+    var companyName = "";
+    if(companyId != ''){
+      companyName = companyData[companyId].toString();
+    }
+    return companyName;
   }
 
   Future<void> getBrandData(selectedCompanyId) async {
     _brandMasterList = await dbHelper!.getBrandListByCompany(selectedCompanyId);
     for (int i = 0; i < _brandMasterList.length; i++) {
-      _brandList.add(_brandMasterList[i].brandName!);
+      //_brandList.add(_brandMasterList[i].brandName!);
+      brandData[_brandMasterList[i].brandId!.toString()] = _brandMasterList[i].brandName!;
       setState(() {
 
       });
     }
+  }
+
+  getBrandName(brandId){
+    var brandName = "";
+    if(brandId != ''){
+      brandName = brandData[brandId].toString();
+    }
+    return brandName;
   }
 
   Future<void> getFormatDataByBrand(brandId) async {
     _formatMasterList = await dbHelper!.getFormatListByBrand(brandId);
-    print(_formatMasterList);
+    // print(_formatMasterList);
     for (int i = 0; i < _formatMasterList.length; i++) {
-      _formatList.add(_formatMasterList[i].formatName!);
+      //_formatList.add(_formatMasterList[i].formatName!);
+      formatData[_formatMasterList[i].formatId!.toString()] = _formatMasterList[i].formatName!;
       setState(() {
       });
     }
   }
 
+  getFormatName(formatId){
+    var formatName = "";
+    if(formatId != ''){
+      formatName = formatData[formatId].toString();
+    }
+    return formatName;
+  }
+
+
   Future<void> getVariantDataByBrandAndFormat(brandId,formatId) async {
     _variantMasterList = await dbHelper!.getVariantListByBrandAndFormat(brandId,formatId);
-    print(_variantMasterList);
+    // print(companyId.text+" "+formatId);
     for (int i = 0; i < _variantMasterList.length; i++) {
-      _variantList.add(_variantMasterList[i].variantName!);
+      // _variantList.add(_variantMasterList[i].variantName!);
+      variantData[_variantMasterList[i].variantId!.toString()] = _variantMasterList[i].variantName!;
       setState(() {
       });
     }
+  }
+
+  getVariantName(variantId){
+    var variantName = "";
+    if(variantId != ''){
+      variantName = variantData[variantId].toString();
+    }
+    return variantName;
   }
 
   Future<void> getWarehouseData(selectedCompanyId) async {
     _warehouseMasterList = await dbHelper!.getWarehouseDataByCompany(selectedCompanyId);
     for (int i = 0; i < _warehouseMasterList.length; i++) {
-      _warehouseList.add(_warehouseMasterList[i].warehouseName!);
+      warehouseData[_warehouseMasterList[i].warehouseId!.toString()] = _warehouseMasterList[i].warehouseName!;
       setState(() {
 
       });
     }
+  }
+
+  getWarehouseName(warehouseId){
+    var warehouseName = "";
+    if(warehouseId != ''){
+      warehouseName = warehouseData[warehouseId].toString();
+    }
+    return warehouseName;
   }
 
   @override
@@ -192,9 +248,9 @@ class _AddDescription extends State<AddDescription>{
                       child: DropdownSearch<String>(
                         popupProps: PopupProps.modalBottomSheet(
                           showSelectedItems: true,
-                          disabledItemFn: (String s) => s.startsWith('I'),
+                          //disabledItemFn: (String s) => s.startsWith('I'),
                         ),
-                        items: _CompanyList,
+                        items: companyData.values.toList(),
                         dropdownDecoratorProps: DropDownDecoratorProps(
                           dropdownSearchDecoration: InputDecoration(
                             labelText: "Company",
@@ -202,14 +258,19 @@ class _AddDescription extends State<AddDescription>{
                           ),
                         ),
                         onChanged: (val){
-                          companyId.text = val!;
-                          _brandList.clear();
-                          _formatList.clear();
-                          _variantList.clear();
-                          getBrandData(val);
-                          getWarehouseData(val);
+                          var key = companyData.keys.firstWhere((k)
+                          => companyData[k] == val!, orElse: () => "");
+                          companyId.text = key!;
+                          brandData.clear();
+                          formatData.clear();
+                          variantData.clear();
+                          warehouseData.clear();
+                          getBrandData(companyId.text);
+                          getWarehouseData(companyId.text);
+                          selectedCompany = val!;
+                          selectedBrand="";
                         },
-                        selectedItem: "",
+                        selectedItem: selectedCompany,
                       ),
                     ),
                     SizedBox(width: 10),
@@ -218,9 +279,9 @@ class _AddDescription extends State<AddDescription>{
                       child: DropdownSearch<String>(
                         popupProps: PopupProps.modalBottomSheet(
                           showSelectedItems: true,
-                          disabledItemFn: (String s) => s.startsWith('I'),
+                          //disabledItemFn: (String s) => s.startsWith('I'),
                         ),
-                        items: _brandList,
+                        items: brandData.values.toList(),
                         dropdownDecoratorProps: DropDownDecoratorProps(
                           dropdownSearchDecoration: InputDecoration(
                             labelText: "Brand",
@@ -228,11 +289,13 @@ class _AddDescription extends State<AddDescription>{
                           ),
                         ),
                         onChanged: (val){
-                          brandId.text = val!;
-                          _formatList.clear();
-                          getFormatDataByBrand(val);
+                          var key = brandData.keys.firstWhere((k)
+                          => brandData[k] == val!, orElse: () => "");
+                          brandId.text = key!;
+                          brandData.clear();
+                          getFormatDataByBrand(brandId.text);
                         },
-                        selectedItem: "",
+                        selectedItem: selectedBrand,
                       ),
                     ),
                   ],
@@ -246,9 +309,9 @@ class _AddDescription extends State<AddDescription>{
                       child: DropdownSearch<String>(
                         popupProps: PopupProps.modalBottomSheet(
                           showSelectedItems: true,
-                          disabledItemFn: (String s) => s.startsWith('I'),
+                          //disabledItemFn: (String s) => s.startsWith('I'),
                         ),
-                        items: _formatList,
+                        items: formatData.values.toList(),
                         dropdownDecoratorProps: DropDownDecoratorProps(
                           dropdownSearchDecoration: InputDecoration(
                             labelText: "Format",
@@ -256,11 +319,14 @@ class _AddDescription extends State<AddDescription>{
                           ),
                         ),
                         onChanged: (val){
-                          formatId.text = val!;
-                          _variantList.clear();
-                          getVariantDataByBrandAndFormat(brandId.text, val);
+                          var key = formatData.keys.firstWhere((k)
+                          => formatData[k] == val!, orElse: () => "");
+                          formatId.text = key!;
+                          variantData.clear();
+                          selectedVariant = "";
+                          getVariantDataByBrandAndFormat(brandId.text, formatId.text);
                         },
-                        selectedItem: "",
+                        selectedItem: selectedFormat,
                       ),
                     ),
                     SizedBox(width: 10),
@@ -269,9 +335,9 @@ class _AddDescription extends State<AddDescription>{
                       child: DropdownSearch<String>(
                         popupProps: PopupProps.modalBottomSheet(
                           showSelectedItems: true,
-                          disabledItemFn: (String s) => s.startsWith('I'),
+                          //disabledItemFn: (String s) => s.startsWith('I'),
                         ),
-                        items: _variantList,
+                        items: variantData.values.toList(),
                         dropdownDecoratorProps: DropDownDecoratorProps(
                           dropdownSearchDecoration: InputDecoration(
                             labelText: "Variant",
@@ -279,9 +345,11 @@ class _AddDescription extends State<AddDescription>{
                           ),
                         ),
                         onChanged: (val){
-                          variantId.text = val!;
+                          var key = variantData.keys.firstWhere((k)
+                          => variantData[k] == val!, orElse: () => "");
+                          variantId.text = key!;
                         },
-                        selectedItem: "",
+                        selectedItem: selectedVariant,
                       ),
                     ),
 
@@ -297,9 +365,9 @@ class _AddDescription extends State<AddDescription>{
                       child: DropdownSearch<String>(
                         popupProps: PopupProps.modalBottomSheet(
                           showSelectedItems: true,
-                          disabledItemFn: (String s) => s.startsWith('I'),
+                          //disabledItemFn: (String s) => s.startsWith('I'),
                         ),
-                        items: _warehouseList,
+                        items: warehouseData.values.toList(),
                         dropdownDecoratorProps: DropDownDecoratorProps(
                           dropdownSearchDecoration: InputDecoration(
                             labelText: "Warehouse",
@@ -307,7 +375,9 @@ class _AddDescription extends State<AddDescription>{
                           ),
                         ),
                         onChanged: (val){
-                          warehouseId.text = val!;
+                          var key = warehouseData.keys.firstWhere((k)
+                          => warehouseData[k] == val!, orElse: () => "");
+                          warehouseId.text = key!;
                         },
                         selectedItem: "",
                       ),
@@ -318,7 +388,7 @@ class _AddDescription extends State<AddDescription>{
                       child: DropdownSearch<String>(
                         popupProps: PopupProps.modalBottomSheet(
                           showSelectedItems: true,
-                          disabledItemFn: (String s) => s.startsWith('I'),
+                          //disabledItemFn: (String s) => s.startsWith('I'),
                         ),
                         items: _months,
                         dropdownDecoratorProps: DropDownDecoratorProps(

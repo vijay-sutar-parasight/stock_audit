@@ -72,6 +72,17 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
   AuditentriesDBHelper? dbHelper;
   DBHelper? db;
 
+  String selectedBrand = "";
+  Map<String, String> brandData = {};
+  String selectedFormat = "";
+  Map<String, String> formatData = {};
+  String selectedVariant = "";
+  Map<String, String> variantData = {};
+  String selectedWarehouse = "";
+  Map<String, String> warehouseData = {};
+  String selectedDescription = "";
+  Map<String, String> descriptionData = {};
+
   void initState(){
     super.initState();
     dbHelper = AuditentriesDBHelper();
@@ -88,50 +99,88 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
   }
 
   Future<void> getBrandData(selectedCompanyId) async {
-    print(selectedCompanyId);
     _brandMasterList = await db!.getBrandListByCompany(selectedCompanyId);
     for (int i = 0; i < _brandMasterList.length; i++) {
-      _brandList.add(_brandMasterList[i].brandName!);
+      //_brandList.add(_brandMasterList[i].brandName!);
+      brandData[_brandMasterList[i].brandId!.toString()] = _brandMasterList[i].brandName!;
       setState(() {
+
       });
     }
+  }
+
+  getBrandName(brandId){
+    var brandName = "";
+    if(brandId != ''){
+      brandName = brandData[brandId].toString();
+    }
+     print(brandName);
+    return brandName;
   }
 
   Future<void> getFormatDataByBrand(brandId) async {
     _formatMasterList = await db!.getFormatListByBrand(brandId);
-    print(_formatMasterList);
+    // print(_formatMasterList);
     for (int i = 0; i < _formatMasterList.length; i++) {
-      _formatList.add(_formatMasterList[i].formatName!);
+      //_formatList.add(_formatMasterList[i].formatName!);
+      formatData[_formatMasterList[i].formatId!.toString()] = _formatMasterList[i].formatName!;
       setState(() {
       });
     }
   }
 
+  getFormatName(formatId){
+    var formatName = "";
+    if(formatId != ''){
+      formatName = formatData[formatId].toString();
+    }
+    return formatName;
+  }
+
+
   Future<void> getVariantDataByBrandAndFormat(brandId,formatId) async {
     _variantMasterList = await db!.getVariantListByBrandAndFormat(brandId,formatId);
-    print(brandId);
+    // print(companyId.text+" "+formatId);
     for (int i = 0; i < _variantMasterList.length; i++) {
-      _variantList.add(_variantMasterList[i].variantName!);
+      // _variantList.add(_variantMasterList[i].variantName!);
+      variantData[_variantMasterList[i].variantId!.toString()] = _variantMasterList[i].variantName!;
       setState(() {
       });
     }
+  }
+
+  getVariantName(variantId){
+    var variantName = "";
+    if(variantId != ''){
+      variantName = variantData[variantId].toString();
+    }
+    return variantName;
   }
 
   Future<void> getWarehouseData(selectedCompanyId) async {
     _warehouseMasterList = await db!.getWarehouseDataByCompany(selectedCompanyId);
     for (int i = 0; i < _warehouseMasterList.length; i++) {
-      _warehouseList.add(_warehouseMasterList[i].warehouseName!);
+      warehouseData[_warehouseMasterList[i].warehouseId!.toString()] = _warehouseMasterList[i].warehouseName!;
       setState(() {
 
       });
     }
   }
 
+  getWarehouseName(warehouseId){
+    var warehouseName = "";
+    if(warehouseId != ''){
+      warehouseName = warehouseData[warehouseId].toString();
+    }
+    return warehouseName;
+  }
+
   Future<void> getDescriptionData(brandId,formatId, variantId) async {
     _descriptionMasterList = await db!.getDescriptionListArray(brandId,formatId,variantId);
-    print(_descriptionMasterList);
+    //print(_descriptionMasterList);
     for (int i = 0; i < _descriptionMasterList.length; i++) {
-      _descriptionList.add(_descriptionMasterList[i].productName!);
+      descriptionData[_descriptionMasterList[i].productId!.toString()] = _descriptionMasterList[i].productName!;
+      // _descriptionList.add(_descriptionMasterList[i].productName!);
       setState(() {
       });
     }
@@ -162,10 +211,26 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
     if(data.length > 0){
         for(var item in data.entries) {
           _calculationArr.add(item.value);
-          print(item.key);
+         // print(item.key);
         };
-        print(_calculationArr);
+        //print(_calculationArr);
     }
+    getBrandData(selectedCompanyId).then((value) =>
+    selectedBrand = getBrandName(updateAuditEntries.brandId!)
+    );
+
+    getFormatDataByBrand(updateAuditEntries.brandId!).then((value) =>
+    selectedFormat = getFormatName(updateAuditEntries.formatId!)
+    );
+    getVariantDataByBrandAndFormat(updateAuditEntries.brandId!, updateAuditEntries.formatId!).then((value) =>
+    selectedVariant = getVariantName(updateAuditEntries.variantId!)
+    );
+    getWarehouseData(updateAuditEntries.companyId!).then((value) =>
+    selectedWarehouse = getWarehouseName(updateAuditEntries.warehouseId!)
+    );
+    getDescriptionData(updateAuditEntries.brandId!,updateAuditEntries.formatId!,updateAuditEntries.variantId!).then((value) =>
+    selectedWarehouse = getWarehouseName(updateAuditEntries.warehouseId!)
+    );
     recordId = updateAuditEntries.entryId!;
 
     return Scaffold(
@@ -183,7 +248,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                           showSelectedItems: true,
                           disabledItemFn: (String s) => s.startsWith('I'),
                         ),
-                        items: _brandList,
+                        items: brandData.values.toList(),
                         dropdownDecoratorProps: DropDownDecoratorProps(
                           dropdownSearchDecoration: InputDecoration(
                             labelText: "Brand",
@@ -191,11 +256,20 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                           ),
                         ),
                         onChanged: (val){
-                          brandId.text = val!;
-                          _formatList.clear();
-                          getFormatDataByBrand(val);
+                          var key = brandData.keys.firstWhere((k)
+                          => brandData[k] == val!, orElse: () => "");
+                          setState(() {
+                            selectedBrand = val!;
+                            brandId.text = key!;
+                            formatData.clear();
+                            variantData.clear();
+
+                            getFormatDataByBrand(brandId.text);
+                            selectedFormat = "";
+                            selectedVariant = "";
+                          });
                         },
-                        selectedItem: updateAuditEntries.brandId,
+                        selectedItem: selectedBrand,
                       ),
                     ),
                     SizedBox(width: 10),
@@ -206,7 +280,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                           showSelectedItems: true,
                           disabledItemFn: (String s) => s.startsWith('I'),
                         ),
-                        items: _formatList,
+                        items: formatData.values.toList(),
                         dropdownDecoratorProps: DropDownDecoratorProps(
                           dropdownSearchDecoration: InputDecoration(
                             labelText: "Format",
@@ -214,11 +288,18 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                           ),
                         ),
                         onChanged: (val){
-                          formatId.text = val!;
-                          _variantList.clear();
-                          getVariantDataByBrandAndFormat(brandId.text, val);
+                          var key = formatData.keys.firstWhere((k)
+                          => formatData[k] == val!, orElse: () => "");
+
+                          setState(() {
+                            selectedFormat = val!;
+                            formatId.text = key!;
+                            variantData.clear();
+                            getVariantDataByBrandAndFormat(brandId.text, formatId.text);
+                            selectedVariant = "";
+                          });
                         },
-                        selectedItem: updateAuditEntries.formatId,
+                        selectedItem: selectedFormat,
                       ),
                     ),
                   ],
@@ -233,7 +314,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                           showSelectedItems: true,
                           disabledItemFn: (String s) => s.startsWith('I'),
                         ),
-                        items: _variantList,
+                        items: variantData.values.toList(),
                         dropdownDecoratorProps: DropDownDecoratorProps(
                           dropdownSearchDecoration: InputDecoration(
                             labelText: "Variant",
@@ -241,11 +322,17 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                           ),
                         ),
                         onChanged: (val){
-                          variantId.text = val!;
-                          _descriptionList.clear();
-                          getDescriptionData(brandId.text, formatId.text, val);
+                          var key = variantData.keys.firstWhere((k)
+                          => variantData[k] == val!, orElse: () => "");
+                          setState(() {
+                            selectedVariant = val!;
+                            variantId.text = key!;
+                            descriptionData.clear();
+                            getDescriptionData(brandId.text, formatId.text, variantId.text);
+                          });
+
                         },
-                        selectedItem: updateAuditEntries.variantId,
+                        selectedItem: selectedVariant,
                       ),
                     ),
                     SizedBox(width: 10),
@@ -256,7 +343,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                           showSelectedItems: true,
                           disabledItemFn: (String s) => s.startsWith('I'),
                         ),
-                        items: _descriptionList,
+                        items: descriptionData.values.toList(),
                         dropdownDecoratorProps: DropDownDecoratorProps(
                           dropdownSearchDecoration: InputDecoration(
                             labelText: "Description",
@@ -264,16 +351,20 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                           ),
                         ),
                         onChanged: (val){
-                          descriptionId.text = val!;
-                          var descriptionRecord = db!.getDescriptionRecord(brandId.text, formatId.text, variantId.text, descriptionId.text);
-                          // var descriptionData = db.getDescription
-                          print(descriptionRecord);
-                          if(descriptionRecord == true){
-                            // mrp.text = descriptionRecord.mrp;
-                          }
-
+                          var key = descriptionData.keys.firstWhere((k)
+                          => descriptionData[k] == val!, orElse: () => "");
+                          setState(() {
+                            selectedDescription = val!;
+                            descriptionId.text = key!;
+                            var descriptionRecord = db!.getDescriptionRecord(brandId.text, formatId.text, variantId.text, descriptionId.text);
+                            // var descriptionData = db.getDescription
+                            print(descriptionRecord);
+                            if(descriptionRecord == true){
+                              // mrp.text = descriptionRecord.mrp;
+                            }
+                          });
                         },
-                        selectedItem: updateAuditEntries.productId,
+                        selectedItem: selectedDescription,
                       ),
                     ),
                   ],

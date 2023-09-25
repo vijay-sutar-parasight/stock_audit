@@ -24,6 +24,9 @@ class _AddWarehouse extends State<AddWarehouse>{
   List<String> _CompanyList = [];
   List<GetCompanyData> _companyMasterList = [];
 
+  String selectedValue = "";
+  Map<String, String> companyData = {};
+
   DBHelper? dbHelper;
 
   void initState(){
@@ -35,12 +38,12 @@ class _AddWarehouse extends State<AddWarehouse>{
   Future<void> getCompanyData() async {
     _companyMasterList = await dbHelper!.getCompanyListArray();
     for (int i = 0; i < _companyMasterList.length; i++) {
-
-      _CompanyList.add(_companyMasterList[i].companyName!);
-      setState(() {
-
-      });
+      // _CompanyList.add(_companyMasterList[i].companyName!);
+      companyData[_companyMasterList[i].companyId!.toString()] = _companyMasterList[i].companyName!;
     }
+    setState(() {
+
+    });
   }
 
   @override
@@ -71,7 +74,7 @@ class _AddWarehouse extends State<AddWarehouse>{
                   showSelectedItems: true,
                   disabledItemFn: (String s) => s.startsWith('I'),
                 ),
-                items: _CompanyList,
+                items: companyData.values.toList(),
                 dropdownDecoratorProps: DropDownDecoratorProps(
                   dropdownSearchDecoration: InputDecoration(
                     labelText: "Company",
@@ -79,8 +82,14 @@ class _AddWarehouse extends State<AddWarehouse>{
                   ),
                 ),
                 onChanged: (val){
+                  var key = companyData.keys.firstWhere((k)
+                  => companyData[k] == val!, orElse: () => "");
+                  companyId.text = key!;
 
-                  companyId.text = val!;
+                  setState(() {
+                    selectedValue = val!;
+                  });
+                  print(companyId.text);
                 },
                 selectedItem: "",
               ),

@@ -28,6 +28,8 @@ class _UpdateWarehouse extends State<UpdateWarehouse>{
 
   List<String> _CompanyList = [];
   List<GetCompanyData> _companyMasterList = [];
+  String selectedValue = "";
+  Map<String, String> companyData = {};
 
   DBHelper? dbHelper;
 
@@ -41,20 +43,29 @@ class _UpdateWarehouse extends State<UpdateWarehouse>{
   Future<void> getCompanyData() async {
     _companyMasterList = await dbHelper!.getCompanyListArray();
     for (int i = 0; i < _companyMasterList.length; i++) {
-
-      _CompanyList.add(_companyMasterList[i].companyName!);
-      setState(() {
-
-      });
+      // _CompanyList.add(_companyMasterList[i].companyName!);
+      companyData[_companyMasterList[i].companyId!.toString()] = _companyMasterList[i].companyName!;
     }
+    setState(() {
+
+    });
+  }
+
+  getCompanyName(companyId){
+    var companyName = "";
+    if(companyId != ''){
+      companyName = companyData[companyId].toString();
+    }
+    return companyName;
   }
 
   @override
   Widget build(BuildContext context) {
 
     final updateWarehouse = ModalRoute.of(context)!.settings.arguments as WarehouseModel;
-    companyId.text = updateWarehouse.companyId!;
+    //companyId.text = updateWarehouse.companyId!;
     warehouseName.text = updateWarehouse.warehouseName!;
+    selectedValue = getCompanyName(updateWarehouse.companyId!);
     recordId = updateWarehouse.warehouseId!;
     return Scaffold(
       appBar: appbar(context, 'Update Warehouse', {'icons' : Icons.menu}),
@@ -82,7 +93,7 @@ class _UpdateWarehouse extends State<UpdateWarehouse>{
                   showSelectedItems: true,
                   disabledItemFn: (String s) => s.startsWith('I'),
                 ),
-                items: _CompanyList,
+                items: companyData.values.toList(),
                 dropdownDecoratorProps: DropDownDecoratorProps(
                   dropdownSearchDecoration: InputDecoration(
                     labelText: "Company",
@@ -90,10 +101,15 @@ class _UpdateWarehouse extends State<UpdateWarehouse>{
                   ),
                 ),
                 onChanged: (val){
-
-                  companyId.text = val!;
+                  var key = companyData.keys.firstWhere((k)
+                  => companyData[k] == val!, orElse: () => "");
+                  companyId.text = key!;
+                  setState(() {
+                    selectedValue = val!;
+                  });
+                  print(companyId.text);
                 },
-                selectedItem: companyId.text,
+                selectedItem: selectedValue,
               ),
               Container(height: 20),
 

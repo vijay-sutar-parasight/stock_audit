@@ -8,6 +8,7 @@ import 'package:stock_audit/warehouse/updatewarehouse.dart';
 
 import '../appbar.dart';
 import '../db_handler.dart';
+import '../jsondata/GetCompanyData.dart';
 import '../models/warehousemodel.dart';
 import 'addwarehouse.dart';
 
@@ -20,15 +21,36 @@ class Warehouse extends StatefulWidget {
     DBHelper? dbHelper;
     late Future<List<WarehouseModel>> warehouseList;
 
+    List<GetCompanyData> _companyMasterList = [];
+
+    String selectedValue = "";
+    Map<int, String> companyData = {};
+
     @override
   void initState(){
       super.initState();
       dbHelper = DBHelper();
       loadData();
+      getCompanyData();
     }
 
     loadData () async{
       warehouseList = dbHelper!.getWarehouseList();
+    }
+
+    Future<void> getCompanyData() async {
+      _companyMasterList = await dbHelper!.getCompanyListArray();
+      for (int i = 0; i < _companyMasterList.length; i++) {
+        companyData[_companyMasterList[i].companyId!] = _companyMasterList[i].companyName!;
+      }
+    }
+
+    getCompanyName(companyId){
+      var companyName = "";
+      if(companyId != ''){
+        companyName = companyData[int.parse(companyId)].toString();
+      }
+      return companyName;
     }
 
     @override
@@ -68,7 +90,7 @@ class Warehouse extends StatefulWidget {
                                     child: ListTile(
                                       contentPadding: EdgeInsets.all(0),
                                       title: Text(snapshot.data![index].warehouseName.toString()),
-                                      subtitle: Text(snapshot.data![index].companyId.toString()),
+                                      subtitle: Text(getCompanyName(snapshot.data![index].companyId)),
                                       trailing: Column(
                                         children: [
                                           InkWell(
