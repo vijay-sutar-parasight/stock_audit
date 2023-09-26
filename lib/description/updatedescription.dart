@@ -210,17 +210,17 @@ class _UpdateDescription extends State<UpdateDescription>{
     // formatId.text = updateProduct.formatId!;
     // variantId.text = updateProduct.variantId!;
     // warehouseId.text = updateProduct.warehouseId!;
-    mfgMonth.text = updateProduct.mfgMonth!;
-    mfgYear.text = updateProduct.mfgYear!;
-    expMonth.text = updateProduct.expMonth!;
-    expYear.text = updateProduct.expYear!;
-    weight.text = updateProduct.weight!;
-    mrp.text = updateProduct.mrp!;
-    systemUnit.text = updateProduct.systemUnit!;
-    valuationPerUnit.text = updateProduct.valuationPerUnit!;
-    combiType.text = updateProduct.combiType!;
-    pcsCases.text = updateProduct.pcsCases!;
-    totalStockValue.text = updateProduct.totalStockValue!;
+    mfgMonth.text = updateProduct.mfgMonth ?? "";
+    mfgYear.text = updateProduct.mfgYear ?? "";
+    expMonth.text = updateProduct.expMonth ?? "";
+    expYear.text = updateProduct.expYear ?? "";
+    weight.text = updateProduct.weight ?? "";
+    mrp.text = updateProduct.mrp ?? "";
+    systemUnit.text = updateProduct.systemUnit ?? "";
+    valuationPerUnit.text = updateProduct.valuationPerUnit ?? "";
+    combiType.text = updateProduct.combiType ?? "";
+    pcsCases.text = updateProduct.pcsCases ?? "";
+    totalStockValue.text = updateProduct.totalStockValue ?? "";
 
     selectedCompany = getCompanyName(updateProduct.companyId!);
 

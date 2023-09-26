@@ -402,7 +402,7 @@ class DBHelper{
 
   Future<List<GetDescriptionData>> getDescriptionRecord(var brandId, var formatId, var variantId, var descriptionId) async {
     var dbClient = await db;
-    final res = await dbClient!.rawQuery("SELECT * FROM product where brand_id='$brandId' and format_id='$formatId' and variant_id='$variantId' and product_name='$descriptionId'");
+    final res = await dbClient!.rawQuery("SELECT * FROM product where brand_id='$brandId' and format_id='$formatId' and variant_id='$variantId' and product_id='$descriptionId'");
     List<GetDescriptionData> list =
     res.isNotEmpty ? res.map((c) => GetDescriptionData.fromJson(c)).toList() : [];
     return list;

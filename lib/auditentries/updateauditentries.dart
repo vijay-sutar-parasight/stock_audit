@@ -29,6 +29,10 @@ class UpdateAuditEntries extends StatefulWidget{
 class _UpdateAuditEntries extends State<UpdateAuditEntries>{
 
   String selectedCompanyId;
+  String? selectedMfgMonth;
+  String? selectedMfgYear;
+  String? selectedExpMonth;
+  String? selectedExpYear;
   double existingActualUnits = 0;
   _UpdateAuditEntries(this.selectedCompanyId);
   TextEditingController companyId = TextEditingController();
@@ -103,10 +107,9 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
     for (int i = 0; i < _brandMasterList.length; i++) {
       //_brandList.add(_brandMasterList[i].brandName!);
       brandData[_brandMasterList[i].brandId!.toString()] = _brandMasterList[i].brandName!;
-      setState(() {
-
-      });
     }
+    setState(() {
+    });
   }
 
   getBrandName(brandId){
@@ -114,7 +117,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
     if(brandId != ''){
       brandName = brandData[brandId].toString();
     }
-     print(brandName);
+    // print(brandName);
     return brandName;
   }
 
@@ -124,16 +127,22 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
     for (int i = 0; i < _formatMasterList.length; i++) {
       //_formatList.add(_formatMasterList[i].formatName!);
       formatData[_formatMasterList[i].formatId!.toString()] = _formatMasterList[i].formatName!;
-      setState(() {
-      });
     }
+    setState(() {
+    });
   }
 
-  getFormatName(formatId){
+  getFormatName(formatId, brandId){
     var formatName = "";
     if(formatId != ''){
+      if(formatData.isEmpty){
+        getFormatDataByBrand(brandId).whenComplete(() =>
+        formatName = formatData[formatId].toString()
+        );
+      }
       formatName = formatData[formatId].toString();
     }
+    //print(formatName);
     return formatName;
   }
 
@@ -144,14 +153,19 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
     for (int i = 0; i < _variantMasterList.length; i++) {
       // _variantList.add(_variantMasterList[i].variantName!);
       variantData[_variantMasterList[i].variantId!.toString()] = _variantMasterList[i].variantName!;
-      setState(() {
-      });
     }
+    setState(() {
+    });
   }
 
-  getVariantName(variantId){
+  getVariantName(variantId,brandId,formatId){
     var variantName = "";
     if(variantId != ''){
+      if(variantData.isEmpty){
+        getVariantDataByBrandAndFormat(brandId, formatId).then((value) =>
+        variantName = variantData[variantId].toString()
+        );
+      }
       variantName = variantData[variantId].toString();
     }
     return variantName;
@@ -161,16 +175,22 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
     _warehouseMasterList = await db!.getWarehouseDataByCompany(selectedCompanyId);
     for (int i = 0; i < _warehouseMasterList.length; i++) {
       warehouseData[_warehouseMasterList[i].warehouseId!.toString()] = _warehouseMasterList[i].warehouseName!;
-      setState(() {
-
-      });
     }
+    print(warehouseData);
+    setState(() {
+    });
   }
 
-  getWarehouseName(warehouseId){
+  getWarehouseName(warehouseId,companyId){
     var warehouseName = "";
     if(warehouseId != ''){
-      warehouseName = warehouseData[warehouseId].toString();
+      if(warehouseData.isEmpty){
+        getWarehouseData(companyId).then((value) =>
+        warehouseName = warehouseData[warehouseId].toString()
+        );
+      }else {
+        warehouseName = warehouseData[warehouseId].toString();
+      }
     }
     return warehouseName;
   }
@@ -181,9 +201,22 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
     for (int i = 0; i < _descriptionMasterList.length; i++) {
       descriptionData[_descriptionMasterList[i].productId!.toString()] = _descriptionMasterList[i].productName!;
       // _descriptionList.add(_descriptionMasterList[i].productName!);
-      setState(() {
-      });
     }
+    setState(() {
+    });
+  }
+
+  getDescriptionName(productId,brandId,formatId,variantId){
+    var productName = "";
+    if(productId != ''){
+      if(descriptionData.isEmpty){
+        getDescriptionData(brandId,formatId,variantId).then((value) =>
+        productName = descriptionData[productId].toString()
+        );
+      }
+      productName = descriptionData[productId].toString();
+    }
+    return productName;
   }
 
   @override
@@ -195,42 +228,43 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
     // formatId.text = updateAuditEntries.formatId!;
     // variantId.text = updateAuditEntries.variantId!;
     // descriptionId.text = updateAuditEntries.productId!;
-    mfgMonth.text = updateAuditEntries.mfgMonth!;
-    mfgYear.text = updateAuditEntries.mfgYear!;
-    expMonth.text = updateAuditEntries.expMonth!;
-    expYear.text = updateAuditEntries.expYear!;
-    warehouseId.text = updateAuditEntries.warehouseId!;
-    weight.text = updateAuditEntries.weight!;
-    mrp.text = updateAuditEntries.mrp!;
-    valuationPerUnit.text = updateAuditEntries.valuationPerUnit!;
-    systemUnit.text = updateAuditEntries.systemUnit!;
+    mfgMonth.text = updateAuditEntries.mfgMonth ?? "";
+    mfgYear.text = updateAuditEntries.mfgYear ?? "";
+    expMonth.text = updateAuditEntries.expMonth ?? "";
+    expYear.text = updateAuditEntries.expYear ?? "";
+    //warehouseId.text = updateAuditEntries.warehouseId ?? "";
+    weight.text = updateAuditEntries.weight ?? "";
+    mrp.text = updateAuditEntries.mrp ?? "";
+    valuationPerUnit.text = updateAuditEntries.valuationPerUnit ?? "";
+    systemUnit.text = updateAuditEntries.systemUnit ?? "";
     calculation.text = "";
-    actualUnits.text = updateAuditEntries.actualUnit!;
-    totalValuation.text = updateAuditEntries.totalStockValue!;
-    Map data = updateAuditEntries.calculationArr! == '' ? {} : json.decode(updateAuditEntries.calculationArr!);
-    if(data.length > 0){
-        for(var item in data.entries) {
-          _calculationArr.add(item.value);
-         // print(item.key);
-        };
-        //print(_calculationArr);
-    }
-    getBrandData(selectedCompanyId).then((value) =>
-    selectedBrand = getBrandName(updateAuditEntries.brandId!)
-    );
+    actualUnits.text = updateAuditEntries.actualUnit ?? "";
+    totalValuation.text = updateAuditEntries.totalStockValue ?? "";
+    var calc = json.decode(updateAuditEntries.calculationArr ?? "0");
+    Map data = {};
 
-    getFormatDataByBrand(updateAuditEntries.brandId!).then((value) =>
-    selectedFormat = getFormatName(updateAuditEntries.formatId!)
-    );
-    getVariantDataByBrandAndFormat(updateAuditEntries.brandId!, updateAuditEntries.formatId!).then((value) =>
-    selectedVariant = getVariantName(updateAuditEntries.variantId!)
-    );
-    getWarehouseData(updateAuditEntries.companyId!).then((value) =>
-    selectedWarehouse = getWarehouseName(updateAuditEntries.warehouseId!)
-    );
-    getDescriptionData(updateAuditEntries.brandId!,updateAuditEntries.formatId!,updateAuditEntries.variantId!).then((value) =>
-    selectedWarehouse = getWarehouseName(updateAuditEntries.warehouseId!)
-    );
+    // if(calc.isNotEmpty) {
+    //   print(calc);
+    //   data = json.decode(updateAuditEntries.calculationArr!);
+    //   if(data.length > 0){
+    //       for(var item in data.entries) {
+    //         _calculationArr.add(item.value);
+    //        // print(item.key);
+    //       };
+    //       //print(_calculationArr);
+    //   }
+    // }
+
+
+    selectedBrand = getBrandName(updateAuditEntries.brandId!);
+    selectedFormat = getFormatName(updateAuditEntries.formatId!,updateAuditEntries.brandId!);
+    selectedVariant = getVariantName(updateAuditEntries.variantId!, updateAuditEntries.brandId!, updateAuditEntries.formatId!);
+    selectedWarehouse = getWarehouseName(updateAuditEntries.warehouseId!, updateAuditEntries.companyId!);
+    selectedDescription = getDescriptionName(updateAuditEntries.productId!,updateAuditEntries.brandId!, updateAuditEntries.formatId!,updateAuditEntries.variantId!);
+    selectedMfgMonth = updateAuditEntries.mfgMonth!;
+    selectedMfgYear = updateAuditEntries.mfgYear!;
+    selectedExpMonth = updateAuditEntries.expMonth!;
+    selectedExpYear = updateAuditEntries.expYear!;
     recordId = updateAuditEntries.entryId!;
 
     return Scaffold(
@@ -246,7 +280,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                       child: DropdownSearch<String>(
                         popupProps: PopupProps.modalBottomSheet(
                           showSelectedItems: true,
-                          disabledItemFn: (String s) => s.startsWith('I'),
+                          //disabledItemFn: (String s) => s.startsWith('I'),
                         ),
                         items: brandData.values.toList(),
                         dropdownDecoratorProps: DropDownDecoratorProps(
@@ -263,7 +297,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                             brandId.text = key!;
                             formatData.clear();
                             variantData.clear();
-
+                            updateAuditEntries.brandName = val!;
                             getFormatDataByBrand(brandId.text);
                             selectedFormat = "";
                             selectedVariant = "";
@@ -278,7 +312,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                       child: DropdownSearch<String>(
                         popupProps: PopupProps.modalBottomSheet(
                           showSelectedItems: true,
-                          disabledItemFn: (String s) => s.startsWith('I'),
+                          //disabledItemFn: (String s) => s.startsWith('I'),
                         ),
                         items: formatData.values.toList(),
                         dropdownDecoratorProps: DropDownDecoratorProps(
@@ -293,11 +327,13 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
 
                           setState(() {
                             selectedFormat = val!;
+                            updateAuditEntries.formatName = val!;
                             formatId.text = key!;
                             variantData.clear();
                             getVariantDataByBrandAndFormat(brandId.text, formatId.text);
                             selectedVariant = "";
                           });
+
                         },
                         selectedItem: selectedFormat,
                       ),
@@ -312,7 +348,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                       child: DropdownSearch<String>(
                         popupProps: PopupProps.modalBottomSheet(
                           showSelectedItems: true,
-                          disabledItemFn: (String s) => s.startsWith('I'),
+                          //disabledItemFn: (String s) => s.startsWith('I'),
                         ),
                         items: variantData.values.toList(),
                         dropdownDecoratorProps: DropDownDecoratorProps(
@@ -326,6 +362,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                           => variantData[k] == val!, orElse: () => "");
                           setState(() {
                             selectedVariant = val!;
+                            updateAuditEntries.variantName = val!;
                             variantId.text = key!;
                             descriptionData.clear();
                             getDescriptionData(brandId.text, formatId.text, variantId.text);
@@ -341,7 +378,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                       child: DropdownSearch<String>(
                         popupProps: PopupProps.modalBottomSheet(
                           showSelectedItems: true,
-                          disabledItemFn: (String s) => s.startsWith('I'),
+                          //disabledItemFn: (String s) => s.startsWith('I'),
                         ),
                         items: descriptionData.values.toList(),
                         dropdownDecoratorProps: DropDownDecoratorProps(
@@ -355,6 +392,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                           => descriptionData[k] == val!, orElse: () => "");
                           setState(() {
                             selectedDescription = val!;
+                            updateAuditEntries.productName = val!;
                             descriptionId.text = key!;
                             var descriptionRecord = db!.getDescriptionRecord(brandId.text, formatId.text, variantId.text, descriptionId.text);
                             // var descriptionData = db.getDescription
@@ -378,7 +416,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                       child: DropdownSearch<String>(
                         popupProps: PopupProps.modalBottomSheet(
                           showSelectedItems: true,
-                          disabledItemFn: (String s) => s.startsWith('I'),
+                          //disabledItemFn: (String s) => s.startsWith('I'),
                         ),
                         items: _months,
                         dropdownDecoratorProps: DropDownDecoratorProps(
@@ -390,7 +428,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                         onChanged: (val){
                           mfgMonth.text = val!;
                         },
-                        selectedItem: updateAuditEntries.mfgMonth,
+                        selectedItem: selectedMfgMonth,
                       ),
                     ),
                     SizedBox(width: 10),
@@ -399,7 +437,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                       child: DropdownSearch<String>(
                         popupProps: PopupProps.modalBottomSheet(
                           showSelectedItems: true,
-                          disabledItemFn: (String s) => s.startsWith('I'),
+                          //disabledItemFn: (String s) => s.startsWith('I'),
                         ),
                         items: _years,
                         dropdownDecoratorProps: DropDownDecoratorProps(
@@ -411,7 +449,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                         onChanged: (val){
                           mfgYear.text = val!;
                         },
-                        selectedItem: updateAuditEntries.mfgYear,
+                        selectedItem: selectedMfgYear,
                       ),
                     ),
 
@@ -427,7 +465,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                       child: DropdownSearch<String>(
                         popupProps: PopupProps.modalBottomSheet(
                           showSelectedItems: true,
-                          disabledItemFn: (String s) => s.startsWith('I'),
+                          //disabledItemFn: (String s) => s.startsWith('I'),
                         ),
                         items: _months,
                         dropdownDecoratorProps: DropDownDecoratorProps(
@@ -439,7 +477,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                         onChanged: (val){
                           expMonth.text = val!;
                         },
-                        selectedItem: updateAuditEntries.expMonth,
+                        selectedItem: selectedExpMonth,
                       ),
                     ),
                     SizedBox(width: 10),
@@ -448,7 +486,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                       child: DropdownSearch<String>(
                         popupProps: PopupProps.modalBottomSheet(
                           showSelectedItems: true,
-                          disabledItemFn: (String s) => s.startsWith('I'),
+                          //disabledItemFn: (String s) => s.startsWith('I'),
                         ),
                         items: _years,
                         dropdownDecoratorProps: DropDownDecoratorProps(
@@ -460,7 +498,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                         onChanged: (val){
                           expYear.text = val!;
                         },
-                        selectedItem: updateAuditEntries.expYear,
+                        selectedItem: selectedExpYear,
                       )
                     ),
                   ],
@@ -472,9 +510,9 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                       child: DropdownSearch<String>(
                         popupProps: PopupProps.modalBottomSheet(
                           showSelectedItems: true,
-                          disabledItemFn: (String s) => s.startsWith('I'),
+                          //disabledItemFn: (String s) => s.startsWith('I'),
                         ),
-                        items: _warehouseList,
+                        items: warehouseData.values.toList(),
                         dropdownDecoratorProps: DropDownDecoratorProps(
                           dropdownSearchDecoration: InputDecoration(
                             labelText: "Warehouse",
@@ -482,9 +520,15 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                           ),
                         ),
                         onChanged: (val){
-                          warehouseId.text = val!;
+    var key = warehouseData.keys.firstWhere((k)
+    => warehouseData[k] == val!, orElse: () => "");
+    setState(() {
+      selectedWarehouse = val!;
+      warehouseId.text = key!;
+      updateAuditEntries.warehouseName = val!;
+    });
                         },
-                        selectedItem: updateAuditEntries.warehouseId,
+                        selectedItem: selectedWarehouse,
                       ),
                     ),
                     SizedBox(width: 10),
@@ -598,13 +642,13 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                               calculations);
                           ContextModel cm = ContextModel();
                           calculationResult = calcActualUnit.evaluate(EvaluationType.REAL,cm);
-                          print(calculationResult);
+                          //print(calculationResult);
                         }
 
                         if(actualUnits.text != ''){
                           existingActualUnits = double.parse(actualUnits.text);
                         }
-                        print(existingActualUnits);
+                       // print(existingActualUnits);
                         actualUnits.text = (existingActualUnits + calculationResult).toString();
                         if(calculations != ''){
                           _calculationArr.add(calculations);
@@ -686,7 +730,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                   String uActualUnit = actualUnits.text.toString();
                   String uTotalValuation = totalValuation.text.toString();
 
-                  print("actual units are $uActualUnit");
+                  //print("actual units are $uActualUnit");
                   if(uBrand == ''){
                     uBrand = updateAuditEntries.brandId.toString();
                   }
@@ -715,7 +759,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                     uWarehouse = updateAuditEntries.warehouseId.toString();
                   }
 
-
+                  //print(uFormat);
                   dbHelper!.update(
                       AuditEntriesModel(
                         companyId: selectedCompanyId,
@@ -736,11 +780,11 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                         calculationArr: uCalculation,
                         actualUnit: uActualUnit,
                         totalStockValue: uTotalValuation,
-                        productName: uDescription,
-                        brandName: uBrand,
-                        formatName: uFormat,
-                        variantName: uVariant,
-                        warehouseName: uWarehouse,
+                        productName: updateAuditEntries.productName,
+                        brandName: updateAuditEntries.brandName,
+                        formatName: updateAuditEntries.formatName,
+                        variantName: updateAuditEntries.variantName,
+                        warehouseName: updateAuditEntries.warehouseName,
                       )
                   ).then((value) {
                     constants.Notification("Audit Entry Updated Successfully");

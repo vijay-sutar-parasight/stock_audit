@@ -31,6 +31,10 @@ class AddAuditEntries extends StatefulWidget{
 class _AddAuditEntries extends State<AddAuditEntries>{
 
   String selectedCompanyId;
+  String? selectedMfgMonth;
+  String? selectedMfgYear;
+  String? selectedExpMonth;
+  String? selectedExpYear;
   double existingActualUnits = 0;
   _AddAuditEntries(this.selectedCompanyId);
 
@@ -74,6 +78,17 @@ class _AddAuditEntries extends State<AddAuditEntries>{
   AuditentriesDBHelper? dbHelper;
   DBHelper? db;
 
+  String selectedBrand = "";
+  Map<String, String> brandData = {};
+  String selectedFormat = "";
+  Map<String, String> formatData = {};
+  String selectedVariant = "";
+  Map<String, String> variantData = {};
+  String selectedWarehouse = "";
+  Map<String, String> warehouseData = {};
+  String selectedDescription = "";
+  Map<String, String> descriptionData = {};
+
   void initState(){
     super.initState();
     dbHelper = AuditentriesDBHelper();
@@ -90,53 +105,120 @@ class _AddAuditEntries extends State<AddAuditEntries>{
   }
 
   Future<void> getBrandData(selectedCompanyId) async {
-    print(selectedCompanyId);
     _brandMasterList = await db!.getBrandListByCompany(selectedCompanyId);
     for (int i = 0; i < _brandMasterList.length; i++) {
-      _brandList.add(_brandMasterList[i].brandName!);
-      setState(() {
-      });
+      //_brandList.add(_brandMasterList[i].brandName!);
+      brandData[_brandMasterList[i].brandId!.toString()] = _brandMasterList[i].brandName!;
     }
+    setState(() {
+    });
+  }
+
+  getBrandName(brandId){
+    var brandName = "";
+    if(brandId != ''){
+      brandName = brandData[brandId].toString();
+    }
+    // print(brandName);
+    return brandName;
   }
 
   Future<void> getFormatDataByBrand(brandId) async {
     _formatMasterList = await db!.getFormatListByBrand(brandId);
-    print(_formatMasterList);
+    // print(_formatMasterList);
     for (int i = 0; i < _formatMasterList.length; i++) {
-      _formatList.add(_formatMasterList[i].formatName!);
-      setState(() {
-      });
+      //_formatList.add(_formatMasterList[i].formatName!);
+      formatData[_formatMasterList[i].formatId!.toString()] = _formatMasterList[i].formatName!;
     }
+    setState(() {
+    });
   }
+
+  getFormatName(formatId, brandId){
+    var formatName = "";
+    if(formatId != ''){
+      if(formatData.isEmpty){
+        getFormatDataByBrand(brandId).whenComplete(() =>
+        formatName = formatData[formatId].toString()
+        );
+      }
+      formatName = formatData[formatId].toString();
+    }
+    //print(formatName);
+    return formatName;
+  }
+
 
   Future<void> getVariantDataByBrandAndFormat(brandId,formatId) async {
     _variantMasterList = await db!.getVariantListByBrandAndFormat(brandId,formatId);
-    print(_variantMasterList);
+    // print(companyId.text+" "+formatId);
     for (int i = 0; i < _variantMasterList.length; i++) {
-      _variantList.add(_variantMasterList[i].variantName!);
-      setState(() {
-      });
+      // _variantList.add(_variantMasterList[i].variantName!);
+      variantData[_variantMasterList[i].variantId!.toString()] = _variantMasterList[i].variantName!;
     }
+    setState(() {
+    });
+  }
+
+  getVariantName(variantId,brandId,formatId){
+    var variantName = "";
+    if(variantId != ''){
+      if(variantData.isEmpty){
+        getVariantDataByBrandAndFormat(brandId, formatId).then((value) =>
+        variantName = variantData[variantId].toString()
+        );
+      }
+      variantName = variantData[variantId].toString();
+    }
+    return variantName;
   }
 
   Future<void> getWarehouseData(selectedCompanyId) async {
     _warehouseMasterList = await db!.getWarehouseDataByCompany(selectedCompanyId);
     for (int i = 0; i < _warehouseMasterList.length; i++) {
-      _warehouseList.add(_warehouseMasterList[i].warehouseName!);
-      setState(() {
-
-      });
+      warehouseData[_warehouseMasterList[i].warehouseId!.toString()] = _warehouseMasterList[i].warehouseName!;
     }
+    print(warehouseData);
+    setState(() {
+    });
+  }
+
+  getWarehouseName(warehouseId,companyId){
+    var warehouseName = "";
+    if(warehouseId != ''){
+      if(warehouseData.isEmpty){
+        getWarehouseData(companyId).then((value) =>
+        warehouseName = warehouseData[warehouseId].toString()
+        );
+      }else {
+        warehouseName = warehouseData[warehouseId].toString();
+      }
+    }
+    return warehouseName;
   }
 
   Future<void> getDescriptionData(brandId,formatId, variantId) async {
     _descriptionMasterList = await db!.getDescriptionListArray(brandId,formatId,variantId);
-    print(_descriptionMasterList);
+    //print(_descriptionMasterList);
     for (int i = 0; i < _descriptionMasterList.length; i++) {
-      _descriptionList.add(_descriptionMasterList[i].productName!);
-      setState(() {
-      });
+      descriptionData[_descriptionMasterList[i].productId!.toString()] = _descriptionMasterList[i].productName!;
+      // _descriptionList.add(_descriptionMasterList[i].productName!);
     }
+    setState(() {
+    });
+  }
+
+  getDescriptionName(productId,brandId,formatId,variantId){
+    var productName = "";
+    if(productId != ''){
+      if(descriptionData.isEmpty){
+        getDescriptionData(brandId,formatId,variantId).then((value) =>
+        productName = descriptionData[productId].toString()
+        );
+      }
+      productName = descriptionData[productId].toString();
+    }
+    return productName;
   }
 
   @override
@@ -154,9 +236,9 @@ class _AddAuditEntries extends State<AddAuditEntries>{
                       child: DropdownSearch<String>(
                         popupProps: PopupProps.modalBottomSheet(
                           showSelectedItems: true,
-                          disabledItemFn: (String s) => s.startsWith('I'),
+                          //disabledItemFn: (String s) => s.startsWith('I'),
                         ),
-                        items: _brandList,
+                        items: brandData.values.toList(),
                         dropdownDecoratorProps: DropDownDecoratorProps(
                           dropdownSearchDecoration: InputDecoration(
                             labelText: "Brand",
@@ -164,11 +246,19 @@ class _AddAuditEntries extends State<AddAuditEntries>{
                           ),
                         ),
                         onChanged: (val){
-                          brandId.text = val!;
-                          _formatList.clear();
-                          getFormatDataByBrand(val);
+                          var key = brandData.keys.firstWhere((k)
+                          => brandData[k] == val!, orElse: () => "");
+                          setState(() {
+                            selectedBrand = val!;
+                            brandId.text = key!;
+                            formatData.clear();
+                            variantData.clear();
+                            getFormatDataByBrand(brandId.text);
+                            selectedFormat = "";
+                            selectedVariant = "";
+                          });
                         },
-                        selectedItem: "",
+                        selectedItem: selectedBrand,
                       ),
                     ),
                     SizedBox(width: 10),
@@ -177,9 +267,9 @@ class _AddAuditEntries extends State<AddAuditEntries>{
                       child: DropdownSearch<String>(
                         popupProps: PopupProps.modalBottomSheet(
                           showSelectedItems: true,
-                          disabledItemFn: (String s) => s.startsWith('I'),
+                         // disabledItemFn: (String s) => s.startsWith('I'),
                         ),
-                        items: _formatList,
+                        items: formatData.values.toList(),
                         dropdownDecoratorProps: DropDownDecoratorProps(
                           dropdownSearchDecoration: InputDecoration(
                             labelText: "Format",
@@ -187,11 +277,18 @@ class _AddAuditEntries extends State<AddAuditEntries>{
                           ),
                         ),
                         onChanged: (val){
-                          formatId.text = val!;
-                          _variantList.clear();
-                          getVariantDataByBrandAndFormat(brandId.text, val);
+                          var key = formatData.keys.firstWhere((k)
+                          => formatData[k] == val!, orElse: () => "");
+
+                          setState(() {
+                            selectedFormat = val!;
+                            formatId.text = key!;
+                            variantData.clear();
+                            getVariantDataByBrandAndFormat(brandId.text, formatId.text);
+                            selectedVariant = "";
+                          });
                         },
-                        selectedItem: "",
+                        selectedItem: selectedFormat,
                       ),
                     ),
                   ],
@@ -204,9 +301,9 @@ class _AddAuditEntries extends State<AddAuditEntries>{
                       child: DropdownSearch<String>(
                         popupProps: PopupProps.modalBottomSheet(
                           showSelectedItems: true,
-                          disabledItemFn: (String s) => s.startsWith('I'),
+                          //disabledItemFn: (String s) => s.startsWith('I'),
                         ),
-                        items: _variantList,
+                        items: variantData.values.toList(),
                         dropdownDecoratorProps: DropDownDecoratorProps(
                           dropdownSearchDecoration: InputDecoration(
                             labelText: "Variant",
@@ -214,11 +311,16 @@ class _AddAuditEntries extends State<AddAuditEntries>{
                           ),
                         ),
                         onChanged: (val){
-                          variantId.text = val!;
-                          _descriptionList.clear();
-                          getDescriptionData(brandId.text, formatId.text, val);
+                          var key = variantData.keys.firstWhere((k)
+                          => variantData[k] == val!, orElse: () => "");
+                          setState(() {
+                            selectedVariant = val!;
+                            variantId.text = key!;
+                            descriptionData.clear();
+                            getDescriptionData(brandId.text, formatId.text, variantId.text);
+                          });
                         },
-                        selectedItem: "",
+                        selectedItem: selectedVariant,
                       ),
                     ),
                     SizedBox(width: 10),
@@ -227,9 +329,9 @@ class _AddAuditEntries extends State<AddAuditEntries>{
                       child: DropdownSearch<String>(
                         popupProps: PopupProps.modalBottomSheet(
                           showSelectedItems: true,
-                          disabledItemFn: (String s) => s.startsWith('I'),
+                          //disabledItemFn: (String s) => s.startsWith('I'),
                         ),
-                        items: _descriptionList,
+                        items: descriptionData.values.toList(),
                         dropdownDecoratorProps: DropDownDecoratorProps(
                           dropdownSearchDecoration: InputDecoration(
                             labelText: "Description",
@@ -237,12 +339,34 @@ class _AddAuditEntries extends State<AddAuditEntries>{
                           ),
                         ),
                         onChanged: (val){
-                          descriptionId.text = val!;
+                          var key = descriptionData.keys.firstWhere((k)
+                          => descriptionData[k] == val!, orElse: () => "");
+                          setState(() {
+                            selectedDescription = val!;
+                            descriptionId.text = key!;
+                            db!.getDescriptionRecord(brandId.text, formatId.text, variantId.text, descriptionId.text).then((value) =>
+                            value.forEach((element) {
+                              mrp.text = element.mrp.toString() ?? "";
+                              weight.text = element.weight.toString() ?? "";
+                              valuationPerUnit.text = element.valuationPerUnit.toString() ?? "";
+                              systemUnit.text = element.systemUnit.toString() ?? "";
+                              selectedWarehouse = getWarehouseName(element.warehouseId.toString(),element.companyId.toString());
+                              actualUnits.text = '0';
+                              totalValuation.text = '0';
+                              selectedMfgMonth = element.mfgMonth.toString();
+                              selectedMfgYear = element.mfgYear.toString();
+                              selectedExpMonth = element.expMonth.toString();
+                              selectedExpYear = element.expYear.toString();
+                            })
+                            );
+                            // var descriptionData = db.getDescription
+                            // print(descriptionRecord);
 
+                          });
                           // var descriptionData = db.getDescription
 
                         },
-                        selectedItem: "",
+                        selectedItem: selectedDescription,
                       ),
                     ),
                   ],
@@ -269,7 +393,7 @@ class _AddAuditEntries extends State<AddAuditEntries>{
                         onChanged: (val){
                           mfgMonth.text = val!;
                         },
-                        selectedItem: "",
+                        selectedItem: selectedMfgMonth,
                       ),
                     ),
                     SizedBox(width: 10),
@@ -290,7 +414,7 @@ class _AddAuditEntries extends State<AddAuditEntries>{
                         onChanged: (val){
                           mfgYear.text = val!;
                         },
-                        selectedItem: "",
+                        selectedItem: selectedMfgYear,
                       ),
                     ),
 
@@ -318,7 +442,7 @@ class _AddAuditEntries extends State<AddAuditEntries>{
                         onChanged: (val){
                           expMonth.text = val!;
                         },
-                        selectedItem: "",
+                        selectedItem: selectedExpMonth,
                       ),
                     ),
                     SizedBox(width: 10),
@@ -339,7 +463,7 @@ class _AddAuditEntries extends State<AddAuditEntries>{
                         onChanged: (val){
                           expYear.text = val!;
                         },
-                        selectedItem: "",
+                        selectedItem: selectedExpYear,
                       ),
                     ),
                   ],
@@ -351,9 +475,9 @@ class _AddAuditEntries extends State<AddAuditEntries>{
                       child: DropdownSearch<String>(
                         popupProps: PopupProps.modalBottomSheet(
                           showSelectedItems: true,
-                          disabledItemFn: (String s) => s.startsWith('I'),
+                          //disabledItemFn: (String s) => s.startsWith('I'),
                         ),
-                        items: _warehouseList,
+                        items: warehouseData.values.toList(),
                         dropdownDecoratorProps: DropDownDecoratorProps(
                           dropdownSearchDecoration: InputDecoration(
                             labelText: "Warehouse",
@@ -361,9 +485,14 @@ class _AddAuditEntries extends State<AddAuditEntries>{
                           ),
                         ),
                         onChanged: (val){
-                          warehouseId.text = val!;
+                          var key = warehouseData.keys.firstWhere((k)
+                          => warehouseData[k] == val!, orElse: () => "");
+                          setState(() {
+                            selectedWarehouse = val!;
+                            warehouseId.text = key!;
+                          });
                         },
-                        selectedItem: "",
+                        selectedItem: selectedWarehouse,
                       ),
                     ),
                     SizedBox(width: 10),
@@ -486,6 +615,8 @@ class _AddAuditEntries extends State<AddAuditEntries>{
                         print(existingActualUnits);
                         actualUnits.text = (existingActualUnits + calculationResult).toString();
                         if(calculations != ''){
+                          totalValuation.text = (double.parse(actualUnits.text) * double.parse(valuationPerUnit.text)).toString();
+
                           _calculationArr.add(calculations);
                         }
                         print(_calculationArr);
@@ -501,6 +632,7 @@ class _AddAuditEntries extends State<AddAuditEntries>{
                     Flexible(
                       child: TextField(
                           controller: actualUnits,
+                          readOnly: true,
                           decoration: InputDecoration(
                               hintText: 'Actual Units',
                               border: OutlineInputBorder(
@@ -520,6 +652,7 @@ class _AddAuditEntries extends State<AddAuditEntries>{
                     Flexible(
                       child: TextField(
                           controller: totalValuation,
+                          readOnly: true,
                           decoration: InputDecoration(
                               hintText: 'Total Valuation',
                               border: OutlineInputBorder(
@@ -584,11 +717,11 @@ class _AddAuditEntries extends State<AddAuditEntries>{
                         calculationArr: uCalculation,
                         actualUnit: uActualUnit,
                         totalStockValue: uTotalValuation,
-                        productName: uDescriiption,
-                        brandName: uBrand,
-                        formatName: uFormat,
-                        variantName: uVariant,
-                        warehouseName: uWarehouse,
+                        productName: selectedDescription,
+                        brandName: selectedBrand,
+                        formatName: selectedFormat,
+                        variantName: selectedVariant,
+                        warehouseName: selectedWarehouse,
                       )
                   ).then((value) {
                     constants.Notification("Audit Entry Added Successfully");

@@ -54,6 +54,16 @@ class _UpdateAudit extends State<UpdateAudit>{
     return companyName;
   }
 
+  getStatus(auditStatus){
+    var status = "";
+    if(auditStatus == '1'){
+      status = 'Active';
+    }else{
+      status = "Inactive";
+    }
+    return status;
+  }
+
   List<String> statusDropdown = ['Active','Inactive'];
   String selectedItem = 'Active';
   @override
@@ -64,6 +74,7 @@ class _UpdateAudit extends State<UpdateAudit>{
     auditDescription.text = updateAudit.auditDescription ?? "";
     auditStatus.text = updateAudit.auditStatus ?? "";
     selectedValue = getCompanyName(updateAudit.companyId!);
+    selectedItem = getStatus(updateAudit.auditStatus ?? "");
     recordId = updateAudit.auditId!;
     return Scaffold(
       appBar: appbar(context, 'Update Audit', {'icons' : Icons.menu}),

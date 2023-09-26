@@ -47,7 +47,7 @@ class AuditList extends State<Audit> {
   getCompanyName(companyId){
     var companyName = "";
     if(companyId != ''){
-      print(companyId);
+     // print(companyId);
       companyName = companyData[int.parse(companyId)].toString();
     }
     return companyName;
