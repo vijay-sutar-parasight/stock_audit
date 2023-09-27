@@ -32,104 +32,136 @@ void initState() {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Login", style: TextStyle(color: Colors.white)),
+        title: Text("", style: TextStyle(color: Colors.white)),
         centerTitle: true,
       ),
-      body:Center(child: Container(
-          width: 300,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Icon(Icons.account_circle,
-                size: 140,
-                  color: Colors.orange
+      body:Column(
+        children: [
+          Container(
+            width: double.infinity,
+            height: 200,
+            decoration: BoxDecoration(
+              color: constants.mainColor,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.elliptical(180, 50),
+                bottomRight: Radius.elliptical(180, 50),
+              )
+            ),
+            child: const Image(image: AssetImage('assets/logo.png')),
+          ),
+          Container(height:20),
+          Container(
+              width: 400,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: constants.mainColor
                 ),
+                borderRadius: BorderRadius.circular(30)
               ),
-              TextField(
-                controller: emailText,
-                  decoration: InputDecoration(
-                    hintText: 'Enter Email',
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(11),
-                      borderSide: BorderSide(
-                        color: Colors.deepOrange,
-                        width: 2
-                      )
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(11),
-                      borderSide: BorderSide(
-                        color: Colors.blueAccent,
-                        width: 2
-                      )
-                    ),
-                    // suffixText: 'Username exists',
-                    // suffixIcon: IconButton(
-                    //   icon: Icon(Icons.remove_red_eye, color: Colors.orange),
-                    //   onPressed: (){
-                    //
-                    //   }
-                    // ),
-                    prefixIcon: Icon(Icons.email, color: Colors.orange)
-                  ),
-              ),
-              Container(height: 11),
-              TextField(
-                controller: passwordText,
-                  obscureText: true,
-                  obscuringCharacter: '*',
-                  decoration: InputDecoration(
-                    hintText: 'Enter Password',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(11),
-                          borderSide: BorderSide(
-                            color: Colors.blue,
-                          )
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  top: 20,
+                  left: 20,
+                  bottom: 20,
+                  right: 20,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Icon(Icons.account_circle,
+                      size: 140,
+                        color: constants.mainColor
                       ),
-                      prefixIcon: Icon(Icons.password, color: Colors.orange)
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: 20
+                      ),
+                      child: Text("Login",style: TextStyle(fontSize: 30,color: constants.mainColor),),
+                    ),
+                    TextField(
+                      controller: emailText,
+                        decoration: InputDecoration(
+                          hintText: 'Enter Email',
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(11),
+                                borderSide: BorderSide(
+                                  color: constants.mainColor,
+                                )
+                            ),
 
-                  )
-              ),
-              Container(height: 20),
-              ElevatedButton(onPressed: () async {
-              String uEmail = emailText.text.toString();
-              String uPass = passwordText.text;
-              print("Email: $uEmail, Password: $uPass");
-              var hashedPassword = "";
-              if(uEmail != '' && uPass != '') {
-                var user_info = dbHelper!.getAdminUser(uEmail);
-                user_info.then((value) =>
-                {
-                  hashedPassword = value[0]['password'],
-                  isPasswordValid = BCrypt.checkpw(uPass, hashedPassword),
-                  passwordCheck(isPasswordValid)
-                });
-              }else{
-                passwordCheck(isPasswordValid);
-              }
-              // user.then((value) => {
-              //   lastSyncDate = value,
-              //   dbHelper!.fetchAllData(lastSyncDate)
-              // }
-              // );
-              // String storedHashedPassword = hashedPassword; // Replace with the actual stored hash
-              // String inputPassword = uPass; // Replace with the user's input password
+                          // suffixText: 'Username exists',
+                          // suffixIcon: IconButton(
+                          //   icon: Icon(Icons.remove_red_eye, color: Colors.orange),
+                          //   onPressed: (){
+                          //
+                          //   }
+                          // ),
+                          prefixIcon: Icon(Icons.email, color: constants.mainColor)
+                        ),
+                    ),
+                    Container(height: 20),
+                    TextField(
+                      controller: passwordText,
+                        obscureText: true,
+                        obscuringCharacter: '*',
+                        decoration: InputDecoration(
+                          hintText: 'Enter Password',
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(11),
+                                borderSide: BorderSide(
+                                  color: constants.mainColor,
+                                )
+                            ),
+                            prefixIcon: Icon(Icons.password, color: constants.mainColor)
 
-              // bool isPasswordValid = Bcrypt.compare(inputPassword, storedHashedPassword);
-              //final String hashed = BCrypt.hashpw("password", BCrypt.gensalt());
-              // $2a$10$r6huirn1laq6UXBVu6ga9.sHca6sr6tQl3Tiq9LB6/6LMpR37XEGu
+                        )
+                    ),
+                    Container(height: 20),
+                    ElevatedButton(onPressed: () async {
+                    String uEmail = emailText.text.toString();
+                    String uPass = passwordText.text;
+                    print("Email: $uEmail, Password: $uPass");
+                    var hashedPassword = "";
+                    if(uEmail != '' && uPass != '') {
+                      var user_info = dbHelper!.getAdminUser(uEmail);
+                      user_info.then((value) =>
+                      {
+                        hashedPassword = value[0]['password'],
+                        isPasswordValid = BCrypt.checkpw(uPass, hashedPassword),
+                        passwordCheck(isPasswordValid)
+                      });
+                    }else{
+                      passwordCheck(isPasswordValid);
+                    }
+                    // user.then((value) => {
+                    //   lastSyncDate = value,
+                    //   dbHelper!.fetchAllData(lastSyncDate)
+                    // }
+                    // );
+                    // String storedHashedPassword = hashedPassword; // Replace with the actual stored hash
+                    // String inputPassword = uPass; // Replace with the user's input password
+
+                    // bool isPasswordValid = Bcrypt.compare(inputPassword, storedHashedPassword);
+                    //final String hashed = BCrypt.hashpw("password", BCrypt.gensalt());
+                    // $2a$10$r6huirn1laq6UXBVu6ga9.sHca6sr6tQl3Tiq9LB6/6LMpR37XEGu
 
 
-              // true
+                    // true
 
 
-              }, child: Text(
-                'Login'
-              ))
-            ],
-          ))),
+                    }, child: Text(
+                      'Login', style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 18),
+                    ),style: ElevatedButton.styleFrom(backgroundColor: constants.mainColor,),
+                    )
+                  ],
+                ),
+              )),
+        ],
+      ),
     );
   }
 

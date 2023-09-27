@@ -24,7 +24,34 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appbar(context, 'Dashboard', {'icons' : Icons.menu}),
+      appBar: AppBar(
+        title: Text("Dashboard", style: TextStyle(color: Colors.white)),
+        centerTitle: false,
+        actions: <Widget>[
+          PopupMenuButton<String>(
+            color: Colors.white,
+            onSelected: (String value) async {
+              switch (value) {
+                case 'Logout':
+                  var sharedPref = await SharedPreferences.getInstance();
+                  sharedPref.setBool(SplashScreenState.KEYLOGIN, false);
+                  constants.Notification("Logged Out Successfully");
+                  // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Login()));
+                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => Login()), (route) => false);
+                  break;
+              }
+            },
+            itemBuilder: (BuildContext context) {
+              return {'Logout'}.map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
+            },
+          ),
+        ],
+      ),
       body: Container(
         child: GridView.count(crossAxisCount: 2,
     children: [
@@ -38,7 +65,7 @@ class _DashboardState extends State<Dashboard> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.branding_watermark_rounded, size: 80,color: Colors.lightBlue,),
+                Icon(Icons.branding_watermark_rounded, size: 80,color: constants.mainColor,),
                 Text('Brands',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
               ],
             ),
@@ -55,7 +82,7 @@ class _DashboardState extends State<Dashboard> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.list_rounded, size: 80,color: Colors.lightBlue,),
+                Icon(Icons.list_rounded, size: 80,color: constants.mainColor,),
                 Text('Formats',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
               ],
             ),
@@ -72,7 +99,7 @@ class _DashboardState extends State<Dashboard> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.library_add_rounded, size: 80,color: Colors.lightBlue,),
+                Icon(Icons.library_add_rounded, size: 80,color: constants.mainColor,),
                 Text('Variants',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
               ],
             ),
@@ -89,7 +116,7 @@ class _DashboardState extends State<Dashboard> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.perm_media_rounded, size: 80,color: Colors.lightBlue,),
+                Icon(Icons.perm_media_rounded, size: 80,color: constants.mainColor,),
                 Text('Descriptions',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
               ],
             ),
@@ -106,7 +133,7 @@ class _DashboardState extends State<Dashboard> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.storage_rounded, size: 80,color: Colors.lightBlue,),
+                Icon(Icons.storage_rounded, size: 80,color: constants.mainColor,),
                 Text('Warehouse',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
               ],
             ),
@@ -123,7 +150,7 @@ class _DashboardState extends State<Dashboard> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.list_alt, size: 80,color: Colors.lightBlue,),
+                Icon(Icons.list_alt, size: 80,color: constants.mainColor,),
                 Text('Company',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
               ],
             ),
@@ -140,7 +167,7 @@ class _DashboardState extends State<Dashboard> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.list_alt, size: 80,color: Colors.lightBlue,),
+                Icon(Icons.list_alt, size: 80,color: constants.mainColor,),
                 Text('Audit',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
               ],
             ),
@@ -157,7 +184,7 @@ class _DashboardState extends State<Dashboard> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.storage_rounded, size: 80,color: Colors.lightBlue,),
+                Icon(Icons.storage_rounded, size: 80,color: constants.mainColor,),
                 Text('Data Sync',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
               ],
             ),

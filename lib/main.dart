@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stock_audit/splash_screen.dart';
+import 'package:stock_audit/util/constants.dart' as constants;
 
 void main() {
   runApp(const MyApp());
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         primarySwatch: Colors.lightBlue,
           appBarTheme: AppBarTheme(
-            color: Colors.lightBlue,
+            color: constants.mainColor,
           ),
       ),
       //home: const MyHomePage(title: 'Stock Audit'),
@@ -49,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.lightBlue,
+        backgroundColor: constants.mainColor,
         title: Text(widget.title),
         actions: <Widget>[
           PopupMenuButton<String>(

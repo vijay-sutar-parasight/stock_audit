@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stock_audit/dashboard.dart';
 import 'package:stock_audit/db_handler.dart';
-
+import 'package:stock_audit/util/constants.dart' as constants;
 import 'login.dart';
 import 'main.dart';
 
@@ -38,12 +38,9 @@ class SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
    return Scaffold(
      body: Container(
-       color: Colors.blue,
-       child: Center(child: Text('Stock Audit', style: TextStyle(
-         fontSize: 34,
-         fontWeight: FontWeight.w700,
-         color: Colors.white
-       ),))
+       color: constants.mainColor,
+       child: const Center(child: Image(image: AssetImage('assets/logo.png'))
+       )
      )
 
    );
@@ -54,7 +51,7 @@ class SplashScreenState extends State<SplashScreen> {
     var isLoggedIn = sharedPref.getBool(KEYLOGIN);
 
 
-    Timer(Duration(seconds: 3),(){
+    Timer(Duration(seconds: 3 ),(){
       if(isLoggedIn != null){
         if(isLoggedIn){
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Dashboard()));

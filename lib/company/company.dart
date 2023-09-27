@@ -67,10 +67,14 @@ class CompanyList extends State<Company> {
                                 key: ValueKey<int>(snapshot.data![index]!.companyId!),
                                 child: Card(
                                   child: ListTile(
-                                    contentPadding: EdgeInsets.all(0),
+                                    contentPadding: EdgeInsets.all(6),
+                                    iconColor: constants.mainColor,
+                                    titleTextStyle: TextStyle(color:constants.mainColor,fontSize: 16,fontWeight: FontWeight.bold),
+                                    tileColor: Colors.white,
                                     title: Text(snapshot.data![index].companyName.toString()),
                                     subtitle: Text(snapshot.data![index].companyAddress.toString()),
                                     trailing: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         InkWell(
                                             onTap: () {
@@ -113,7 +117,7 @@ class CompanyList extends State<Company> {
             },
             tooltip: 'Add Company',
             child: const Icon(Icons.add, color: Colors.white,),
-            backgroundColor: Colors.lightBlue,
+            backgroundColor: constants.mainColor,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(50.0))
             ),

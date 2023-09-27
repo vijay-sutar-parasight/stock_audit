@@ -97,10 +97,14 @@ class AuditList extends State<Audit> {
                             key: ValueKey<int>(snapshot.data![index]!.auditId!),
                             child: Card(
                               child: ListTile(
-                                contentPadding: EdgeInsets.all(0),
+                                contentPadding: EdgeInsets.all(6),
+                                iconColor: constants.mainColor,
+                                titleTextStyle: TextStyle(color:constants.mainColor,fontSize: 16,fontWeight: FontWeight.bold),
+                                tileColor: Colors.white,
                                 title: Text("Company: "+getCompanyName(snapshot.data![index].companyId)),
                                 subtitle: Text("Status: "+getStatus(snapshot.data![index].auditStatus.toString())),
                                 trailing: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     InkWell(
                                       onTap: () {
@@ -118,6 +122,7 @@ class AuditList extends State<Audit> {
                                       },
                                         child: Icon(Icons.edit)
                                     ),
+                                    SizedBox(height: 6,),
                                     InkWell(
                                         onTap: () {
                                           Navigator.push(
@@ -159,7 +164,7 @@ class AuditList extends State<Audit> {
             },
             tooltip: 'Add Audit',
             child: const Icon(Icons.add, color: Colors.white,),
-            backgroundColor: Colors.lightBlue,
+            backgroundColor: constants.mainColor,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(50.0))
             ),

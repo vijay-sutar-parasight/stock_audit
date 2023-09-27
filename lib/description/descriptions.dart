@@ -64,10 +64,14 @@ class DescriptionList extends State<Descriptions> {
                                 key: ValueKey<int>(snapshot.data![index]!.productId!),
                                 child: Card(
                                   child: ListTile(
-                                    contentPadding: EdgeInsets.all(0),
+                                    contentPadding: EdgeInsets.all(6),
+                                    iconColor: constants.mainColor,
+                                    titleTextStyle: TextStyle(color:constants.mainColor,fontSize: 16,fontWeight: FontWeight.bold),
+                                    tileColor: Colors.white,
                                     title: Text(snapshot.data![index].productName.toString()),
                                     subtitle: Text("Item No: "+snapshot.data![index].itemNumber.toString()),
                                     trailing: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         InkWell(
                                             onTap: () {
@@ -110,7 +114,7 @@ class DescriptionList extends State<Descriptions> {
             },
             tooltip: 'Add Description',
             child: const Icon(Icons.add, color: Colors.white,),
-            backgroundColor: Colors.lightBlue,
+            backgroundColor: constants.mainColor,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(50.0))
             ),

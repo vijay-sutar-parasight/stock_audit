@@ -87,10 +87,14 @@ class Formats extends StatefulWidget {
                                   key: ValueKey<int>(snapshot.data![index]!.formatId!),
                                   child: Card(
                                     child: ListTile(
-                                      contentPadding: EdgeInsets.all(0),
+                                      contentPadding: EdgeInsets.all(6),
+                                      iconColor: constants.mainColor,
+                                      titleTextStyle: TextStyle(color:constants.mainColor,fontSize: 16,fontWeight: FontWeight.bold),
+                                      tileColor: Colors.white,
                                       title: Text(snapshot.data![index].formatName.toString()),
                                       subtitle: Text("Brand: "+getBrandName(snapshot.data![index].brandId)),
                                       trailing: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           InkWell(
                                               onTap: () {
@@ -133,7 +137,7 @@ class Formats extends StatefulWidget {
               },
               tooltip: 'Add Audit',
               child: const Icon(Icons.add, color: Colors.white,),
-              backgroundColor: Colors.lightBlue,
+              backgroundColor: constants.mainColor,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(50.0))
               ),

@@ -7,12 +7,7 @@ const SUCCESS_MESSAGE=" You will be contacted by us very soon.";
 const apiBaseURL = "https://www.parasightdemo.com/castockaudit/api";
 const databaseName = "stockaudit11.db";
 
-const userLoginApi = "login";
-const userSignupApi = "signup";
-
-// Shared Preference keys
-const kDeviceName = "device_name";
-const kDeviceUDID = "device_id";
+Color mainColor = const Color(0xff8D2C8A);
 
 // Asset Constants
 const navBarLogoImage = "assets/images/home_images/sample.png";
@@ -24,7 +19,7 @@ void Notification(var message){
       toastLength: Toast.LENGTH_LONG,
       gravity: ToastGravity.BOTTOM,
       timeInSecForIosWeb: 1,
-      backgroundColor: Colors.lightBlue,
+      backgroundColor: mainColor,
       textColor: Colors.white,
       fontSize: 16.0
   );}

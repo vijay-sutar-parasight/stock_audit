@@ -7,10 +7,14 @@ import 'login.dart';
 
 PreferredSizeWidget appbar(BuildContext context, String title, dynamic otherData) {
   return AppBar(
+    leading: BackButton(
+        color: Colors.white
+    ),
     title: Text(title, style: TextStyle(color: Colors.white)),
     centerTitle: false,
     actions: <Widget>[
       PopupMenuButton<String>(
+        color: Colors.white,
         onSelected: (String value) async {
           switch (value) {
             case 'Logout':
