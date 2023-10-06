@@ -116,8 +116,9 @@ class _AddBrand extends State<AddBrand>{
                     ).then((value) {
                       constants.Notification("Brand Added Successfully");
                       //Navigator.push(context, MaterialPageRoute(builder: (context) => Brands()));
-                      //Navigator.pop(context,true);
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Brands()));
+                      Navigator.pop(context,true);
+                      //Navigator.(context, MaterialPageRoute(builder: (context) => Brands()));
+                      //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Brands()));
                     }).onError((error, stackTrace) {
                       print(error.toString());
                     });
