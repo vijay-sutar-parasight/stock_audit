@@ -242,7 +242,7 @@ class _UpdateDescription extends State<UpdateDescription>{
     return Scaffold(
       appBar: appbar(context, 'Update Description', {'icons' : Icons.menu}),
       body: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(constants.bodyPadding),
         child: SingleChildScrollView(
             child: Column(
               children: [
@@ -699,90 +699,101 @@ class _UpdateDescription extends State<UpdateDescription>{
                 //   });
                 // }),
                 Container(height: 20),
-                ElevatedButton(onPressed: (){
-                  String uItemNumber = itemNumber.text.toString();
-                  String uDescriptionName = productName.text.toString();
-                  String uCompanyId = companyId.text.toString();
-                  String uBrandId = brandId.text.toString();
-                  String uFormatId = formatId.text.toString();
-                  String uVariantId = variantId.text.toString();
-                  String uWarehouseId = warehouseId.text.toString();
-                  String uMfgMonth = mfgMonth.text.toString();
-                  String uMfgYear = mfgYear.text.toString();
-                  String uExpMonth = expMonth.text.toString();
-                  String uExpYear = expYear.text.toString();
-                  String uWeight = weight.text.toString();
-                  String uMrp = mrp.text.toString();
-                  String uSystemUnit = systemUnit.text.toString();
-                  String uValuationPerUnit = valuationPerUnit.text.toString();
-                  String uCombiType = combiType.text.toString();
-                  String uPcsCases = pcsCases.text.toString();
-                  String uTotalStockValue = totalStockValue.text.toString();
+                SizedBox(
+                  width: constants.buttonWidth,
+                  height: constants.buttonHeight,
+                  child: ElevatedButton(onPressed: (){
+                    String uItemNumber = itemNumber.text.toString();
+                    String uDescriptionName = productName.text.toString();
+                    String uCompanyId = companyId.text.toString();
+                    String uBrandId = brandId.text.toString();
+                    String uFormatId = formatId.text.toString();
+                    String uVariantId = variantId.text.toString();
+                    String uWarehouseId = warehouseId.text.toString();
+                    String uMfgMonth = mfgMonth.text.toString();
+                    String uMfgYear = mfgYear.text.toString();
+                    String uExpMonth = expMonth.text.toString();
+                    String uExpYear = expYear.text.toString();
+                    String uWeight = weight.text.toString();
+                    String uMrp = mrp.text.toString();
+                    String uSystemUnit = systemUnit.text.toString();
+                    String uValuationPerUnit = valuationPerUnit.text.toString();
+                    String uCombiType = combiType.text.toString();
+                    String uPcsCases = pcsCases.text.toString();
+                    String uTotalStockValue = totalStockValue.text.toString();
 
-                  if(uCompanyId == ''){
-                    uCompanyId = updateProduct.companyId.toString();
-                  }
-                  if(uBrandId == ''){
-                    uBrandId = updateProduct.brandId.toString();
-                  }
-                  if(uFormatId == ''){
-                    uFormatId = updateProduct.formatId.toString();
-                  }
-                  if(uVariantId == ''){
-                    uVariantId = updateProduct.variantId.toString();
-                  }
-                  if(uWarehouseId == ''){
-                    uWarehouseId = updateProduct.warehouseId.toString();
-                  }
-                  if(uMfgMonth == ''){
-                    uMfgMonth = updateProduct.mfgMonth.toString();
-                  }
-                  if(uMfgYear == ''){
-                    uMfgYear = updateProduct.mfgYear.toString();
-                  }
-                  if(uExpMonth == ''){
-                    uExpMonth = updateProduct.expMonth.toString();
-                  }
-                  if(uExpYear == ''){
-                    uExpYear = updateProduct.expYear.toString();
-                  }
-                  if(uCompanyId == ''){
-                    uCompanyId = updateProduct.companyId.toString();
-                  }
+                    if(uCompanyId == ''){
+                      uCompanyId = updateProduct.companyId.toString();
+                    }
+                    if(uBrandId == ''){
+                      uBrandId = updateProduct.brandId.toString();
+                    }
+                    if(uFormatId == ''){
+                      uFormatId = updateProduct.formatId.toString();
+                    }
+                    if(uVariantId == ''){
+                      uVariantId = updateProduct.variantId.toString();
+                    }
+                    if(uWarehouseId == ''){
+                      uWarehouseId = updateProduct.warehouseId.toString();
+                    }
+                    if(uMfgMonth == ''){
+                      uMfgMonth = updateProduct.mfgMonth.toString();
+                    }
+                    if(uMfgYear == ''){
+                      uMfgYear = updateProduct.mfgYear.toString();
+                    }
+                    if(uExpMonth == ''){
+                      uExpMonth = updateProduct.expMonth.toString();
+                    }
+                    if(uExpYear == ''){
+                      uExpYear = updateProduct.expYear.toString();
+                    }
+                    if(uCompanyId == ''){
+                      uCompanyId = updateProduct.companyId.toString();
+                    }
 
 
-                  dbHelper!.updateProduct(
-                      ProductModel(
-                          productId: recordId,
-                          itemNumber: uItemNumber,
-                          productName: uDescriptionName,
-                          companyId: uCompanyId,
-                          brandId: uBrandId,
-                          formatId: uFormatId,
-                          variantId: uVariantId,
-                          warehouseId: uWarehouseId,
-                          mfgMonth: uMfgMonth,
-                          mfgYear: uMfgYear,
-                          expMonth: uExpMonth,
-                          expYear: uExpYear,
-                          weight: uWeight,
-                          mrp: uMrp,
-                          valuationPerUnit: uValuationPerUnit,
-                          systemUnit: uSystemUnit,
-                          combiType: uCombiType,
-                          pcsCases: uPcsCases,
-                          totalStockValue: uTotalStockValue
+                    dbHelper!.updateProduct(
+                        ProductModel(
+                            productId: recordId,
+                            itemNumber: uItemNumber,
+                            productName: uDescriptionName,
+                            companyId: uCompanyId,
+                            brandId: uBrandId,
+                            formatId: uFormatId,
+                            variantId: uVariantId,
+                            warehouseId: uWarehouseId,
+                            mfgMonth: uMfgMonth,
+                            mfgYear: uMfgYear,
+                            expMonth: uExpMonth,
+                            expYear: uExpYear,
+                            weight: uWeight,
+                            mrp: uMrp,
+                            valuationPerUnit: uValuationPerUnit,
+                            systemUnit: uSystemUnit,
+                            combiType: uCombiType,
+                            pcsCases: uPcsCases,
+                            totalStockValue: uTotalStockValue
+                        )
+                    ).then((value) {
+                      constants.Notification("Description Updated Successfully");
+                      // Navigator.push(context, MaterialPageRoute(builder: (context) => Descriptions()));
+                      Navigator.pop(context,value);
+                    }).onError((error, stackTrace) {
+                      print(error.toString());
+                    });
+                  }, child: Text(
+                      'Update'
+                      ,style: TextStyle(color: Colors.white,fontSize: 16)),
+                      style: ElevatedButton.styleFrom(
+                        primary: constants.mainColor, //background color of button
+                        shape: RoundedRectangleBorder( //to set border radius to button
+                            borderRadius: BorderRadius.circular(10)
+                        ),
                       )
-                  ).then((value) {
-                    constants.Notification("Description Updated Successfully");
-                    // Navigator.push(context, MaterialPageRoute(builder: (context) => Descriptions()));
-                    Navigator.pop(context,value);
-                  }).onError((error, stackTrace) {
-                    print(error.toString());
-                  });
-                }, child: Text(
-                    'Update'
-                ))
+                  ),
+                )
               ],
             )
         ),

@@ -125,7 +125,14 @@ class _DataSyncState extends State<DataSync> {
                 dbHelper!.syncDatabase();
               }, child: Text(
                   'Import From Server'
-              )),
+                  ,style: TextStyle(color: Colors.white,fontSize: 15)),
+                  style: ElevatedButton.styleFrom(
+                    primary: constants.mainColor, //background color of button
+                    shape: RoundedRectangleBorder( //to set border radius to button
+                        borderRadius: BorderRadius.circular(10)
+                    ),
+                  )
+    ),
             ),
             SizedBox(width: 20,),
             Flexible(
@@ -155,7 +162,14 @@ class _DataSyncState extends State<DataSync> {
 
               }, child: Text(
                   'Sync To Server'
-              )),
+                  ,style: TextStyle(color: Colors.white,fontSize: 15)),
+                  style: ElevatedButton.styleFrom(
+                    primary: constants.mainColor, //background color of button
+                    shape: RoundedRectangleBorder( //to set border radius to button
+                        borderRadius: BorderRadius.circular(10)
+                    ),
+                  )
+    ),
             )
           ],
         ),

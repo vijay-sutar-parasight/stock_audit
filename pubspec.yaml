@@ -48,6 +48,7 @@ dependencies:
   flutter_easyloading:
   bcrypt:
   math_expressions:
+  flutter_svg:
 
 dev_dependencies:
   flutter_test:
@@ -67,6 +68,14 @@ dev_dependencies:
 flutter:
   assets:
     - assets/logo.png
+    - assets/icons/audit.png
+    - assets/icons/brand.png
+    - assets/icons/format.png
+    - assets/icons/variant.png
+    - assets/icons/description.png
+    - assets/icons/warehouse.png
+    - assets/icons/datasync.png
+#    - assets/icons/company.svg
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

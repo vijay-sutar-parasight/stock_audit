@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stock_audit/dashboard.dart';
 import 'package:stock_audit/db_handler.dart';
@@ -39,7 +40,17 @@ class SplashScreenState extends State<SplashScreen> {
    return Scaffold(
      body: Container(
        color: constants.mainColor,
-       child: const Center(child: Image(image: AssetImage('assets/logo.png'))
+       child: Center(
+         child:
+         // Image(image: AssetImage('assets/logo.png'))
+         Column(
+           mainAxisAlignment: MainAxisAlignment.center,
+           crossAxisAlignment: CrossAxisAlignment.center,
+           children: [
+             Image(image: AssetImage(constants.logo),width: 120,height: 120,),
+             const Text("Stock Audit",style: TextStyle(color: Colors.white,fontSize: 25)),
+           ],
+         ),
        )
      )
 

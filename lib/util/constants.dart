@@ -8,6 +8,18 @@ const apiBaseURL = "https://www.parasightdemo.com/castockaudit/api";
 const databaseName = "stockaudit11.db";
 
 Color mainColor = const Color(0xff8D2C8A);
+const brandIcon = "assets/icons/brand.png";
+const formatIcon = "assets/icons/format.png";
+const variantIcon = "assets/icons/variant.png";
+const descriptionIcon = "assets/icons/description.png";
+const warehouseIcon = "assets/icons/warehouse.png";
+const datasyncIcon = "assets/icons/datasync.png";
+const auditIcon = "assets/icons/audit.png";
+const logo = "assets/logo.png";
+
+const double bodyPadding = 10;
+const double buttonWidth = 200;
+const double buttonHeight = 60;
 
 // Asset Constants
 const navBarLogoImage = "assets/images/home_images/sample.png";

@@ -50,68 +50,82 @@ class _AddFormat extends State<AddFormat>{
       appBar: appbar(context, 'Add Format', {'icons' : Icons.menu}),
       body: Container(
 
-          child: Column(
-            children: [
-              TextField(
-                  controller: formatName,
-                  decoration: InputDecoration(
-                      hintText: 'Format Name',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(11),
-                          borderSide: BorderSide(
-                            color: Colors.blue,
-                          )
-                      ),
-                      prefixIcon: Icon(Icons.list_alt, color: Colors.orange)
+          child: Padding(
+            padding: const EdgeInsets.all(constants.bodyPadding),
+            child: Column(
+              children: [
+                TextField(
+                    controller: formatName,
+                    decoration: InputDecoration(
+                        hintText: 'Format Name',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(11),
+                            borderSide: BorderSide(
+                              color: Colors.blue,
+                            )
+                        ),
+                        prefixIcon: Icon(Icons.list_alt, color: Colors.orange)
 
-                  )
-              ),
-              Container(height: 11),
-              DropdownSearch<String>(
-                popupProps: PopupProps.modalBottomSheet(
-                  showSelectedItems: true,
-                  disabledItemFn: (String s) => s.startsWith('I'),
-                ),
-                items: brandData.values.toList(),
-                dropdownDecoratorProps: DropDownDecoratorProps(
-                  dropdownSearchDecoration: InputDecoration(
-                    labelText: "Brand",
-                    hintText: "Select Brand",
-                  ),
-                ),
-                onChanged: (val){
-                  var key = brandData.keys.firstWhere((k)
-                  => brandData[k] == val!, orElse: () => "");
-                  brandId.text = key!;
-
-                  setState(() {
-                    selectedValue = val!;
-                  });
-                  print(brandId.text);
-                },
-                selectedItem: "",
-              ),
-              Container(height: 20),
-              ElevatedButton(onPressed: (){
-                String uBrandId = brandId.text.toString();
-                String uFormatName = formatName.text;
-                dbHelper!.insertFormat(
-                    FormatModel(
-                  brandId: uBrandId,
-                  formatName: uFormatName
                     )
-                ).then((value) {
-                  constants.Notification("Format Added Successfully");
+                ),
+                Container(height: 11),
+                DropdownSearch<String>(
+                  popupProps: PopupProps.modalBottomSheet(
+                    showSelectedItems: true,
+                    disabledItemFn: (String s) => s.startsWith('I'),
+                  ),
+                  items: brandData.values.toList(),
+                  dropdownDecoratorProps: DropDownDecoratorProps(
+                    dropdownSearchDecoration: InputDecoration(
+                      labelText: "Brand",
+                      hintText: "Select Brand",
+                    ),
+                  ),
+                  onChanged: (val){
+                    var key = brandData.keys.firstWhere((k)
+                    => brandData[k] == val!, orElse: () => "");
+                    brandId.text = key!;
 
-                  // Navigator.push(context, MaterialPageRoute(builder: (context) => Formats()));
-                  Navigator.pop(context,value);
-                }).onError((error, stackTrace) {
-                  print(error.toString());
-                });
-              }, child: Text(
-                  'Save'
-              ))
-            ],
+                    setState(() {
+                      selectedValue = val!;
+                    });
+                    print(brandId.text);
+                  },
+                  selectedItem: "",
+                ),
+                Container(height: 20),
+                SizedBox(
+                  width: constants.buttonWidth,
+                  height: constants.buttonHeight,
+                  child: ElevatedButton(onPressed: (){
+                    String uBrandId = brandId.text.toString();
+                    String uFormatName = formatName.text;
+                    dbHelper!.insertFormat(
+                        FormatModel(
+                      brandId: uBrandId,
+                      formatName: uFormatName
+                        )
+                    ).then((value) {
+                      constants.Notification("Format Added Successfully");
+
+                      // Navigator.push(context, MaterialPageRoute(builder: (context) => Formats()));
+                      Navigator.pop(context,value);
+                    }).onError((error, stackTrace) {
+                      print(error.toString());
+                    });
+                  }, child: Text(
+                      'Save'
+                      ,style: TextStyle(color: Colors.white,fontSize: 16)),
+                      style: ElevatedButton.styleFrom(
+                        primary: constants.mainColor, //background color of button
+                        shape: RoundedRectangleBorder( //to set border radius to button
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                      )
+                  ),
+                )
+              ],
+            ),
           )),
     );
   }

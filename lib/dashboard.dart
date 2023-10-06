@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stock_audit/brand/brands.dart';
 import 'package:stock_audit/company/company.dart';
@@ -65,7 +66,9 @@ class _DashboardState extends State<Dashboard> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.branding_watermark_rounded, size: 80,color: constants.mainColor,),
+                // Icon(Icons.branding_watermark_rounded, size: 80,color: constants.mainColor,),
+                //SvgPicture.asset("assets/icons/test.svg", width:60, height:60),
+                Image(image: AssetImage(constants.brandIcon),width: 60,height: 60,),
                 Text('Brands',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
               ],
             ),
@@ -82,7 +85,7 @@ class _DashboardState extends State<Dashboard> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.list_rounded, size: 80,color: constants.mainColor,),
+                Image(image: AssetImage(constants.formatIcon),width: 60,height: 60,),
                 Text('Formats',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
               ],
             ),
@@ -99,7 +102,7 @@ class _DashboardState extends State<Dashboard> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.library_add_rounded, size: 80,color: constants.mainColor,),
+                Image(image: AssetImage(constants.variantIcon),width: 60,height: 60,),
                 Text('Variants',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
               ],
             ),
@@ -116,7 +119,7 @@ class _DashboardState extends State<Dashboard> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.perm_media_rounded, size: 80,color: constants.mainColor,),
+                Image(image: AssetImage(constants.descriptionIcon),width: 60,height: 60,),
                 Text('Descriptions',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
               ],
             ),
@@ -133,7 +136,7 @@ class _DashboardState extends State<Dashboard> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.storage_rounded, size: 80,color: constants.mainColor,),
+                Image(image: AssetImage(constants.warehouseIcon),width: 60,height: 60,),
                 Text('Warehouse',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
               ],
             ),
@@ -150,7 +153,7 @@ class _DashboardState extends State<Dashboard> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.list_alt, size: 80,color: constants.mainColor,),
+                Icon(Icons.factory_outlined, size: 60,color: constants.mainColor,),
                 Text('Company',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
               ],
             ),
@@ -167,7 +170,7 @@ class _DashboardState extends State<Dashboard> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.list_alt, size: 80,color: constants.mainColor,),
+                Image(image: AssetImage(constants.auditIcon),width: 60,height: 60,),
                 Text('Audit',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
               ],
             ),
@@ -184,7 +187,7 @@ class _DashboardState extends State<Dashboard> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.storage_rounded, size: 80,color: constants.mainColor,),
+                Image(image: AssetImage(constants.datasyncIcon),width: 60,height: 60,),
                 Text('Data Sync',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
               ],
             ),

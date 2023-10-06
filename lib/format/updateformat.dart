@@ -69,75 +69,89 @@ class _UpdateFormat extends State<UpdateFormat>{
     return Scaffold(
       appBar: appbar(context, 'Update Format', {'icons' : Icons.menu}),
       body: Container(
-          child: Column(
-            children: [
-              TextField(
-                  controller: formatName,
-                  decoration: InputDecoration(
-                      hintText: 'Format Name',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(11),
-                          borderSide: BorderSide(
-                            color: Colors.blue,
-                          )
-                      ),
-                      prefixIcon: Icon(Icons.list_alt, color: Colors.orange)
+          child: Padding(
+            padding: const EdgeInsets.all(constants.bodyPadding),
+            child: Column(
+              children: [
+                TextField(
+                    controller: formatName,
+                    decoration: InputDecoration(
+                        hintText: 'Format Name',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(11),
+                            borderSide: BorderSide(
+                              color: Colors.blue,
+                            )
+                        ),
+                        prefixIcon: Icon(Icons.list_alt, color: Colors.orange)
 
-                  )
-              ),
-              Container(height: 11),
-
-              DropdownSearch<String>(
-                popupProps: PopupProps.modalBottomSheet(
-                  showSelectedItems: true,
-                  //disabledItemFn: (String s) => s.startsWith('I'),
+                    )
                 ),
-                items: brandData.values.toList(),
-                dropdownDecoratorProps: DropDownDecoratorProps(
-                  dropdownSearchDecoration: InputDecoration(
-                    labelText: "Brand",
-                    hintText: "Select Brand",
+                Container(height: 11),
+
+                DropdownSearch<String>(
+                  popupProps: PopupProps.modalBottomSheet(
+                    showSelectedItems: true,
+                    //disabledItemFn: (String s) => s.startsWith('I'),
                   ),
-                ),
+                  items: brandData.values.toList(),
+                  dropdownDecoratorProps: DropDownDecoratorProps(
+                    dropdownSearchDecoration: InputDecoration(
+                      labelText: "Brand",
+                      hintText: "Select Brand",
+                    ),
+                  ),
       onChanged: (val){
         var key = brandData.keys.firstWhere((k)
         => brandData[k] == val!, orElse: () => "");
         brandId.text = key!;
         setState(() {
-          selectedValue = val!;
+            selectedValue = val!;
         });
         print(brandId.text);
       },
-                selectedItem: selectedValue,
-              ),
-              Container(height: 20),
+                  selectedItem: selectedValue,
+                ),
+                Container(height: 20),
 
 
-              ElevatedButton(onPressed: (){
-                String uBrandId = brandId.text.toString();
-                String uFormatName = formatName.text;
+                SizedBox(
+                  width: constants.buttonWidth,
+                  height: constants.buttonHeight,
+                  child: ElevatedButton(onPressed: (){
+                    String uBrandId = brandId.text.toString();
+                    String uFormatName = formatName.text;
 
-                if(uBrandId == ''){
-                  uBrandId = updateFormat.brandId.toString();
-                }
+                    if(uBrandId == ''){
+                      uBrandId = updateFormat.brandId.toString();
+                    }
 
-                dbHelper!.updateFormat(
-                    FormatModel(
-                      formatId: recordId,
-                  brandId: uBrandId,
-                      formatName: uFormatName,
-                    )
-                ).then((value) {
-                  constants.Notification("Format Updated Successfully");
-                  // Navigator.push(context, MaterialPageRoute(builder: (context) => Formats()));
-                  Navigator.pop(context,value);
-                }).onError((error, stackTrace) {
-                  print(error.toString());
-                });
-              }, child: Text(
-                  'Save'
-              ))
-            ],
+                    dbHelper!.updateFormat(
+                        FormatModel(
+                          formatId: recordId,
+                      brandId: uBrandId,
+                          formatName: uFormatName,
+                        )
+                    ).then((value) {
+                      constants.Notification("Format Updated Successfully");
+                      // Navigator.push(context, MaterialPageRoute(builder: (context) => Formats()));
+                      Navigator.pop(context,value);
+                    }).onError((error, stackTrace) {
+                      print(error.toString());
+                    });
+                  }, child: Text(
+                      'Save'
+                      ,style: TextStyle(color: Colors.white,fontSize: 16)),
+                      style: ElevatedButton.styleFrom(
+                        primary: constants.mainColor, //background color of button
+                        shape: RoundedRectangleBorder( //to set border radius to button
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                      )
+                  ),
+                )
+              ],
+            ),
           )),
     );
   }

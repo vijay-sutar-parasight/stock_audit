@@ -15,9 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Stock Audit',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
-        primarySwatch: Colors.lightBlue,
           appBarTheme: AppBarTheme(
             color: constants.mainColor,
           ),

@@ -46,110 +46,108 @@ class _UpdateCompany extends State<UpdateCompany>{
     return Scaffold(
       appBar: appbar(context, 'Update Company', {'icons' : Icons.menu}),
       body: Container(
-          child: Column(
-            children: [
-              TextField(
-                controller: companyName,
-                decoration: InputDecoration(
-                    hintText: 'Company Name',
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(11),
-                        borderSide: BorderSide(
-                            color: Colors.deepOrange,
-                            width: 2
-                        )
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(11),
-                        borderSide: BorderSide(
-                            color: Colors.blueAccent,
-                            width: 2
-                        )
-                    ),
-                    prefixIcon: Icon(Icons.add_business, color: Colors.orange)
-                ),
-              ),
-              Container(height: 11),
-              TextField(
-                controller: companyAddress,
-                decoration: InputDecoration(
-                    hintText: 'Company Address',
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(11),
-                        borderSide: BorderSide(
-                            color: Colors.deepOrange,
-                            width: 2
-                        )
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(11),
-                        borderSide: BorderSide(
-                            color: Colors.blueAccent,
-                            width: 2
-                        )
-                    ),
-                    prefixIcon: Icon(Icons.add_business, color: Colors.orange)
-                ),
-              ),
-              Container(height: 11),
-
-              TextField(
-                  controller: cmMobile,
+          child: Padding(
+            padding: const EdgeInsets.all(constants.bodyPadding),
+            child: Column(
+              children: [
+                TextField(
+                  controller: companyName,
                   decoration: InputDecoration(
-                      hintText: 'Mobile No',
+                      hintText: 'Company Name',
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(11),
                           borderSide: BorderSide(
-                            color: Colors.blue,
+                              width: 1
                           )
                       ),
-                      prefixIcon: Icon(Icons.list_alt, color: Colors.orange)
-
-                  )
-              ),
-              Container(height: 11),
-
-              TextField(
-                  controller: city,
+                      prefixIcon: Icon(Icons.add_business, color: Colors.orange)
+                  ),
+                ),
+                Container(height: 11),
+                TextField(
+                  controller: companyAddress,
                   decoration: InputDecoration(
-                      hintText: 'City',
+                      hintText: 'Company Address',
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(11),
                           borderSide: BorderSide(
-                            color: Colors.blue,
+                              width: 1
                           )
                       ),
-                      prefixIcon: Icon(Icons.list_alt, color: Colors.orange)
+                      prefixIcon: Icon(Icons.add_business, color: Colors.orange)
+                  ),
+                ),
+                Container(height: 11),
 
-                  )
-              ),
-              Container(height: 20),
+                TextField(
+                    controller: cmMobile,
+                    decoration: InputDecoration(
+                        hintText: 'Mobile No',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(11),
+                            borderSide: BorderSide(
+                              color: Colors.blue,
+                            )
+                        ),
+                        prefixIcon: Icon(Icons.list_alt, color: Colors.orange)
 
-
-              ElevatedButton(onPressed: (){
-                String uCompanyName = companyName.text.toString();
-                String uCompanyAddress = companyAddress.text.toString();
-                String uCmMobile = cmMobile.text;
-                String uCity = city.text;
-                dbHelper!.updateCompany(
-                    CompanyModel(
-                      companyId: recordId,
-                        companyName: uCompanyName,
-                        companyAddress: uCompanyAddress,
-                        cmMobile: uCmMobile,
-                        city: uCity
                     )
-                ).then((value) {
-                  constants.Notification("Company Updated Successfully");
-                  // Navigator.push(context, MaterialPageRoute(builder: (context) => Company()));
-                  Navigator.pop(context,value);
-                }).onError((error, stackTrace) {
-                  print(error.toString());
-                });
-              }, child: Text(
-                  'Save'
-              ))
-            ],
+                ),
+                Container(height: 11),
+
+                TextField(
+                    controller: city,
+                    decoration: InputDecoration(
+                        hintText: 'City',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(11),
+                            borderSide: BorderSide(
+                              color: Colors.blue,
+                            )
+                        ),
+                        prefixIcon: Icon(Icons.list_alt, color: Colors.orange)
+
+                    )
+                ),
+                Container(height: 20),
+
+
+                SizedBox(
+                  width: constants.buttonWidth,
+                  height: constants.buttonHeight,
+                  child: ElevatedButton(onPressed: (){
+                    String uCompanyName = companyName.text.toString();
+                    String uCompanyAddress = companyAddress.text.toString();
+                    String uCmMobile = cmMobile.text;
+                    String uCity = city.text;
+                    dbHelper!.updateCompany(
+                        CompanyModel(
+                          companyId: recordId,
+                            companyName: uCompanyName,
+                            companyAddress: uCompanyAddress,
+                            cmMobile: uCmMobile,
+                            city: uCity
+                        )
+                    ).then((value) {
+                      constants.Notification("Company Updated Successfully");
+                      // Navigator.push(context, MaterialPageRoute(builder: (context) => Company()));
+                      Navigator.pop(context,value);
+                    }).onError((error, stackTrace) {
+                      print(error.toString());
+                    });
+                  }, child: Text(
+                      'Save'
+                      ,style: TextStyle(color: Colors.white,fontSize: 16)),
+                      style: ElevatedButton.styleFrom(
+                        primary: constants.mainColor, //background color of button
+                        shape: RoundedRectangleBorder( //to set border radius to button
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                      )
+                  ),
+                )
+              ],
+            ),
           )),
     );
   }

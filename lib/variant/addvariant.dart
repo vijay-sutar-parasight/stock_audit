@@ -65,102 +65,116 @@ class _AddVariant extends State<AddVariant>{
       appBar: appbar(context, 'Add Variant', {'icons' : Icons.menu}),
       body: Container(
 
-          child: Column(
-            children: [
-              TextField(
-                  controller: variantName,
-                  decoration: InputDecoration(
-                      hintText: 'Variant Name',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(11),
-                          borderSide: BorderSide(
-                            color: Colors.blue,
-                          )
-                      ),
-                      prefixIcon: Icon(Icons.list_alt, color: Colors.orange)
+          child: Padding(
+            padding: const EdgeInsets.all(constants.bodyPadding),
+            child: Column(
+              children: [
+                TextField(
+                    controller: variantName,
+                    decoration: InputDecoration(
+                        hintText: 'Variant Name',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(11),
+                            borderSide: BorderSide(
+                              color: Colors.blue,
+                            )
+                        ),
+                        prefixIcon: Icon(Icons.list_alt, color: Colors.orange)
 
-                  )
-              ),
-              Container(height: 11),
-              DropdownSearch<String>(
-                popupProps: PopupProps.modalBottomSheet(
-                  showSelectedItems: true,
-                  //disabledItemFn: (String s) => s.startsWith('I'),
-                ),
-                items: brandData.values.toList(),
-                dropdownDecoratorProps: DropDownDecoratorProps(
-                  dropdownSearchDecoration: InputDecoration(
-                    labelText: "Brand",
-                    hintText: "Select Brand",
-                  ),
-                ),
-                // onChanged: (val){
-                //   brandId.text = val!;
-                //   _formatList.clear();
-                //   getFormatDataByBrand(val);
-                // },
-                onChanged: (val){
-                  var key = brandData.keys.firstWhere((k)
-                  => brandData[k] == val!, orElse: () => 0);
-
-                  setState(() {
-                    selectedBrand = val!;
-                    brandId.text = key!.toString();
-                    formatData.clear();
-                    getFormatDataByBrand(brandId.text);
-                    selectedFormat= "";
-                  });
-                  print(brandId.text);
-                },
-                selectedItem: "",
-              ),
-              Container(height: 11),
-              DropdownSearch<String>(
-                popupProps: PopupProps.modalBottomSheet(
-                  showSelectedItems: true,
-                  disabledItemFn: (String s) => s.startsWith('I'),
-                ),
-                items: formatData.values.toList(),
-                dropdownDecoratorProps: DropDownDecoratorProps(
-                  dropdownSearchDecoration: InputDecoration(
-                    labelText: "Format",
-                    hintText: "Select Format",
-                  ),
-                ),
-                onChanged: (val){
-                  var key = formatData.keys.firstWhere((k)
-                  => formatData[k] == val!, orElse: () => 0);
-
-                  setState(() {
-                    selectedFormat = val!;
-                    formatId.text = key!.toString();
-                  });
-                  print(formatId.text);
-                },
-                selectedItem: selectedFormat,
-              ),
-              Container(height: 20),
-              ElevatedButton(onPressed: (){
-                String uBrandId = brandId.text.toString();
-                String uFormatId = formatId.text.toString();
-                String uVariantName = variantName.text;
-                dbHelper!.insertVariant(
-                    VariantModel(
-                        brandId: uBrandId,
-                        formatId: uFormatId,
-                  variantName: uVariantName
                     )
-                ).then((value) {
-                  constants.Notification("Variant Added Successfully");
-                  // Navigator.push(context, MaterialPageRoute(builder: (context) => Variants()));
-                  Navigator.pop(context,value);
-                }).onError((error, stackTrace) {
-                  print(error.toString());
-                });
-              }, child: Text(
-                  'Save'
-              ))
-            ],
+                ),
+                Container(height: 11),
+                DropdownSearch<String>(
+                  popupProps: PopupProps.modalBottomSheet(
+                    showSelectedItems: true,
+                    //disabledItemFn: (String s) => s.startsWith('I'),
+                  ),
+                  items: brandData.values.toList(),
+                  dropdownDecoratorProps: DropDownDecoratorProps(
+                    dropdownSearchDecoration: InputDecoration(
+                      labelText: "Brand",
+                      hintText: "Select Brand",
+                    ),
+                  ),
+                  // onChanged: (val){
+                  //   brandId.text = val!;
+                  //   _formatList.clear();
+                  //   getFormatDataByBrand(val);
+                  // },
+                  onChanged: (val){
+                    var key = brandData.keys.firstWhere((k)
+                    => brandData[k] == val!, orElse: () => 0);
+
+                    setState(() {
+                      selectedBrand = val!;
+                      brandId.text = key!.toString();
+                      formatData.clear();
+                      getFormatDataByBrand(brandId.text);
+                      selectedFormat= "";
+                    });
+                    print(brandId.text);
+                  },
+                  selectedItem: "",
+                ),
+                Container(height: 11),
+                DropdownSearch<String>(
+                  popupProps: PopupProps.modalBottomSheet(
+                    showSelectedItems: true,
+                    disabledItemFn: (String s) => s.startsWith('I'),
+                  ),
+                  items: formatData.values.toList(),
+                  dropdownDecoratorProps: DropDownDecoratorProps(
+                    dropdownSearchDecoration: InputDecoration(
+                      labelText: "Format",
+                      hintText: "Select Format",
+                    ),
+                  ),
+                  onChanged: (val){
+                    var key = formatData.keys.firstWhere((k)
+                    => formatData[k] == val!, orElse: () => 0);
+
+                    setState(() {
+                      selectedFormat = val!;
+                      formatId.text = key!.toString();
+                    });
+                    print(formatId.text);
+                  },
+                  selectedItem: selectedFormat,
+                ),
+                Container(height: 20),
+                SizedBox(
+                  width: constants.buttonWidth,
+                  height: constants.buttonHeight,
+                  child: ElevatedButton(onPressed: (){
+                    String uBrandId = brandId.text.toString();
+                    String uFormatId = formatId.text.toString();
+                    String uVariantName = variantName.text;
+                    dbHelper!.insertVariant(
+                        VariantModel(
+                            brandId: uBrandId,
+                            formatId: uFormatId,
+                      variantName: uVariantName
+                        )
+                    ).then((value) {
+                      constants.Notification("Variant Added Successfully");
+                      // Navigator.push(context, MaterialPageRoute(builder: (context) => Variants()));
+                      Navigator.pop(context,value);
+                    }).onError((error, stackTrace) {
+                      print(error.toString());
+                    });
+                  }, child: Text(
+                      'Save'
+                      ,style: TextStyle(color: Colors.white,fontSize: 16)),
+                      style: ElevatedButton.styleFrom(
+                        primary: constants.mainColor, //background color of button
+                        shape: RoundedRectangleBorder( //to set border radius to button
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                      )
+                  ),
+                )
+              ],
+            ),
           )),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stock_audit/dashboard.dart';
 import 'package:stock_audit/splash_screen.dart';
@@ -35,131 +36,121 @@ void initState() {
         title: Text("", style: TextStyle(color: Colors.white)),
         centerTitle: true,
       ),
-      body:Column(
+      backgroundColor: constants.mainColor,
+      body:ListView(
         children: [
           Container(
-            width: double.infinity,
-            height: 200,
-            decoration: BoxDecoration(
-              color: constants.mainColor,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.elliptical(180, 50),
-                bottomRight: Radius.elliptical(180, 50),
-              )
-            ),
-            child: const Image(image: AssetImage('assets/logo.png')),
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height/3.5,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Image(image: AssetImage(constants.logo), width: 120, height: 120,),
+                const Text("Stock Audit",style: TextStyle(color: Colors.white,fontSize: 25)),
+
+
+                // SvgPicture.asset("assets/logo.svg",semanticsLabel: "Logo"),
+                SizedBox(height:40),
+              ],
+            )
           ),
-          Container(height:20),
           Container(
-              width: 400,
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height/1.6,
               decoration: BoxDecoration(
                 border: Border.all(
                   color: constants.mainColor
                 ),
-                borderRadius: BorderRadius.circular(30)
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
+                ),
+                color: Colors.white
               ),
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  top: 20,
-                  left: 20,
-                  bottom: 20,
-                  right: 20,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Icon(Icons.account_circle,
-                      size: 140,
-                        color: constants.mainColor
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        bottom: 20
-                      ),
-                      child: Text("Login",style: TextStyle(fontSize: 30,color: constants.mainColor),),
-                    ),
-                    TextField(
-                      controller: emailText,
-                        decoration: InputDecoration(
-                          hintText: 'Enter Email',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(11),
-                                borderSide: BorderSide(
-                                  color: constants.mainColor,
-                                )
-                            ),
-
-                          // suffixText: 'Username exists',
-                          // suffixIcon: IconButton(
-                          //   icon: Icon(Icons.remove_red_eye, color: Colors.orange),
-                          //   onPressed: (){
-                          //
-                          //   }
-                          // ),
-                          prefixIcon: Icon(Icons.email, color: constants.mainColor)
+                child: Form(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Icon(Icons.account_circle,
+                          size: 140,
+                            color: constants.mainColor
+                          ),
                         ),
-                    ),
-                    Container(height: 20),
-                    TextField(
-                      controller: passwordText,
-                        obscureText: true,
-                        obscuringCharacter: '*',
-                        decoration: InputDecoration(
-                          hintText: 'Enter Password',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(11),
-                                borderSide: BorderSide(
-                                  color: constants.mainColor,
-                                )
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: 20
+                          ),
+                          child: Text("Login",style: TextStyle(fontSize: 30,color: constants.mainColor),),
+                        ),
+                        TextField(
+                          controller: emailText,
+                            decoration: InputDecoration(
+                              hintText: 'Enter Email',
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(11),
+                                    borderSide: BorderSide(
+                                      color: constants.mainColor,
+                                    )
+                                ),
+
+                              // suffixText: 'Username exists',
+                              // suffixIcon: IconButton(
+                              //   icon: Icon(Icons.remove_red_eye, color: Colors.orange),
+                              //   onPressed: (){
+                              //
+                              //   }
+                              // ),
+                              prefixIcon: Icon(Icons.email, color: constants.mainColor)
                             ),
-                            prefixIcon: Icon(Icons.password, color: constants.mainColor)
+                        ),
+                        Container(height: 20),
+                        TextField(
+                          controller: passwordText,
+                            obscureText: true,
+                            obscuringCharacter: '*',
+                            decoration: InputDecoration(
+                              hintText: 'Enter Password',
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(11),
+                                    borderSide: BorderSide(
+                                      color: constants.mainColor,
+                                    )
+                                ),
+                                prefixIcon: Icon(Icons.password, color: constants.mainColor)
 
+                            )
+                        ),
+                        Container(height: 20),
+                        ElevatedButton(onPressed: () async {
+                        String uEmail = emailText.text.toString();
+                        String uPass = passwordText.text;
+                        print("Email: $uEmail, Password: $uPass");
+                        var hashedPassword = "";
+                        if(uEmail != '' && uPass != '') {
+                          var user_info = dbHelper!.getAdminUser(uEmail);
+                          user_info.then((value) =>
+                          {
+                            hashedPassword = value[0]['password'],
+                            isPasswordValid = BCrypt.checkpw(uPass, hashedPassword),
+                            passwordCheck(isPasswordValid)
+                          });
+                        }else{
+                          passwordCheck(isPasswordValid);
+                        }
+                        }, child: Text(
+                          'Login', style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 18),
+                        ),style: ElevatedButton.styleFrom(backgroundColor: constants.mainColor,),
                         )
+                      ],
                     ),
-                    Container(height: 20),
-                    ElevatedButton(onPressed: () async {
-                    String uEmail = emailText.text.toString();
-                    String uPass = passwordText.text;
-                    print("Email: $uEmail, Password: $uPass");
-                    var hashedPassword = "";
-                    if(uEmail != '' && uPass != '') {
-                      var user_info = dbHelper!.getAdminUser(uEmail);
-                      user_info.then((value) =>
-                      {
-                        hashedPassword = value[0]['password'],
-                        isPasswordValid = BCrypt.checkpw(uPass, hashedPassword),
-                        passwordCheck(isPasswordValid)
-                      });
-                    }else{
-                      passwordCheck(isPasswordValid);
-                    }
-                    // user.then((value) => {
-                    //   lastSyncDate = value,
-                    //   dbHelper!.fetchAllData(lastSyncDate)
-                    // }
-                    // );
-                    // String storedHashedPassword = hashedPassword; // Replace with the actual stored hash
-                    // String inputPassword = uPass; // Replace with the user's input password
-
-                    // bool isPasswordValid = Bcrypt.compare(inputPassword, storedHashedPassword);
-                    //final String hashed = BCrypt.hashpw("password", BCrypt.gensalt());
-                    // $2a$10$r6huirn1laq6UXBVu6ga9.sHca6sr6tQl3Tiq9LB6/6LMpR37XEGu
-
-
-                    // true
-
-
-                    }, child: Text(
-                      'Login', style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 18),
-                    ),style: ElevatedButton.styleFrom(backgroundColor: constants.mainColor,),
-                    )
-                  ],
+                  ),
                 ),
-              )),
+
+          ),
         ],
       ),
     );

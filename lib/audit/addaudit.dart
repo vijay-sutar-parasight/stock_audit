@@ -49,82 +49,96 @@ class _AddAudit extends State<AddAudit>{
       appBar: appbar(context, 'Add Audit', {'icons' : Icons.menu}),
       body: Container(
 
-          child: Column(
-            children: [
-              DropdownSearch<String>(
-                popupProps: PopupProps.modalBottomSheet(
-                  showSelectedItems: true,
-                  disabledItemFn: (String s) => s.startsWith('I'),
-                ),
-                items: _CompanyList,
-                dropdownDecoratorProps: DropDownDecoratorProps(
-                  dropdownSearchDecoration: InputDecoration(
-                    labelText: "Company",
-                    hintText: "Select Company",
+          child: Padding(
+            padding: const EdgeInsets.all(constants.bodyPadding),
+            child: Column(
+              children: [
+                DropdownSearch<String>(
+                  popupProps: PopupProps.modalBottomSheet(
+                    showSelectedItems: true,
+                    disabledItemFn: (String s) => s.startsWith('I'),
                   ),
-                ),
-                onChanged: (val){
-                  companyId.text = val!;
-                },
-                selectedItem: "",
-              ),
-              Container(height: 11),
-              TextField(
-                  controller: auditDescription,
-                  decoration: InputDecoration(
-                      hintText: 'Short Description',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(11),
-                          borderSide: BorderSide(
-                            color: Colors.blue,
-                          )
-                      ),
-                      prefixIcon: Icon(Icons.list_alt, color: Colors.orange)
-
-                  )
-              ),
-              Container(height: 20),
-              DropdownSearch<String>(
-                popupProps: PopupProps.modalBottomSheet(
-                  showSelectedItems: true,
-                  disabledItemFn: (String s) => s.startsWith('I'),
-                ),
-                items: statusDropdown,
-                dropdownDecoratorProps: DropDownDecoratorProps(
-                  dropdownSearchDecoration: InputDecoration(
-                    labelText: "Status",
-                    hintText: "Select Status",
+                  items: _CompanyList,
+                  dropdownDecoratorProps: DropDownDecoratorProps(
+                    dropdownSearchDecoration: InputDecoration(
+                      labelText: "Company",
+                      hintText: "Select Company",
+                    ),
                   ),
+                  onChanged: (val){
+                    companyId.text = val!;
+                  },
+                  selectedItem: "",
                 ),
-                onChanged: (val){
+                Container(height: 11),
+                TextField(
+                    controller: auditDescription,
+                    decoration: InputDecoration(
+                        hintText: 'Short Description',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(11),
+                            borderSide: BorderSide(
+                              color: Colors.blue,
+                            )
+                        ),
+                        prefixIcon: Icon(Icons.list_alt, color: Colors.orange)
 
-                  auditStatus.text = val!;
-                },
-                selectedItem: "",
-              ),
-              Container(height: 20),
-              ElevatedButton(onPressed: (){
-                String uCompany = companyId.text.toString();
-                String uDescription = auditDescription.text;
-                String uStatus = auditStatus.text;
-                dbHelper!.insert(
-                    AuditModel(
-                  companyId: uCompany,
-                  auditDescription: uDescription,
-                      auditStatus: uStatus,
                     )
-                ).then((value) {
-                  constants.Notification("Audit Added Successfully");
-                  // Navigator.push(context, MaterialPageRoute(builder: (context) => Audit()));
-                  Navigator.pop(context,value);
-                }).onError((error, stackTrace) {
-                  print(error.toString());
-                });
-                print("Company: $uCompany, Description: $uDescription, Status: $uStatus");
-              }, child: Text(
-                  'Save'
-              ))
-            ],
+                ),
+                Container(height: 20),
+                DropdownSearch<String>(
+                  popupProps: PopupProps.modalBottomSheet(
+                    showSelectedItems: true,
+                    disabledItemFn: (String s) => s.startsWith('I'),
+                  ),
+                  items: statusDropdown,
+                  dropdownDecoratorProps: DropDownDecoratorProps(
+                    dropdownSearchDecoration: InputDecoration(
+                      labelText: "Status",
+                      hintText: "Select Status",
+                    ),
+                  ),
+                  onChanged: (val){
+
+                    auditStatus.text = val!;
+                  },
+                  selectedItem: "",
+                ),
+                Container(height: 20),
+                SizedBox(
+                  width: constants.buttonWidth,
+                  height: constants.buttonHeight,
+                  child: ElevatedButton(onPressed: (){
+                    String uCompany = companyId.text.toString();
+                    String uDescription = auditDescription.text;
+                    String uStatus = auditStatus.text;
+                    dbHelper!.insert(
+                        AuditModel(
+                      companyId: uCompany,
+                      auditDescription: uDescription,
+                          auditStatus: uStatus,
+                        )
+                    ).then((value) {
+                      constants.Notification("Audit Added Successfully");
+                      // Navigator.push(context, MaterialPageRoute(builder: (context) => Audit()));
+                      Navigator.pop(context,value);
+                    }).onError((error, stackTrace) {
+                      print(error.toString());
+                    });
+                    print("Company: $uCompany, Description: $uDescription, Status: $uStatus");
+                  }, child: Text(
+                      'Save'
+                      ,style: TextStyle(color: Colors.white,fontSize: 16)),
+                      style: ElevatedButton.styleFrom(
+                        primary: constants.mainColor, //background color of button
+                        shape: RoundedRectangleBorder( //to set border radius to button
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                      )
+                  ),
+                )
+              ],
+            ),
           )),
     );
   }

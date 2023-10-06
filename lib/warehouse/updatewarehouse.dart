@@ -70,75 +70,89 @@ class _UpdateWarehouse extends State<UpdateWarehouse>{
     return Scaffold(
       appBar: appbar(context, 'Update Warehouse', {'icons' : Icons.menu}),
       body: Container(
-          child: Column(
-            children: [
-              TextField(
-                  controller: warehouseName,
-                  decoration: InputDecoration(
-                      hintText: 'Format Name',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(11),
-                          borderSide: BorderSide(
-                            color: Colors.blue,
-                          )
-                      ),
-                      prefixIcon: Icon(Icons.list_alt, color: Colors.orange)
+          child: Padding(
+            padding: const EdgeInsets.all(constants.bodyPadding),
+            child: Column(
+              children: [
+                TextField(
+                    controller: warehouseName,
+                    decoration: InputDecoration(
+                        hintText: 'Format Name',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(11),
+                            borderSide: BorderSide(
+                              color: Colors.blue,
+                            )
+                        ),
+                        prefixIcon: Icon(Icons.list_alt, color: Colors.orange)
 
-                  )
-              ),
-              Container(height: 11),
-
-              DropdownSearch<String>(
-                popupProps: PopupProps.modalBottomSheet(
-                  showSelectedItems: true,
-                  disabledItemFn: (String s) => s.startsWith('I'),
-                ),
-                items: companyData.values.toList(),
-                dropdownDecoratorProps: DropDownDecoratorProps(
-                  dropdownSearchDecoration: InputDecoration(
-                    labelText: "Company",
-                    hintText: "Select Company",
-                  ),
-                ),
-                onChanged: (val){
-                  var key = companyData.keys.firstWhere((k)
-                  => companyData[k] == val!, orElse: () => "");
-                  companyId.text = key!;
-                  setState(() {
-                    selectedValue = val!;
-                  });
-                  print(companyId.text);
-                },
-                selectedItem: selectedValue,
-              ),
-              Container(height: 20),
-
-
-              ElevatedButton(onPressed: (){
-                String uCompanyId = companyId.text.toString();
-                String uWarehouseName = warehouseName.text;
-
-                if(uCompanyId == ''){
-                  uCompanyId = updateWarehouse.companyId.toString();
-                }
-
-                dbHelper!.updateWarehouse(
-                    WarehouseModel(
-                      warehouseId: recordId,
-                  companyId: uCompanyId,
-                      warehouseName: uWarehouseName,
                     )
-                ).then((value) {
-                  constants.Notification("Warehouse Updated Successfully");
-                  // Navigator.push(context, MaterialPageRoute(builder: (context) => Warehouse()));
-                  Navigator.pop(context,value);
-                }).onError((error, stackTrace) {
-                  print(error.toString());
-                });
-              }, child: Text(
-                  'Save'
-              ))
-            ],
+                ),
+                Container(height: 11),
+
+                DropdownSearch<String>(
+                  popupProps: PopupProps.modalBottomSheet(
+                    showSelectedItems: true,
+                    disabledItemFn: (String s) => s.startsWith('I'),
+                  ),
+                  items: companyData.values.toList(),
+                  dropdownDecoratorProps: DropDownDecoratorProps(
+                    dropdownSearchDecoration: InputDecoration(
+                      labelText: "Company",
+                      hintText: "Select Company",
+                    ),
+                  ),
+                  onChanged: (val){
+                    var key = companyData.keys.firstWhere((k)
+                    => companyData[k] == val!, orElse: () => "");
+                    companyId.text = key!;
+                    setState(() {
+                      selectedValue = val!;
+                    });
+                    print(companyId.text);
+                  },
+                  selectedItem: selectedValue,
+                ),
+                Container(height: 20),
+
+
+                SizedBox(
+                  width: constants.buttonWidth,
+                  height: constants.buttonHeight,
+                  child: ElevatedButton(onPressed: (){
+                    String uCompanyId = companyId.text.toString();
+                    String uWarehouseName = warehouseName.text;
+
+                    if(uCompanyId == ''){
+                      uCompanyId = updateWarehouse.companyId.toString();
+                    }
+
+                    dbHelper!.updateWarehouse(
+                        WarehouseModel(
+                          warehouseId: recordId,
+                      companyId: uCompanyId,
+                          warehouseName: uWarehouseName,
+                        )
+                    ).then((value) {
+                      constants.Notification("Warehouse Updated Successfully");
+                      // Navigator.push(context, MaterialPageRoute(builder: (context) => Warehouse()));
+                      Navigator.pop(context,value);
+                    }).onError((error, stackTrace) {
+                      print(error.toString());
+                    });
+                  }, child: Text(
+                      'Save'
+                      ,style: TextStyle(color: Colors.white,fontSize: 16)),
+                      style: ElevatedButton.styleFrom(
+                        primary: constants.mainColor, //background color of button
+                        shape: RoundedRectangleBorder( //to set border radius to button
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                      )
+                  ),
+                )
+              ],
+            ),
           )),
     );
   }
