@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stock_audit/dashboard.dart';
 import 'package:stock_audit/splash_screen.dart';
@@ -57,15 +56,12 @@ void initState() {
           ),
           Container(
               width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height/1.6,
+              // height: MediaQuery.of(context).size.height/1.6,
               decoration: BoxDecoration(
                 border: Border.all(
                   color: constants.mainColor
                 ),
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
-                ),
+                borderRadius: BorderRadius.all(Radius.circular(0)),
                 color: Colors.white
               ),
                 child: Form(
@@ -144,7 +140,8 @@ void initState() {
                         }, child: Text(
                           'Login', style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 18),
                         ),style: ElevatedButton.styleFrom(backgroundColor: constants.mainColor,),
-                        )
+                        ),
+                        SizedBox(height: 20,)
                       ],
                     ),
                   ),

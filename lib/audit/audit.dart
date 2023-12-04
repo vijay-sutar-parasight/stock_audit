@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../appbar.dart';
+import '../auditentries/addauditentries.dart';
 import '../auditentries/auditentries.dart';
 import '../db_handler.dart';
 import '../jsondata/GetCompanyData.dart';
@@ -139,7 +140,8 @@ class AuditList extends State<Audit> {
                                         },
                                         child: Icon(Icons.add)
                                     ),
-                                  ],
+
+                              ],
                                 ),
 
                               ),

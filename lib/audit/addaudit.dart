@@ -22,6 +22,9 @@ class _AddAudit extends State<AddAudit>{
   List<String> _CompanyList = [];
   List<GetCompanyData> _companyMasterList = [];
 
+  String selectedValue = "";
+  Map<String, String> companyData = {};
+
   DBHelper? dbHelper;
 
   void initState(){
@@ -33,12 +36,12 @@ class _AddAudit extends State<AddAudit>{
   Future<void> getCompanyData() async {
     _companyMasterList = await dbHelper!.getCompanyListArray();
     for (int i = 0; i < _companyMasterList.length; i++) {
-
-      _CompanyList.add(_companyMasterList[i].companyName!);
-      setState(() {
-
-      });
+      // _CompanyList.add(_companyMasterList[i].companyName!);
+      companyData[_companyMasterList[i].companyId!.toString()] = _companyMasterList[i].companyName!;
     }
+    setState(() {
+
+    });
   }
 
   List<String> statusDropdown = ['Active','Inactive'];
@@ -56,9 +59,9 @@ class _AddAudit extends State<AddAudit>{
                 DropdownSearch<String>(
                   popupProps: PopupProps.modalBottomSheet(
                     showSelectedItems: true,
-                    disabledItemFn: (String s) => s.startsWith('I'),
+                    //disabledItemFn: (String s) => s.startsWith('I'),
                   ),
-                  items: _CompanyList,
+                  items: companyData.values.toList(),
                   dropdownDecoratorProps: DropDownDecoratorProps(
                     dropdownSearchDecoration: InputDecoration(
                       labelText: "Company",
@@ -66,9 +69,16 @@ class _AddAudit extends State<AddAudit>{
                     ),
                   ),
                   onChanged: (val){
-                    companyId.text = val!;
+                    var key = companyData.keys.firstWhere((k)
+                    => companyData[k] == val!, orElse: () => "");
+                    companyId.text = key!;
+
+                    setState(() {
+                      selectedValue = val!;
+                    });
+                    print(companyId.text);
                   },
-                  selectedItem: "",
+                  selectedItem: selectedValue,
                 ),
                 Container(height: 11),
                 TextField(
@@ -89,7 +99,7 @@ class _AddAudit extends State<AddAudit>{
                 DropdownSearch<String>(
                   popupProps: PopupProps.modalBottomSheet(
                     showSelectedItems: true,
-                    disabledItemFn: (String s) => s.startsWith('I'),
+                    //disabledItemFn: (String s) => s.startsWith('I'),
                   ),
                   items: statusDropdown,
                   dropdownDecoratorProps: DropDownDecoratorProps(

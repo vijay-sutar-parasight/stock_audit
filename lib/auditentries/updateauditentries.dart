@@ -539,14 +539,14 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                         child: TextField(
                             controller: weight,
                             decoration: InputDecoration(
-                                hintText: 'Weight',
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(11),
-                                    borderSide: BorderSide(
-                                      color: Colors.blue,
-                                    )
-                                ),
-                                prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
+                                labelText: 'Weight',
+                                // border: OutlineInputBorder(
+                                //     borderRadius: BorderRadius.circular(11),
+                                //     borderSide: BorderSide(
+                                //       color: Colors.blue,
+                                //     )
+                                // ),
+                                // prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
                               contentPadding: EdgeInsets.symmetric(vertical: 15),
 
                             )
@@ -562,14 +562,14 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                         child: TextField(
                             controller: mrp,
                             decoration: InputDecoration(
-                                hintText: 'MRP',
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(11),
-                                    borderSide: BorderSide(
-                                      color: Colors.blue,
-                                    )
-                                ),
-                                prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
+                                labelText: 'MRP',
+                                // border: OutlineInputBorder(
+                                //     borderRadius: BorderRadius.circular(11),
+                                //     borderSide: BorderSide(
+                                //       color: Colors.blue,
+                                //     )
+                                // ),
+                                // prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
                               contentPadding: EdgeInsets.symmetric(vertical: 15),
 
                             )
@@ -581,14 +581,14 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                         child: TextField(
                             controller: valuationPerUnit,
                             decoration: InputDecoration(
-                                hintText: 'Valuation Per Unit',
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(11),
-                                    borderSide: BorderSide(
-                                      color: Colors.blue,
-                                    )
-                                ),
-                                prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
+                                labelText: 'Valuation Per Unit',
+                                // border: OutlineInputBorder(
+                                //     borderRadius: BorderRadius.circular(11),
+                                //     borderSide: BorderSide(
+                                //       color: Colors.blue,
+                                //     )
+                                // ),
+                                // prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
                               contentPadding: EdgeInsets.symmetric(vertical: 15),
 
                             )
@@ -601,14 +601,14 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                   TextField(
                       controller: systemUnit,
                       decoration: InputDecoration(
-                          hintText: 'System Unit',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(11),
-                              borderSide: BorderSide(
-                                color: Colors.blue,
-                              )
-                          ),
-                          prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
+                          labelText: 'System Unit',
+                          // border: OutlineInputBorder(
+                          //     borderRadius: BorderRadius.circular(11),
+                          //     borderSide: BorderSide(
+                          //       color: Colors.blue,
+                          //     )
+                          // ),
+                          // prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
                         contentPadding: EdgeInsets.symmetric(vertical: 15),
 
                       )
@@ -620,14 +620,14 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                         child: TextField(
                           controller: calculation,
                           decoration: InputDecoration(
-                            hintText: 'Calculation',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(11),
-                                borderSide: BorderSide(
-                                  color: Colors.blue,
-                                )
-                            ),
-                            prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
+                            labelText: 'Calculation',
+                            // border: OutlineInputBorder(
+                            //     borderRadius: BorderRadius.circular(11),
+                            //     borderSide: BorderSide(
+                            //       color: Colors.blue,
+                            //     )
+                            // ),
+                            // prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
                             contentPadding: EdgeInsets.symmetric(vertical: 15),
 
                           ),
@@ -653,9 +653,12 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                          // print(existingActualUnits);
                           actualUnits.text = (existingActualUnits + calculationResult).toString();
                           if(calculations != ''){
+                            totalValuation.text = (double.parse(actualUnits.text) * double.parse(valuationPerUnit.text)).toStringAsFixed(2);
+
                             _calculationArr.add(calculations);
                           }
                           print(json.encode(_calculationArr));
+                          calculation.text = "";
                         }, child: Text(
                             'Calculate'
                         )),
@@ -669,14 +672,14 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                         child: TextField(
                             controller: actualUnits,
                             decoration: InputDecoration(
-                                hintText: 'Actual Units',
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(11),
-                                    borderSide: BorderSide(
-                                      color: Colors.blue,
-                                    )
-                                ),
-                                prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
+                                labelText: 'Actual Units',
+                                // border: OutlineInputBorder(
+                                //     borderRadius: BorderRadius.circular(11),
+                                //     borderSide: BorderSide(
+                                //       color: Colors.blue,
+                                //     )
+                                // ),
+                                // prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
                               contentPadding: EdgeInsets.symmetric(vertical: 15),
 
                             )
@@ -688,14 +691,14 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                         child: TextField(
                             controller: totalValuation,
                             decoration: InputDecoration(
-                                hintText: 'Total Valuation',
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(11),
-                                    borderSide: BorderSide(
-                                      color: Colors.blue,
-                                    )
-                                ),
-                                prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
+                                labelText: 'Total Valuation',
+                                // border: OutlineInputBorder(
+                                //     borderRadius: BorderRadius.circular(11),
+                                //     borderSide: BorderSide(
+                                //       color: Colors.blue,
+                                //     )
+                                // ),
+                                // prefixIcon: Icon(Icons.list_alt, color: Colors.orange),
                               contentPadding: EdgeInsets.symmetric(vertical: 15),
 
                             )
@@ -713,7 +716,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                   //     selectedItem = val as String;
                   //   });
                   // }),
-                  Container(height: 20),
+                  Container(height: 40),
                   SizedBox(
                     width: constants.buttonWidth,
                     height: constants.buttonHeight,

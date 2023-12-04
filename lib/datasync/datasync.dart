@@ -123,6 +123,8 @@ class _DataSyncState extends State<DataSync> {
             Flexible(
               child: ElevatedButton(onPressed: (){
                 dbHelper!.syncDatabase();
+                print("Database Sync in Progress");
+                constants.Notification("Database Sync in Progress");
               }, child: Text(
                   'Import From Server'
                   ,style: TextStyle(color: Colors.white,fontSize: 15)),
@@ -170,9 +172,31 @@ class _DataSyncState extends State<DataSync> {
                     ),
                   )
     ),
-            )
+            ),
+
           ],
         ),
+        SizedBox(height: 30,),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Flexible(
+              child: ElevatedButton(onPressed: (){
+                dbHelper!.clearLocalDatabase();
+                constants.Notification("Database Cleared Successfully");
+              }, child: Text(
+                  'Clear Local Database'
+                  ,style: TextStyle(color: Colors.white,fontSize: 15)),
+                  style: ElevatedButton.styleFrom(
+                    primary: constants.mainColor, //background color of button
+                    shape: RoundedRectangleBorder( //to set border radius to button
+                        borderRadius: BorderRadius.circular(10)
+                    ),
+                  )
+              ),
+            ),
+          ],
+        )
         
 
       ],

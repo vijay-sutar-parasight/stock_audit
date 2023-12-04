@@ -48,7 +48,6 @@ dependencies:
   flutter_easyloading:
   bcrypt:
   math_expressions:
-  flutter_svg:
 
 dev_dependencies:
   flutter_test:

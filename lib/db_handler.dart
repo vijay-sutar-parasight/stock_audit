@@ -559,13 +559,28 @@ class DBHelper{
 
   Future<void> syncDatabase() async {
     var dbHelper = DBHelper();
-    dbHelper = DBHelper();
     String lastSyncDate = "";
     var syncDate = dbHelper!.getLastSyncDate();
     syncDate.then((value) => {
       lastSyncDate = value,
       dbHelper!.fetchAllData(lastSyncDate)
     });
+  }
+
+  Future<void> clearLocalDatabase() async{
+    var dbClient = await db;
+    var dbHelper = DBHelper();
+    await dbClient!.rawQuery("Delete from audit");
+    await dbClient!.rawQuery("Delete from audit_wise_entries");
+    await dbClient!.rawQuery("Delete from brand");
+    await dbClient!.rawQuery("Delete from format");
+    await dbClient!.rawQuery("Delete from variant");
+    await dbClient!.rawQuery("Delete from product");
+    await dbClient!.rawQuery("Delete from warehouse");
+    await dbClient!.rawQuery("Delete from company");
+    await dbClient!.rawQuery("Delete from admin_users");
+    dbHelper.updateSyncDate(SyncDate(syncId: 1, syncCode: "lastsyncdate", syncDate: ""));
+
   }
 
 }
