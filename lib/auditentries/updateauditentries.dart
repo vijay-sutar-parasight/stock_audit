@@ -21,20 +21,22 @@ import 'auditentries_handler.dart';
 
 class UpdateAuditEntries extends StatefulWidget{
   String selectedCompanyId;
-  UpdateAuditEntries({required this.selectedCompanyId});
+  String selectedAuditId;
+  UpdateAuditEntries({required this.selectedCompanyId, required this.selectedAuditId});
   @override
-  State<UpdateAuditEntries> createState() => _UpdateAuditEntries(selectedCompanyId);
+  State<UpdateAuditEntries> createState() => _UpdateAuditEntries(selectedCompanyId, selectedAuditId);
 }
 
 class _UpdateAuditEntries extends State<UpdateAuditEntries>{
 
   String selectedCompanyId;
+  String selectedAuditId;
   String? selectedMfgMonth;
   String? selectedMfgYear;
   String? selectedExpMonth;
   String? selectedExpYear;
   double existingActualUnits = 0;
-  _UpdateAuditEntries(this.selectedCompanyId);
+  _UpdateAuditEntries(this.selectedCompanyId, this.selectedAuditId);
   TextEditingController companyId = TextEditingController();
   var brandId = TextEditingController();
   var formatId = TextEditingController();
@@ -243,17 +245,30 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
     var calc = json.decode(updateAuditEntries.calculationArr ?? "0");
     Map data = {};
 
-    // if(calc.isNotEmpty) {
-    //   print(calc);
-    //   data = json.decode(updateAuditEntries.calculationArr!);
-    //   if(data.length > 0){
-    //       for(var item in data.entries) {
-    //         _calculationArr.add(item.value);
-    //        // print(item.key);
-    //       };
-    //       //print(_calculationArr);
-    //   }
-    // }
+    if(calc.isNotEmpty) {
+      //print(updateAuditEntries.calculationArr!);
+      // Map<String, dynamic> myMap = json.decode(updateAuditEntries.calculationArr!);
+      // print(myMap[0]);
+      // List<dynamic> entitlements = myMap["Dependents"][0]["Entitlements"];
+
+      // myMap.forEach((entitlement) {
+      //   (entitlement as Map<String, dynamic>).forEach((key, value) {
+      //     print(key);
+      //     (value as Map<String, dynamic>).forEach((key2, value2) {
+      //       print(key2);
+      //       print(value2);
+      //     });
+      //   });
+      // });
+      //  data = json.decode(updateAuditEntries.calculationArr ?? "") ;
+      // if(data.length > 0){
+      //     for(var item in data.entries) {
+      //       _calculationArr.add(item.value);
+      //      // print(item.key);
+      //     };
+      //     // print(_calculationArr);
+      // }
+    }
 
 
     selectedBrand = getBrandName(updateAuditEntries.brandId!);
@@ -266,6 +281,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
     selectedExpMonth = updateAuditEntries.expMonth!;
     selectedExpYear = updateAuditEntries.expYear!;
     recordId = updateAuditEntries.entryId!;
+
 
     return Scaffold(
       appBar: appbar(context, 'Update Audit Entries', {'icons' : Icons.menu}),
@@ -654,10 +670,9 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                           actualUnits.text = (existingActualUnits + calculationResult).toString();
                           if(calculations != ''){
                             totalValuation.text = (double.parse(actualUnits.text) * double.parse(valuationPerUnit.text)).toStringAsFixed(2);
-
-                            _calculationArr.add(calculations);
+                            calc.add(calculations);
                           }
-                          print(json.encode(_calculationArr));
+                          print(json.encode(calc));
                           calculation.text = "";
                         }, child: Text(
                             'Calculate'
@@ -734,7 +749,7 @@ class _UpdateAuditEntries extends State<UpdateAuditEntries>{
                       String uMrp = mrp.text.toString();
                       String uValuationPerUnit = valuationPerUnit.text.toString();
                       String uSystemUnit = systemUnit.text.toString();
-                      String uCalculation = json.encode(_calculationArr);
+                      String uCalculation = json.encode(calc);
                       String uActualUnit = actualUnits.text.toString();
                       String uTotalValuation = totalValuation.text.toString();
 

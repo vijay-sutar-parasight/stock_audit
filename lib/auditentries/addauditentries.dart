@@ -23,20 +23,22 @@ class AddAuditEntries extends StatefulWidget{
   @override
 
   String selectedCompanyId;
-  AddAuditEntries({required this.selectedCompanyId});
-  State<AddAuditEntries> createState() => _AddAuditEntries(selectedCompanyId);
+  String selectedAuditId;
+  AddAuditEntries({required this.selectedCompanyId, required this.selectedAuditId});
+  State<AddAuditEntries> createState() => _AddAuditEntries(selectedCompanyId, selectedAuditId);
 
 }
 
 class _AddAuditEntries extends State<AddAuditEntries>{
 
   String selectedCompanyId;
+  String selectedAuditId;
   String? selectedMfgMonth;
   String? selectedMfgYear;
   String? selectedExpMonth;
   String? selectedExpYear;
   double existingActualUnits = 0;
-  _AddAuditEntries(this.selectedCompanyId);
+  _AddAuditEntries(this.selectedCompanyId, this.selectedAuditId);
 
   var brandId = TextEditingController();
   var formatId = TextEditingController();
@@ -354,17 +356,17 @@ class _AddAuditEntries extends State<AddAuditEntries>{
                                   actualUnits.text = '0';
                                   totalValuation.text = '0';
                                   selectedMfgMonth = element.mfgMonth.toString();
+                                  mfgMonth.text = selectedMfgMonth.toString();
                                   selectedMfgYear = element.mfgYear.toString();
+                                  mfgYear.text = selectedMfgYear.toString();
                                   selectedExpMonth = element.expMonth.toString();
+                                  expMonth.text = selectedExpMonth.toString();
                                   selectedExpYear = element.expYear.toString();
+                                  expYear.text = selectedExpYear.toString();
+                                  warehouseId.text = selectedWarehouse.toString();
                                 })
                             );
-                            // var descriptionData = db.getDescription
-                            // print(descriptionRecord);
-
                           });
-                          // var descriptionData = db.getDescription
-
                         },
                         selectedItem: selectedDescription,
                       ),
@@ -693,6 +695,7 @@ class _AddAuditEntries extends State<AddAuditEntries>{
                   height: constants.buttonHeight,
                   child: ElevatedButton(onPressed: (){
                     String uCompanyId = selectedCompanyId;
+                    String uAuditId = selectedAuditId;
                     String uBrand = brandId.text.toString();
                     String uFormat = formatId.text.toString();
                     String uVariant = variantId.text.toString();
@@ -712,6 +715,7 @@ class _AddAuditEntries extends State<AddAuditEntries>{
                     dbHelper!.insert(
                         AuditEntriesModel(
                           companyId: selectedCompanyId,
+                          auditId: selectedAuditId,
                           brandId: uBrand,
                           formatId: uFormat,
                           variantId: uVariant,
@@ -738,7 +742,7 @@ class _AddAuditEntries extends State<AddAuditEntries>{
                       constants.Notification("Audit Entry Added Successfully");
                       // Navigator.push(context, MaterialPageRoute(builder: (context) => AuditEntries(auditCompanyId: selectedCompanyId.toString())));
                       //Navigator.pop(context,value);
-                      //Navigator.push(context, MaterialPageRoute(builder: (context) => AddAuditEntries(selectedCompanyId: selectedCompanyId.toString()),));
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AddAuditEntries(selectedCompanyId: selectedCompanyId.toString(),selectedAuditId: selectedAuditId.toString(),),));
 
                     }).onError((error, stackTrace) {
                       print(error.toString());

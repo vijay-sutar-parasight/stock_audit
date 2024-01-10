@@ -55,6 +55,41 @@ class _DashboardState extends State<Dashboard> {
       body: Container(
         child: GridView.count(crossAxisCount: 2,
     children: [
+
+      Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: InkWell(
+          onTap: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => Audit()));
+          },
+          child: Card(color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image(image: AssetImage(constants.auditIcon),width: 60,height: 60,),
+                Text('Audit',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+              ],
+            ),
+          ),
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: InkWell(
+          onTap: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => DataSync()));
+          },
+          child: Card(color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image(image: AssetImage(constants.datasyncIcon),width: 60,height: 60,),
+                Text('Data Sync',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+              ],
+            ),
+          ),
+        ),
+      ),
         Padding(
           padding: const EdgeInsets.all(15.0),
           child: InkWell(
@@ -159,40 +194,7 @@ class _DashboardState extends State<Dashboard> {
           ),
         ),
       ),
-      Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: InkWell(
-          onTap: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context) => Audit()));
-          },
-          child: Card(color: Colors.white,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image(image: AssetImage(constants.auditIcon),width: 60,height: 60,),
-                Text('Audit',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-              ],
-            ),
-          ),
-        ),
-      ),
-      Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: InkWell(
-          onTap: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context) => DataSync()));
-          },
-          child: Card(color: Colors.white,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image(image: AssetImage(constants.datasyncIcon),width: 60,height: 60,),
-                Text('Data Sync',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-              ],
-            ),
-          ),
-        ),
-      ),
+
     ],
         ),
       ),

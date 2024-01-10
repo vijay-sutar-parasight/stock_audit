@@ -34,10 +34,10 @@ class AuditentriesDBHelper{
     return auditEntriesModel;
   }
 
-  Future<List<AuditEntriesModel>> getAuditEntriesList(companyId) async{
+  Future<List<AuditEntriesModel>> getAuditEntriesList(companyId,auditId) async{
     var dbClient = await db;
     print(companyId);
-    final List<Map<String, Object?>> queryResult = await dbClient!.rawQuery("Select * from audit_wise_entries where company_id='$companyId'");
+    final List<Map<String, Object?>> queryResult = await dbClient!.rawQuery("Select * from audit_wise_entries where audit_id='$auditId' and company_id='$companyId'");
     return queryResult.map((e) => AuditEntriesModel.fromMap(e)).toList();
   }
 

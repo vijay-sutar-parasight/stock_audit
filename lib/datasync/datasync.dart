@@ -68,6 +68,8 @@ class _DataSyncState extends State<DataSync> {
       dbHelper!.getLastSyncDate().then((value) => {
         lastSyncDate = value,
       });
+      setState(() {
+      });
       return lastSyncDate;
     }
 
@@ -122,9 +124,15 @@ class _DataSyncState extends State<DataSync> {
 
             Flexible(
               child: ElevatedButton(onPressed: (){
-                dbHelper!.syncDatabase();
+                var value = dbHelper!.syncDatabase();
                 print("Database Sync in Progress");
                 constants.Notification("Database Sync in Progress");
+                print(value.then((data) =>
+                getSyncDate()
+                ));
+                // setState(() {
+                //   getSyncDate();
+                // });
               }, child: Text(
                   'Import From Server'
                   ,style: TextStyle(color: Colors.white,fontSize: 15)),
